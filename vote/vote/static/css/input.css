@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+/* On indique à Tailwind d'aller chercher les classes dans tes templates */
+/* Le chemin ../../../templates remonte du dossier css vers le dossier templates */
+@source "../../templates/**/*.html";

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#ffb690",
+                    "on-tertiary-container": "#243348",
+                    "inverse-on-surface": "#ffede6",
+                    "tertiary-container": "#8c9cb4",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#d3e4fe",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#fce3d9",
+                    "on-surface": "#251913",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "primary-fixed": "#ffdbca",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#9d4300",
+                    "primary": "#9d4300",
+                    "secondary-fixed": "#dae2fd",
+                    "background": "#fff8f6",
+                    "on-surface-variant": "#584237",
+                    "surface-container-highest": "#f6ded3",
+                    "on-secondary-fixed": "#131b2e",
+                    "secondary": "#565e74",
+                    "on-primary-fixed": "#341100",
+                    "surface-bright": "#fff8f6",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "inverse-primary": "#ffb690",
+                    "outline": "#8c7164",
+                    "surface-container": "#ffeae0",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#505f76",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#e0c0b1",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#edd5cb",
+                    "secondary-container": "#dae2fd",
+                    "on-background": "#251913",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "surface-variant": "#f6ded3",
+                    "surface": "#fff8f6",
+                    "primary-container": "#f97316",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#783200",
+                    "on-secondary-container": "#5c647a",
+                    "inverse-surface": "#3c2d26",
+                    "on-primary-container": "#582200",
+                    "surface-container-low": "#fff1eb",
+                    "on-tertiary-fixed": "#0b1c30"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1280px",
+                    "gutter": "1.5rem",
+                    "stack-gap": "1rem",
+                    "section-gap": "4rem"
+            },
+            "fontFamily": {
+                    "body-base": ["Inter"],
+                    "h2": ["Inter"],
+                    "h3": ["Inter"],
+                    "data-point": ["Inter"],
+                    "h1": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h3": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "data-point": ["14px", {"lineHeight": "20px", "fontWeight": "700"}],
+                    "h1": ["36px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-white font-body-base text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
+<div class="max-w-[1280px] mx-auto h-20 px-6 md:px-12 flex justify-between items-center w-full">
+<div class="text-xl font-black text-slate-900 dark:text-white tracking-tighter">
+                VOTE.INSTITUTIONAL
+            </div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-orange-600 dark:text-orange-500 font-bold border-b-2 border-orange-600 pb-1 font-sans Inter tracking-tight" href="#">Technology</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-orange-600 dark:hover:text-orange-400 transition-all duration-200 font-sans Inter tracking-tight" href="#">Transparency</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-orange-600 dark:hover:text-orange-400 transition-all duration-200 font-sans Inter tracking-tight" href="#">Statistics</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-orange-600 dark:hover:text-orange-400 transition-all duration-200 font-sans Inter tracking-tight" href="#">Support</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden lg:block text-slate-600 dark:text-slate-400 font-medium px-4 py-2 hover:text-orange-600 transition-all active:scale-95 duration-100">Connexion</button>
+<button class="bg-primary-container text-white font-semibold px-6 py-3 rounded-DEFAULT hover:bg-orange-700 transition-all active:scale-95 duration-100">Commencer à voter</button>
+</div>
+</div>
+</header>
+<!-- Hero Section -->
+<section class="relative overflow-hidden py-24 md:py-32 bg-white">
+<div class="max-w-[1280px] mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-16">
+<div class="flex-1 space-y-8 z-10 text-center md:text-left">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-700 rounded-DEFAULT font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+                    PROTOCOLE SÉCURISÉ
+                </div>
+<h1 class="font-h1 text-h1 md:text-6xl text-on-surface-variant leading-tight">
+                    Infrastructure de Vote Institutionnelle
+                </h1>
+<p class="font-body-base text-body-base text-slate-600 max-w-xl mx-auto md:mx-0">
+                    La démocratie, chiffrée et transparente. Un système de vote électronique souverain conçu pour la résilience et l'intégrité absolue du scrutin.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+<button class="bg-primary-container text-white font-semibold px-8 py-4 rounded-DEFAULT hover:bg-orange-700 transition-all shadow-sm">
+                        Déployer le système
+                    </button>
+<button class="border border-slate-300 text-slate-900 bg-white px-8 py-4 rounded-DEFAULT hover:bg-slate-50 transition-all">
+                        Consulter les audits
+                    </button>
+</div>
+</div>
+<div class="flex-1 relative">
+<div class="relative w-full aspect-square max-w-[500px] bg-slate-50 rounded-DEFAULT border border-slate-200 overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover grayscale opacity-80 mix-blend-multiply" data-alt="abstract architectural geometry with clean white concrete lines and professional blue lighting representing modern institutional infrastructure" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCns7tfZbhiXJTzhsZX86OuOZuLs0XAXLG7FDysjrg7UXgSnqEGxra5tVy-pB_VQrCSNtjhxo-SWF_TcX3Ms7P9Edy_K47SrKBDC2aib0RVvDMfVtRNsjwYoCuUVs8dWvrpoLsbgUZP0zLm5u5J9wjOw7JekKQtlRcNYkcM7pNx2ZWGw8tFBbR8iJ6gtGRG0iUAwAzTbmDqe4jY6N35P2psQ5BQKwpuO7B6G6QTXOTDXBEYt2kQ1Onmsh1IAPjMjUQuHaRg9BD2BoYg"/>
+<div class="absolute inset-0 bg-gradient-to-tr from-orange-500/10 to-transparent"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section class="bg-on-tertiary-fixed py-20">
+<div class="max-w-[1280px] mx-auto px-6 md:px-12">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+<div class="space-y-2">
+<div class="font-h1 text-h1 text-primary-container">1,240,892</div>
+<div class="text-white font-label-caps text-label-caps tracking-widest opacity-80 uppercase">Votes sécurisés</div>
+</div>
+<div class="space-y-2">
+<div class="font-h1 text-h1 text-white">100%</div>
+<div class="text-white font-label-caps text-label-caps tracking-widest opacity-80 uppercase">Uptime Opérationnel</div>
+</div>
+<div class="space-y-2">
+<div class="font-h1 text-h1 text-white">452</div>
+<div class="text-white font-label-caps text-label-caps tracking-widest opacity-80 uppercase">Audits publics</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Section (Bento Grid Style) -->
+<section class="py-24 bg-white">
+<div class="max-w-[1280px] mx-auto px-6 md:px-12">
+<div class="mb-16">
+<h2 class="font-h2 text-h2 text-slate-900">Normes de Sécurité Maximales</h2>
+<div class="w-20 h-1 bg-primary-container mt-4"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Large card -->
+<div class="md:col-span-8 bg-slate-50 border border-slate-200 p-10 flex flex-col justify-between hover:border-orange-200 transition-colors">
+<div>
+<span class="material-symbols-outlined text-orange-600 text-4xl mb-6">lock</span>
+<h3 class="font-h3 text-h3 text-slate-900 mb-4">Chiffrement AES-256 de bout en bout</h3>
+<p class="text-slate-600 font-body-base max-w-lg">
+                            Le bulletin de vote est chiffré sur l'appareil de l'électeur avant même d'être transmis. Seule la clé de dépouillement multi-signée peut révéler le résultat global sans compromettre l'anonymat individuel.
+                        </p>
+</div>
+<div class="mt-8 flex gap-4">
+<span class="bg-emerald-100 text-emerald-700 font-label-caps text-[10px] px-2 py-1 uppercase rounded-DEFAULT">Militaire</span>
+<span class="bg-slate-200 text-slate-700 font-label-caps text-[10px] px-2 py-1 uppercase rounded-DEFAULT">Certifié ANSSI</span>
+</div>
+</div>
+<!-- Small card -->
+<div class="md:col-span-4 bg-primary-container p-10 text-white flex flex-col justify-center">
+<span class="material-symbols-outlined text-4xl mb-6">database</span>
+<h3 class="font-h3 text-h3 mb-4">Blockchain Souveraine</h3>
+<p class="font-body-sm opacity-90 leading-relaxed">
+                        Un registre immuable géré par des nœuds institutionnels distribués garantissant qu'aucun vote ne peut être supprimé ou modifié.
+                    </p>
+</div>
+<!-- Small card -->
+<div class="md:col-span-4 border border-slate-200 p-8 hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-orange-600 text-3xl mb-4">analytics</span>
+<h3 class="font-h3 text-h3 text-slate-900 mb-2">Audit Temps Réel</h3>
+<p class="font-body-sm text-slate-500">
+                        Observateurs et citoyens peuvent vérifier l'intégrité de la chaîne de vote en temps réel sans voir les choix individuels.
+                    </p>
+</div>
+<!-- Long card -->
+<div class="md:col-span-8 bg-slate-900 p-8 flex flex-col md:flex-row items-center gap-8 text-white">
+<div class="flex-1">
+<h3 class="font-h3 text-h3 mb-2">Conformité RGPD &amp; CNIL</h3>
+<p class="font-body-sm text-slate-400">
+                            Notre infrastructure est hébergée sur des serveurs souverains, garantissant que vos données sensibles ne quittent jamais le territoire.
+                        </p>
+</div>
+<div class="flex-shrink-0">
+<div class="w-16 h-16 rounded-full border-2 border-orange-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-500 text-3xl">policy</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust Banner -->
+<div class="bg-slate-900 text-white py-4">
+<div class="max-w-[1280px] mx-auto px-6 md:px-12 flex flex-wrap justify-center md:justify-between items-center gap-4">
+<div class="flex items-center gap-2 font-label-caps text-[10px] uppercase tracking-widest text-slate-400">
+<span class="material-symbols-outlined text-emerald-500 text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                Session Sécurisée SSL/TLS 1.3
+            </div>
+<div class="flex items-center gap-6 opacity-60 grayscale brightness-200">
+<span class="font-black text-xs tracking-tighter">CERTIFIED_SECURITY</span>
+<span class="font-black text-xs tracking-tighter">EU_SOVEREIGNTY</span>
+<span class="font-black text-xs tracking-tighter">ENCRYPT_GOLD</span>
+</div>
+<div class="flex items-center gap-2 font-data-point text-data-point">
+<span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                Système en ligne
+            </div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+<div class="max-w-[1280px] mx-auto py-12 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="text-lg font-bold text-slate-900 dark:text-slate-100">
+                VOTE.INSTITUTIONAL
+            </div>
+<nav class="flex flex-wrap justify-center gap-8">
+<a class="text-sm font-normal Inter text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors focus:ring-2 focus:ring-orange-500" href="#">Legal</a>
+<a class="text-sm font-normal Inter text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors focus:ring-2 focus:ring-orange-500" href="#">Contact</a>
+<a class="text-sm font-normal Inter text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors focus:ring-2 focus:ring-orange-500" href="#">Privacy</a>
+<a class="text-sm font-normal Inter text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors focus:ring-2 focus:ring-orange-500" href="#">Terms</a>
+<a class="text-sm font-normal Inter text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors focus:ring-2 focus:ring-orange-500" href="#">Compliance</a>
+</nav>
+<div class="text-sm font-normal Inter text-slate-500 dark:text-slate-400 text-center md:text-right">
+                © 2024 Institutional Voting System. Secure &amp; Encrypted.
+            </div>
+</div>
+</footer>
+</body></html>

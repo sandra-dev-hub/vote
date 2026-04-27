@@ -4,32 +4,16 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 
-
-# class User(AbstractUser):
-#     """
-#     Default custom user model for vote.
-#     If adding fields that need to be filled at user signup,
-#     check forms.SignupForm and forms.SocialSignupForms accordingly.
-#     """
-
-#     # First and last name do not cover name patterns around the globe
-#     name = CharField(_("Name of User"), blank=True, max_length=255)
-#     first_name = None  # type: ignore[assignment]
-#     last_name = None  # type: ignore[assignment]
-
-#     def get_absolute_url(self) -> str:
-#         """Get URL for user's detail view.
-
-#         Returns:
-#             str: URL for user detail.
-
-#         """
-#         return reverse("users:detail", kwargs={"username": self.username})
-    
 
 
 from django.db import models
+
+from vote.global_data.enums import Role, StatutDemande, StatutScrutin
+from vote.users.managers import UserManager
 
 class BaseModel(models.Model):
     date_creation = models.DateTimeField(auto_now_add=True)
@@ -39,40 +23,30 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-# ennum
-class Role(models.TextChoices):
-    ADMIN = "admin", "Administrateur"
-    ELECTEUR = "electeur", "Electeur"
 
-
-class StatutScrutin(models.TextChoices):
-    OUVERT = "ouvert", "Ouvert"
-    FERME = "ferme", "Fermé"
-    ANNULE = "annule", "Annulé"
-
-
-class StatutDemande(models.TextChoices):
-    EN_ATTENTE = "en_attente", "En attente"
-    ACCEPTEE = "acceptee", "Acceptée"
-    REFUSEE = "refusee", "Refusée"
-
-
-
-class Utilisateur(BaseModel):
+class Utilisateur(AbstractUser, BaseModel):
     email = models.EmailField(unique=True)
-    mot_de_passe = models.CharField(max_length=255, help_text="Le mot de passe doit comporter au moins 8 caractères, inclure une majuscule, une minuscule, un chiffre et un caractère spécial.")
-    est_actif = models.BooleanField(default=True)
+
     role = models.CharField(max_length=50, choices=Role.choices, default=Role.ELECTEUR)
-    derniere_connexion = models.DateTimeField(null=True, blank=True)
+    est_actif = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+
     id_electeur = models.BooleanField(default=False)
     id_candidat = models.BooleanField(default=False)
+
+    REQUIRED_FIELDS = ["email"]
+    objects = UserManager()
 
     def se_connecter(self):
         pass
 
     def se_deconnecter(self):
         pass
+    class Meta:
+        db_table = ''
+        managed = True
+        verbose_name = 'utilisateur'
+        verbose_name_plural = 'utilisateurs'
 
 
 class Administrateur(Utilisateur):
@@ -85,6 +59,12 @@ class Administrateur(Utilisateur):
 
     def publier_resultat(self):
         pass
+    
+    class Meta:
+        db_table = ''
+        managed = True
+        verbose_name = 'Administrateur'
+        verbose_name_plural = 'Administrateurs'
 
 
 class Electeur(BaseModel):
@@ -101,6 +81,11 @@ class Electeur(BaseModel):
 
     def consulter_scrutin(self):
         pass
+    class Meta:
+        db_table = ''
+        managed = True
+        verbose_name = 'Electeur'
+        verbose_name_plural = 'Electeurs'
 
 
 class Scrutin(BaseModel):
@@ -120,6 +105,11 @@ class Scrutin(BaseModel):
 
     def cloturer(self):
         pass
+    class Meta:
+        db_table = ''
+        managed = True
+        verbose_name = 'Scrutin'
+        verbose_name_plural = 'Scrutins'
 
 
 class Candidat(BaseModel):
@@ -136,6 +126,11 @@ class Candidat(BaseModel):
 
     def get_pourcentage(self):
         pass
+    class Meta:
+        db_table = ''
+        managed = True
+        verbose_name = 'Candidat'
+        verbose_name_plural = 'Candidats'
 
 
 class Vote(BaseModel):
@@ -147,6 +142,11 @@ class Vote(BaseModel):
 
     def valider(self):
         pass
+    class Meta:
+        db_table = ''
+        managed = True
+        verbose_name = 'Vote'
+        verbose_name_plural = 'Votes'
 
 
 class DemandeCandidature(BaseModel):
@@ -165,6 +165,11 @@ class DemandeCandidature(BaseModel):
     scrutin = models.ForeignKey(Scrutin, on_delete=models.CASCADE, related_name="demandes")
     admin = models.ForeignKey(Administrateur, on_delete=models.SET_NULL, null=True, blank=True)
 
+class Meta:
+    db_table = ''
+    managed = True
+    verbose_name = 'DemandeCandidature'
+    verbose_name_plural = 'DemandeCandidatures'
 
 class Logaudit(BaseModel):
     action = models.CharField(max_length=50)
@@ -175,3 +180,10 @@ class Logaudit(BaseModel):
 
     def get_rapport(self):
         pass
+    class Meta:
+        db_table = ''
+        managed = True
+        verbose_name = 'Logaudit'
+        verbose_name_plural = 'Logaudits'
+
+        

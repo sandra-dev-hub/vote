@@ -10,14 +10,14 @@ from django.views.generic import DetailView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
 
-from vote.users.models import User
+from vote.users.models import Utilisateur
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
-    model = User
+    model = Utilisateur
     slug_field = "username"
     slug_url_kwarg = "username"
 
@@ -26,7 +26,7 @@ user_detail_view = UserDetailView.as_view()
 
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = User
+    model = Utilisateur
     fields = ["name"]
     success_message = _("Information successfully updated")
 

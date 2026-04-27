@@ -274,3 +274,5 @@ vote/media/
 .env
 .envs/*
 !.envs/.local/
+
+.envs/

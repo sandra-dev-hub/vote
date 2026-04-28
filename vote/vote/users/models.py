@@ -1,16 +1,12 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import AbstractUser
+# from django.db.models import CharField
+# from django.urls import reverse
+# from django.utils.translation import gettext_lazy as _
+# from django.contrib.auth.hashers import make_password
 from django.db import models
 
-
-
-from django.db import models
 
 from vote.global_data.enums import Role, StatutDemande, StatutScrutin
 from vote.users.managers import UserManager
@@ -43,7 +39,6 @@ class Utilisateur(AbstractUser, BaseModel):
     def se_deconnecter(self):
         pass
     class Meta:
-        db_table = ''
         managed = True
         verbose_name = 'utilisateur'
         verbose_name_plural = 'utilisateurs'
@@ -61,7 +56,6 @@ class Administrateur(Utilisateur):
         pass
     
     class Meta:
-        db_table = ''
         managed = True
         verbose_name = 'Administrateur'
         verbose_name_plural = 'Administrateurs'
@@ -82,7 +76,6 @@ class Electeur(BaseModel):
     def consulter_scrutin(self):
         pass
     class Meta:
-        db_table = ''
         managed = True
         verbose_name = 'Electeur'
         verbose_name_plural = 'Electeurs'
@@ -106,7 +99,6 @@ class Scrutin(BaseModel):
     def cloturer(self):
         pass
     class Meta:
-        db_table = ''
         managed = True
         verbose_name = 'Scrutin'
         verbose_name_plural = 'Scrutins'
@@ -127,7 +119,6 @@ class Candidat(BaseModel):
     def get_pourcentage(self):
         pass
     class Meta:
-        db_table = ''
         managed = True
         verbose_name = 'Candidat'
         verbose_name_plural = 'Candidats'
@@ -143,7 +134,6 @@ class Vote(BaseModel):
     def valider(self):
         pass
     class Meta:
-        db_table = ''
         managed = True
         verbose_name = 'Vote'
         verbose_name_plural = 'Votes'
@@ -165,11 +155,10 @@ class DemandeCandidature(BaseModel):
     scrutin = models.ForeignKey(Scrutin, on_delete=models.CASCADE, related_name="demandes")
     admin = models.ForeignKey(Administrateur, on_delete=models.SET_NULL, null=True, blank=True)
 
-class Meta:
-    db_table = ''
-    managed = True
-    verbose_name = 'DemandeCandidature'
-    verbose_name_plural = 'DemandeCandidatures'
+    class Meta:
+        managed = True
+        verbose_name = 'DemandeCandidature'
+        verbose_name_plural = 'DemandeCandidatures'
 
 class Logaudit(BaseModel):
     action = models.CharField(max_length=50)
@@ -181,7 +170,6 @@ class Logaudit(BaseModel):
     def get_rapport(self):
         pass
     class Meta:
-        db_table = ''
         managed = True
         verbose_name = 'Logaudit'
         verbose_name_plural = 'Logaudits'

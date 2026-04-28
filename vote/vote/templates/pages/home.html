@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
+
 {% load static %}
 
-<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -10,216 +10,12 @@
   <title>ICAB Bafoussam — Plateforme de Vote Sécurisé</title>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-  <style type="text/tailwindcss">
-    @theme {
-      --font-sans: 'Plus Jakarta Sans', sans-serif;
-      --font-display: 'Instrument Serif', serif;
-
-      --color-brand-50: #eff6ff;
-      --color-brand-100: #dbeafe;
-      --color-brand-200: #bfdbfe;
-      --color-brand-500: #3b82f6;
-      --color-brand-600: #2563eb;
-      --color-brand-700: #1d4ed8;
-      --color-brand-800: #1e40af;
-      --color-brand-900: #1e3a8a;
-      --color-brand-950: #0d2054;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes slideRight {
-      from { opacity: 0; transform: translateX(-20px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes floatCard {
-      0%, 100% { transform: translateY(0px); }
-      50%       { transform: translateY(-8px); }
-    }
-    @keyframes pulse-ring {
-      0%   { box-shadow: 0 0 0 0 rgba(59,130,246,.4); }
-      70%  { box-shadow: 0 0 0 14px rgba(59,130,246,0); }
-      100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
-    }
-    @keyframes shimmer {
-      from { background-position: -200% center; }
-      to   { background-position:  200% center; }
-    }
-    @keyframes countUp {
-      from { opacity: 0; transform: scale(.8); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-
-    .anim-fade-up   { animation: fadeUp .7s ease both; }
-    .anim-slide-r   { animation: slideRight .6s ease both; }
-    .float-card     { animation: floatCard 4s ease-in-out infinite; }
-    .pulse-ring     { animation: pulse-ring 2s ease-out infinite; }
-    .count-up       { animation: countUp .6s ease both; }
-
-    .delay-100 { animation-delay: .1s; }
-    .delay-200 { animation-delay: .2s; }
-    .delay-300 { animation-delay: .3s; }
-    .delay-400 { animation-delay: .4s; }
-    .delay-500 { animation-delay: .5s; }
-    .delay-600 { animation-delay: .6s; }
-
-    .shimmer-text {
-      background: linear-gradient(90deg, #fff 0%, #93c5fd 40%, #fff 60%, #bfdbfe 100%);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer 4s linear infinite;
-    }
-
-    .hero-mesh {
-      background:
-        radial-gradient(ellipse 80% 60% at 60% 40%, rgba(59,130,246,.25) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 50% at 20% 80%, rgba(99,102,241,.2) 0%, transparent 60%),
-        linear-gradient(160deg, #0d2054 0%, #1d4ed8 55%, #1e40af 100%);
-    }
-
-    .card-glass {
-      background: rgba(255,255,255,.08);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,.18);
-    }
-
-    .step-connector::after {
-      content: '';
-      position: absolute;
-      top: 24px;
-      left: calc(50% + 28px);
-      right: calc(-50% + 28px);
-      height: 2px;
-      background: linear-gradient(90deg, #bfdbfe, #dbeafe);
-    }
-
-    .candidate-hover {
-      transition: transform .25s ease, box-shadow .25s ease;
-    }
-    .candidate-hover:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 40px rgba(30,58,138,.15);
-    }
-
-    .feature-icon-wrap {
-      background: linear-gradient(135deg, #eff6ff, #dbeafe);
-    }
-
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-
-    /* HERO CAROUSEL */
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(30px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    .slide-in { animation: slideIn .35s ease both; }
-
-    .hero-bg {
-      background: linear-gradient(135deg, #0a1a4e 0%, #0d2260 30%, #1340a8 65%, #1a4fc8 100%);
-      position: relative;
-    }
-
-    /* Floating decorative shapes */
-    .hero-decor {
-      position: absolute;
-      pointer-events: none;
-      opacity: .1;
-    }
-    .hero-decor-1 {
-      width: 280px; height: 280px;
-      border: 2px solid white;
-      border-radius: 20px;
-      top: 10px; right: -20px;
-      animation: floatCard 6s ease-in-out infinite;
-    }
-    .hero-decor-2 {
-      width: 210px; height: 210px;
-      border: 2px solid white;
-      border-radius: 50%;
-      top: 65%; left: 5%;
-      animation: floatCard 8s ease-in-out infinite reverse;
-    }
-    .hero-decor-3 {
-      width: 140px; height: 140px;
-      border: 2px solid rgba(255,255,255,.3);
-      border-radius: 30px;
-      top: 15%; right: 8%;
-      animation: floatCard 7s ease-in-out infinite;
-    }
-
-    .carousel-arrow {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      border: 2px solid rgba(255,255,255,0.4);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: background .2s, transform .2s;
-      flex-shrink: 0;
-    }
-    .carousel-arrow:hover { 
-      background: rgba(255,255,255,0.35);
-      transform: scale(1.1);
-    }
-
-    .cand-photo-wrap {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 0;
-      justify-content: flex-start;
-    }
-    .cand-photo-img {
-      width: 100%;
-      aspect-ratio: 3/4;
-      object-fit: cover;
-      object-position: top;
-      border-radius: 10px;
-      display: block;
-    }
-    .cand-photo-name {
-      color: white;
-      font-weight: 700;
-      font-size: .9rem;
-      text-align: center;
-      margin-top: .4rem;
-      line-height: 1.2;
-    }
-    .cand-photo-role {
-      color: rgba(255,255,255,.65);
-      font-size: .78rem;
-      text-align: center;
-      margin-top: .08rem;
-    }
-
-    .dot-active {
-      background: white;
-      width: 22px;
-    }
-    .dot-inactive {
-      background: rgba(255,255,255,.35);
-      width: 8px;
-    }
-    .dot-base {
-      height: 8px;
-      border-radius: 100px;
-      transition: all .3s;
-    }
-  </style>
+<link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
 
 <body class="font-sans bg-white text-gray-900 antialiased overflow-x-hidden">
 
-<!-- ══════════════════════════════════════════
-     NAVBAR
-══════════════════════════════════════════ -->
+<!-- ma navbar -->
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
   <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
@@ -253,9 +49,7 @@
 </nav>
 
 
-<!-- ══════════════════════════════════════════
-     HERO
-══════════════════════════════════════════ -->
+<!-- hero -->
 <section class="hero-bg pt-16 relative overflow-hidden" style="height: 100vh;">
 
   <!-- Decorative elements -->
@@ -350,16 +144,20 @@
 
           <!-- Photo 1 -->
           <div class="cand-photo-wrap" id="cand-0">
-            <img src="{% static 'images/hero1.png' %}" alt="NTSOPGNI Aimé"
-              class="w-full h-full object-cover" />
+            <img
+              src="{% static 'images/hero2.png' %}"
+              alt="NTSOPGNI Aimé"
+              class="cand-photo-img"
+              style="height: 420px;"
+            />
             <p class="cand-photo-name">NTSOPGNI Aimé</p>
-            <p class="cand-photo-role">Président du BDE</p>
+            <p class="cand-photo-role">Président des jeunes</p>
           </div>
 
           <!-- Photo 2 (center — slightly taller) -->
           <div class="cand-photo-wrap" id="cand-1">
             <img
-              src="{% static 'images/hero2.png' %}"
+              src="{% static 'images/hero7.png' %}"
               alt="FOUDA Laura"
               class="cand-photo-img"
               style="height: 470px;"
@@ -371,7 +169,7 @@
           <!-- Photo 3 -->
           <div class="cand-photo-wrap" id="cand-2">
             <img
-              src="{% static 'images/hero3.png' %}"
+              src="{% static 'images/hero8.png' %}"
               alt="MEKOUO Dylan"
               class="cand-photo-img"
               style="height: 420px;"
@@ -411,10 +209,10 @@
 <script>
   // All candidates data
   const allCandidates = [
-    { name: 'NTSOPGNI Aimé',  role: 'Président du BDE',  img: '/static/images/hero1.png' },
+    { name: 'NTSOPGNI Aimé',  role: 'Président des jeunes',  img: '/static/images/hero9.png' },
     { name: 'FOUDA Laura',    role: 'Vice-president',     img: '/static/images/hero2.png' },
-    { name: 'MEKOUO Dylan',   role: 'Tresorier General',   img: '/static/images/hero3.png' },
-    { name: 'KAMGA Serge',    role: 'Secretaire General', img: '/static/images/hero8.png' },
+    { name: 'MEKOUO Dylan',   role: 'Tresorier General',  img: '/static/images/hero3.png' },
+    { name: 'KAMGA Serge',    role: 'Secretaire General',  img: '/static/images/hero8.png' },
     { name: 'MBAH Celeste',   role: 'Chargee Comm.',      img: '/static/images/hero5.png' },
     { name: 'TAGNE Pierre',   role: 'Charge Sports',      img: '/static/images/hero7.png' },
   ];
@@ -479,9 +277,7 @@
 </script>
 
 
-<!-- ══════════════════════════════════════════
-     COMMENT ÇA MARCHE
-══════════════════════════════════════════ -->
+<!-- comment ca marche? -->
 <section class="py-24 bg-white">
   <div class="max-w-7xl mx-auto px-6">
 
@@ -536,9 +332,7 @@
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     STATS BAR
-══════════════════════════════════════════ -->
+<!-- start bar -->
 <section class="bg-brand-700 py-14 relative overflow-hidden">
   <div class="absolute inset-0 opacity-10"
     style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 28px 28px;"></div>
@@ -580,9 +374,7 @@
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     CANDIDATES SECTION
-══════════════════════════════════════════ -->
+<!-- candidates section -->
 <section class="py-24 bg-gray-50">
   <div class="max-w-7xl mx-auto px-6">
 
@@ -600,11 +392,11 @@
     <div class="grid lg:grid-cols-2 gap-8">
 
       <!-- Candidate Card 1 -->
-      <div class="candidate-hover bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm flex flex-col md:flex-row h-full">
+      <div class="candidate-hover bg-white rounded-3xl overflow-hidden border-2 border-brand-600 shadow-xl shadow-brand-100 flex flex-col md:flex-row h-full relative">
         <!-- Photo Section -->
         <div class="w-full md:w-48 lg:w-56 shrink-0 relative p-4 pb-0 md:pb-4">
           <div class="h-full rounded-2xl overflow-hidden shadow-inner bg-gray-100">
-            <img src="{% static 'images/hero1.png' %}" alt="NTSOPGNI Aimé"
+            <img src="{% static 'images/image copy 2.png' %}" alt="NTSOPGNI Aimé"
               class="w-full h-full object-cover" />
           </div>
           <span class="absolute top-6 left-6 bg-green-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Nouveau</span>
@@ -615,9 +407,9 @@
           <div class="flex justify-between items-start mb-4">
             <div>
               <h3 class="text-2xl font-bold text-gray-900 tracking-tight">NTSOPGNI Aimé</h3>
-              <p class="text-sm font-semibold text-gray-400 mt-0.5">Président du BDE</p>
+              <p class="text-sm font-semibold text-gray-400 mt-0.5">Président des jeunes</p>
             </div>
-            <span class="bg-brand-50 text-brand-700 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase">Candidat</span>
+            <span class="bg-brand-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase">Candidat</span>
           </div>
 
           <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">
@@ -641,7 +433,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 Programme
               </a>
-              <a href="#" class="px-5 py-2.5 bg-brand-50 text-brand-700 hover:bg-brand-700 hover:text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+              <a href="#" class="px-5 py-2.5 bg-brand-700 text-white hover:bg-brand-800 rounded-xl text-xs font-bold transition-all shadow-md">
                 Voir le profil
               </a>
             </div>
@@ -704,9 +496,7 @@
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     FEATURES
-══════════════════════════════════════════ -->
+<!-- features -->
 <section class="py-24 bg-white">
   <div class="max-w-7xl mx-auto px-6">
 
@@ -770,19 +560,17 @@
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     CTA BANNER
-══════════════════════════════════════════ -->
+<!-- CTA banner -->
 <section class="py-20 hero-mesh relative overflow-hidden">
   <div class="absolute inset-0 opacity-10"
     style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;"></div>
   <div class="max-w-3xl mx-auto px-6 text-center relative">
     <div class="inline-flex items-center gap-2 card-glass rounded-full px-4 py-2 mb-6">
       <span class="w-2 h-2 bg-green-400 rounded-full pulse-ring"></span>
-      <span class="text-white/90 text-xs font-semibold">Vote en cours — Du 01 au 20 Mai 2024</span>
+      <span class="text-white/90 text-xs font-semibold">Vote en cours — Du 01 au 20 Mai 2026</span>
     </div>
     <h2 class="font-display text-4xl lg:text-5xl text-white mb-6">Votre voix façonne<br/><em class="text-blue-200">l'avenir de l'ICAB</em></h2>
-    <p class="text-blue-100/80 text-lg mb-10 leading-relaxed">Ne laissez pas passer votre chance de participer à la démocratie étudiante. Chaque vote compte.</p>
+    <p class="text-blue-100/80 text-lg mb-10 leading-relaxed">Ne laissez pas passer votre chance de participer à la démocratie vis a vis des étudiants. Chaque vote compte.</p>
     <div class="flex flex-wrap justify-center gap-4">
       <a href="#" class="flex items-center gap-2 px-8 py-4 bg-white text-brand-800 font-bold rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
@@ -796,9 +584,7 @@
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     FOOTER
-══════════════════════════════════════════ -->
+<!-- Footer -->
 <footer class="bg-gray-900 text-gray-400 py-16">
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid md:grid-cols-4 gap-10 mb-12">
@@ -837,7 +623,7 @@
         <ul class="space-y-2.5">
           <li class="text-sm flex items-center gap-2">
             <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-            bde@icab.cm
+            towasandra6@gmail.com
           </li>
           <li class="text-sm flex items-center gap-2">
             <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -848,7 +634,7 @@
     </div>
 
     <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
-      <p class="text-xs text-gray-500">© 2024 ICAB Bafoussam. Tous droits réservés.</p>
+      <p class="text-xs text-gray-500">© 2026 ICAB Bafoussam. Tous droits réservés.</p>
       <div class="flex items-center gap-4 text-xs text-gray-500">
         <a href="#" class="hover:text-white transition-colors">Confidentialité</a>
         <a href="#" class="hover:text-white transition-colors">Conditions d'utilisation</a>

@@ -1,23 +1,24 @@
 {% extends "base.html" %}
 
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion — ICAB Vote</title>
+  <title>Inscription — ICAB Vote</title>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- CSS compilé -->
+  <!-- CSS -->
   <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
 
 <body class="font-sans antialiased min-h-screen flex items-center justify-center hero-bg relative overflow-hidden px-6">
 
-  <!-- Décor (tu l'avais déjà, on garde) -->
+  <!-- Décor -->
   <div class="hero-decor hero-decor-1"></div>
   <div class="hero-decor hero-decor-2"></div>
   <div class="hero-decor hero-decor-3"></div>
@@ -31,7 +32,7 @@
       </div>
 
       <h1 class="text-white text-3xl font-black italic font-display tracking-tight">
-        Espace de vote
+        Créer un compte
       </h1>
 
       <p class="text-blue-100/60 text-xs font-bold uppercase tracking-[0.2em] mt-2">
@@ -39,11 +40,17 @@
       </p>
     </div>
 
-    <!-- CARD LOGIN -->
+    <!-- CARD -->
     <div class="card">
 
       <form method="POST" class="space-y-6">
         {% csrf_token %}
+
+        <!-- NOM -->
+        <div>
+          <label class="label">Nom complet</label>
+          <input type="text" name="nom" placeholder="Ex: Sandra Towa" class="input">
+        </div>
 
         <!-- IDENTIFIANT -->
         <div>
@@ -51,29 +58,27 @@
           <input type="text" name="username" placeholder="Ex: ICAB-2024-XXX" class="input">
         </div>
 
-        <!-- PASSWORD -->
+        <!-- EMAIL -->
         <div>
-          <div class="flex justify-between items-center mb-2">
-            <label class="label mb-0">Mot de passe</label>
-            <a href="#" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition-colors">
-              Oublié ?
-            </a>
-          </div>
-
-          <input type="password" name="password" placeholder="••••••••" class="input">
+          <label class="label">Email</label>
+          <input type="email" name="email" placeholder="exemple@mail.com" class="input">
         </div>
 
-        <!-- REMEMBER -->
-        <div class="flex items-center gap-3">
-          <input type="checkbox" id="remember" class="w-4 h-4 rounded-md border-gray-200 text-brand-600 focus:ring-brand-500/20">
-          <label for="remember" class="text-xs font-bold text-gray-500">
-            Rester connecté
-          </label>
+        <!-- PASSWORD -->
+        <div>
+          <label class="label">Mot de passe</label>
+          <input type="password" name="password1" placeholder="••••••••" class="input">
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div>
+          <label class="label">Confirmer mot de passe</label>
+          <input type="password" name="password2" placeholder="••••••••" class="input">
         </div>
 
         <!-- BUTTON -->
         <button type="submit" class="btn">
-          Ouvrir ma session
+          Créer mon compte
         </button>
 
       </form>
@@ -81,11 +86,11 @@
       <!-- FOOTER -->
       <div class="mt-10 pt-6 border-t border-gray-100 text-center">
         <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
-          Nouveau sur la plateforme ?
+          Déjà inscrit ?
         </p>
 
-        <a href="#" class="text-sm font-black text-brand-700 hover:text-brand-900 transition-colors underline underline-offset-4">
-          Inscrivez-vous maintenant
+        <a href="{% url 'login' %}" class="text-sm font-black text-brand-700 hover:text-brand-900 transition-colors underline underline-offset-4">
+          Connectez-vous
         </a>
       </div>
 

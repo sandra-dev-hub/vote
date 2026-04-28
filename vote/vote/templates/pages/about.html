@@ -1,3 +1,292 @@
-{% extends "base.html" %}
 
 
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>À Propos | ICAB Bafoussam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-display: 'Instrument Serif', serif;
+      --color-brand-50: #eff6ff;
+      --color-brand-100: #dbeafe;
+      --color-brand-200: #bfdbfe;
+      --color-brand-500: #3b82f6;
+      --color-brand-600: #2563eb;
+      --color-brand-700: #1d4ed8;
+      --color-brand-800: #1e40af;
+      --color-brand-900: #1e3a8a;
+      --color-brand-950: #0d2054;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .anim-fade-up { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+    .hero-mesh {
+      background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 50%),
+                  radial-gradient(at 100% 0%, #1d4ed8 0%, transparent 50%),
+                  radial-gradient(at 100% 100%, #1e40af 0%, transparent 50%),
+                  radial-gradient(at 0% 100%, #3b82f6 0%, transparent 50%);
+      background-color: #0d2054;
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-gray-50 text-gray-900 antialiased">
+
+  <!-- NAVBAR (Synchronized with home.html) -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-brand-900 flex items-center justify-center shadow-md">
+          <span class="text-white text-xs font-extrabold tracking-tight leading-none">ICAB</span>
+        </div>
+        <div class="leading-tight">
+          <p class="text-sm font-bold text-gray-900">ICAB</p>
+          <p class="text-[11px] text-gray-400 font-medium">Bafoussam</p>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center gap-1">
+        <a href="home.html" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Accueil</a>
+        <a href="about.html" class="px-4 py-2 text-sm font-bold text-brand-700 bg-brand-50 rounded-lg transition-all">À propos</a>
+        <a href="fonctionnalite.html" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Fonctionnalités</a>
+        <a href="contact.html" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Contact</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="conection.html" class="px-5 py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold rounded-xl shadow-md transition-all">Se connecter</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="pt-32 pb-20 hero-mesh relative overflow-hidden text-center px-6">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;"></div>
+    <div class="max-w-4xl mx-auto relative z-10">
+      <span class="text-xs font-bold text-blue-300 uppercase tracking-[0.3em] mb-4 block anim-fade-up">Notre Institution</span>
+      <h1 class="font-display text-5xl md:text-7xl text-white italic mb-6 leading-tight anim-fade-up" style="animation-delay: 0.1s">
+        L'Excellence au Service de la <span class="not-italic font-extrabold text-blue-300 underline decoration-blue-400/30">Démocratie</span> Étudiante
+      </h1>
+      <p class="text-blue-100/70 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto anim-fade-up" style="animation-delay: 0.2s">
+        Depuis sa création, l'ICAB Bafoussam s'engage à offrir un cadre électoral transparent, sécurisé et innovant pour former les leaders de demain.
+      </p>
+    </div>
+  </section>
+
+  <!-- VISION & MISSION -->
+  <section class="py-24 relative overflow-hidden bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-20 items-center">
+        <div class="anim-fade-up" style="animation-delay: 0.3s">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-[10px] font-bold uppercase tracking-wider mb-6">
+            <span class="w-1.5 h-1.5 bg-brand-600 rounded-full"></span>
+            Notre Vision
+          </div>
+          <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">Bâtir un avenir commun fondé sur la transparence.</h2>
+          <p class="text-gray-500 text-lg leading-relaxed mb-8">
+            Nous croyons que chaque voix compte. Notre plateforme n'est pas seulement un outil technique, c'est le garant d'une expression démocratique pure au sein de notre établissement. 
+          </p>
+          <div class="grid sm:grid-cols-2 gap-8">
+            <div class="space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              </div>
+              <p class="text-sm font-bold text-gray-900">Totalement Sécurisé</p>
+              <p class="text-xs text-gray-500 leading-relaxed">Chiffrement AES-256 de bout en bout pour chaque bulletin de vote.</p>
+            </div>
+            <div class="space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <p class="text-sm font-bold text-gray-900">Temps Réel</p>
+              <p class="text-xs text-gray-500 leading-relaxed">Suivi en direct de la participation pour tous les candidats.</p>
+            </div>
+          </div>
+        </div>
+        <div class="relative anim-fade-up" style="animation-delay: 0.4s">
+           <div class="rounded-[3rem] overflow-hidden shadow-2xl relative z-10 bg-gray-100 group">
+              <!-- Placeholder for institutional image -->
+              <div class="aspect-4/5 bg-gradient-to-br from-brand-900 to-brand-700 flex items-center justify-center">
+                 <span class="text-white/20 font-black text-6xl">ICAB</span>
+              </div>
+              <div class="absolute inset-0 bg-brand-900/10 group-hover:bg-transparent transition-all"></div>
+           </div>
+           <!-- Decorative SVG nodes -->
+           <svg class="absolute -top-10 -right-10 text-brand-100 opacity-40 -z-10" width="200" height="200" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="1" fill="none" /><circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4" fill="none" /></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES SECTION -->
+  <section class="py-24 bg-gray-50 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">Nos Valeurs Fondamentales</h2>
+        <p class="text-gray-500 max-w-xl mx-auto italic font-display text-xl">L'intégrité est le fondement de toute grande institution.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-brand-900/5 transition-all text-center anim-fade-up" style="animation-delay: 0.5s">
+           <div class="w-16 h-16 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 mx-auto mb-8">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+           </div>
+           <h3 class="text-xl font-bold text-gray-900 mb-4">Transparence Totale</h3>
+           <p class="text-sm text-gray-500 leading-relaxed">Nous garantissons que chaque aspect du scrutin est vérifiable par les instances de contrôle académiques.</p>
+        </div>
+
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-brand-900/5 transition-all text-center anim-fade-up" style="animation-delay: 0.6s">
+           <div class="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center text-green-600 mx-auto mb-8">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 20a10.003 10.003 0 006.203-2.138l.054.09a10.3 10.3 0 011.511-1.511l-.09-.054A10.003 10.003 0 0020 10c0-2.21-1.79-4-4-4-2.21 0-4 1.79-4 4v1m-2.753 9.571l-.054.09A10.3 10.3 0 011.511 18.23l.09.054A10.003 10.003 0 014 20c2.21 0 4-1.79 4-4v-1a4 4 0 014-4c2.21 0 4 1.79 4 4v1"/></svg>
+           </div>
+           <h3 class="text-xl font-bold text-gray-900 mb-4">Engagement Citoyen</h3>
+           <p class="text-sm text-gray-500 leading-relaxed">Encourager la participation active des étudiants comme pilier fondamental de la vie du campus.</p>
+        </div>
+
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-brand-900/5 transition-all text-center anim-fade-up" style="animation-delay: 0.7s">
+           <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 mx-auto mb-8">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+           </div>
+           <h3 class="text-xl font-bold text-gray-900 mb-4">Innovation Constante</h3>
+           <p class="text-sm text-gray-500 leading-relaxed">Adapter continuellement nos outils aux nouveaux standards technologiques pour plus de fluidité.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM SECTION -->
+  <section class="py-24 bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div>
+           <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">Équipe de Direction</h2>
+           <p class="text-gray-500 text-lg italic font-display">Les visages derrière l'intégrité de votre scrutin.</p>
+        </div>
+        <button class="px-6 py-3 border border-gray-100 text-gray-600 text-sm font-bold rounded-xl hover:bg-gray-50 transition-all shrink-0">
+           Contacter l'équipe
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <!-- Team Member 1 -->
+        <div class="group anim-fade-up" style="animation-delay: 0.8s">
+           <div class="rounded-3xl overflow-hidden mb-4 relative aspect-square bg-gray-100">
+              <img src="https://ui-avatars.com/api/?name=Direc+Icab&background=random" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+           </div>
+           <p class="text-sm font-bold text-gray-900">Dr. Djoha Kevin</p>
+           <p class="text-[10px] font-bold text-brand-600 uppercase tracking-widest leading-relaxed">Directeur Général</p>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="group anim-fade-up" style="animation-delay: 0.9s">
+           <div class="rounded-3xl overflow-hidden mb-4 relative aspect-square bg-gray-100">
+              <img src="https://ui-avatars.com/api/?name=Admin+Icab&background=random" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+           </div>
+           <p class="text-sm font-bold text-gray-900">Mme. Laura Fouda</p>
+           <p class="text-[10px] font-bold text-brand-600 uppercase tracking-widest leading-relaxed">Responsable Électoral</p>
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="group anim-fade-up" style="animation-delay: 1.0s">
+           <div class="rounded-3xl overflow-hidden mb-4 relative aspect-square bg-gray-100">
+              <img src="https://ui-avatars.com/api/?name=Tech+Icab&background=random" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+           </div>
+           <p class="text-sm font-bold text-gray-900">M. Aimé Ntsopgni</p>
+           <p class="text-[10px] font-bold text-brand-600 uppercase tracking-widest leading-relaxed">Chef de la Technologie</p>
+        </div>
+
+        <!-- Team Member 4 -->
+        <div class="group anim-fade-up" style="animation-delay: 1.1s">
+           <div class="rounded-3xl overflow-hidden mb-4 relative aspect-square bg-gray-100">
+              <img src="https://ui-avatars.com/api/?name=Support+Icab&background=random" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+           </div>
+           <p class="text-sm font-bold text-gray-900">M. Dylan Mekouo</p>
+           <p class="text-[10px] font-bold text-brand-600 uppercase tracking-widest leading-relaxed">Support Étudiant</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FOOTER -->
+  <section class="py-20 bg-brand-50 mx-6 mb-16 rounded-[3.5rem] text-center px-6 relative overflow-hidden">
+     <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle, #1e3a8a 1px, transparent 1px); background-size: 24px 24px;"></div>
+     <div class="relative z-10 max-w-2xl mx-auto">
+        <h2 class="text-3xl md:text-5xl font-display italic italic text-gray-900 mb-8 leading-tight">
+          Prêt à faire entendre votre <span class="not-italic font-black text-brand-800">voix</span> ?
+        </h2>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+           <a href="register.html" class="px-10 py-5 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-2xl shadow-xl shadow-brand-200 transition-all hover:shadow-2xl hover:-translate-y-1">
+              S'inscrire pour voter
+           </a>
+           <a href="contact.html" class="px-10 py-5 bg-white border border-gray-100 text-gray-600 font-bold rounded-2xl shadow-sm hover:bg-gray-50 transition-all">
+              Posez vos questions
+           </a>
+        </div>
+     </div>
+  </section>
+
+  <!-- FOOTER (Synchronized) -->
+  <footer class="bg-gray-900 text-gray-400 py-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-10 mb-12">
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center">
+              <span class="text-white text-xs font-extrabold">ICAB</span>
+            </div>
+            <div>
+              <p class="text-white text-sm font-bold">ICAB Bafoussam</p>
+              <p class="text-gray-500 text-xs">Plateforme de vote sécurisé</p>
+            </div>
+          </div>
+          <p class="text-sm leading-relaxed">Votez en toute confiance pour construire ensemble l'avenir de notre établissement.</p>
+        </div>
+        <div>
+          <h4 class="text-white text-sm font-bold mb-4">Navigation</h4>
+          <ul class="space-y-2.5">
+            <li><a href="home.html" class="text-sm hover:text-white transition-colors">Accueil</a></li>
+            <li><a href="about.html" class="text-sm hover:text-white transition-colors text-white font-bold">À propos</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Candidats</a></li>
+            <li><a href="contact.html" class="text-sm hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white text-sm font-bold mb-4">Élection</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Voter maintenant</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Résultats</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Règlement</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white text-sm font-bold mb-4">Contact</h4>
+          <ul class="space-y-2.5">
+            <li class="text-sm flex items-center gap-2">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              bde@icab.cm
+            </li>
+            <li class="text-sm flex items-center gap-2">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Bafoussam, Cameroun
+            </li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-gray-500">© 2024 ICAB Bafoussam. Tous droits réservés.</p>
+        <div class="flex items-center gap-4 text-xs text-gray-500">
+           <span>Plateforme opérationnelle</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

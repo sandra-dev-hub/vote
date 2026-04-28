@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestion Candidats | ICAB Bafoussam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-display: 'Instrument Serif', serif;
+      --color-brand-50: #eff6ff;
+      --color-brand-100: #dbeafe;
+      --color-brand-200: #bfdbfe;
+      --color-brand-500: #3b82f6;
+      --color-brand-600: #2563eb;
+      --color-brand-700: #1d4ed8;
+      --color-brand-800: #1e40af;
+      --color-brand-900: #1e3a8a;
+      --color-brand-950: #0d2054;
+    }
+
+    .sidebar-link-active {
+      @apply bg-brand-800 text-white shadow-md shadow-black/20;
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-gray-50 text-gray-900 antialiased h-screen flex overflow-hidden">
+
+  <!-- SIDEBAR (Synchronized) -->
+  <aside class="w-72 bg-brand-950 text-blue-100/60 hidden lg:flex flex-col shrink-0 border-r border-white/5">
+    <div class="p-8 pb-10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg">
+          <span class="text-brand-950 text-xs font-black tracking-tight">ICAB</span>
+        </div>
+        <div>
+          <p class="text-white text-sm font-bold tracking-tight leading-none mb-1">Admin Panel</p>
+          <p class="text-[10px] font-bold text-blue-400/60 uppercase tracking-widest">Election 2024</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-grow px-4 space-y-1.5 overflow-y-auto">
+      <p class="px-4 text-[10px] font-bold text-blue-100/30 uppercase tracking-widest mb-4">Général</p>
+      <a href="admin_dashboard.html" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 hover:text-white transition-all group">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        <span class="text-sm font-bold">Tableau de bord</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 hover:text-white transition-all group">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="text-sm font-bold">Élection en cours</span>
+      </a>
+      <a href="admin_candidat.html" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl sidebar-link-active group transition-all">
+        <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <span class="text-sm font-bold">Candidats</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 hover:text-white transition-all group">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        <span class="text-sm font-bold">Électeurs</span>
+      </a>
+      <div class="pt-6">
+        <p class="px-4 text-[10px] font-bold text-blue-100/30 uppercase tracking-widest mb-4">Système</p>
+        <a href="#" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 hover:text-white transition-all group">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span class="text-sm font-bold">Paramètres</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <main class="flex-grow overflow-y-auto bg-gray-50 flex flex-col">
+    <!-- Top Header -->
+    <header class="h-20 bg-white border-b border-gray-100 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
+      <div>
+        <h2 class="text-lg font-bold text-gray-900">Gestion des Candidats</h2>
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Liste des participants</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="px-5 py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+            Ajouter un candidat
+        </button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="p-8 space-y-8">
+      
+      <!-- Stats Summary -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+          <p class="text-sm font-bold text-gray-400 mb-1">Total Candidats</p>
+          <p class="text-3xl font-black text-gray-900">12</p>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+          <p class="text-sm font-bold text-green-500 mb-1">Validés</p>
+          <p class="text-3xl font-black text-gray-900">10</p>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+          <p class="text-sm font-bold text-orange-400 mb-1">En attente</p>
+          <p class="text-3xl font-black text-gray-900">2</p>
+        </div>
+      </div>
+
+      <!-- Candidate Table Card -->
+      <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
+           <div class="relative">
+              <input type="text" placeholder="Rechercher un candidat..." class="w-64 pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition-all" />
+              <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+           </div>
+           <div class="flex gap-2">
+              <button class="p-2.5 rounded-xl border border-gray-200 text-gray-500 hover:bg-white transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 4.5h18m-18 5h18m-18 5h18m-18 5h18"/></svg>
+              </button>
+           </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50">
+                <th class="px-8 py-5">Candidat</th>
+                <th class="px-6 py-5">Poste</th>
+                <th class="px-6 py-5">Status</th>
+                <th class="px-6 py-5">Votes</th>
+                <th class="px-8 py-5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+              <!-- Candidate Row 1 -->
+              <tr class="group hover:bg-gray-50/50 transition-colors">
+                <td class="px-8 py-5">
+                  <div class="flex items-center gap-4">
+                    <img src="hero7.png" class="w-11 h-11 rounded-1.5xl object-cover shadow-sm" />
+                    <div>
+                      <p class="text-sm font-bold text-gray-900">FOUDA Laura</p>
+                      <p class="text-[10px] text-gray-400 font-bold">Marketing - L3</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-5 text-sm font-semibold text-gray-600">Vice-présidente</td>
+                <td class="px-6 py-5">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-wider">Validé</span>
+                </td>
+                <td class="px-6 py-5">
+                  <p class="text-sm font-bold text-gray-900">367</p>
+                </td>
+                <td class="px-8 py-5 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <button class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:bg-brand-50 hover:text-brand-600 transition-all">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    </button>
+                    <button class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Candidate Row 2 -->
+              <tr class="group hover:bg-gray-50/50 transition-colors">
+                <td class="px-8 py-5">
+                  <div class="flex items-center gap-4">
+                    <img src="hero9.png" class="w-11 h-11 rounded-1.5xl object-cover shadow-sm" />
+                    <div>
+                      <p class="text-sm font-bold text-gray-900">NTSOPGNI Aimé</p>
+                      <p class="text-[10px] text-gray-400 font-bold">Gestion - L3</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-5 text-sm font-semibold text-gray-600">Président du BDE</td>
+                <td class="px-6 py-5">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-wider">Validé</span>
+                </td>
+                <td class="px-6 py-5">
+                  <p class="text-sm font-bold text-gray-900">253</p>
+                </td>
+                <td class="px-8 py-5 text-right">
+                   <div class="flex items-center justify-end gap-2">
+                    <button class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:bg-brand-50 hover:text-brand-600 transition-all">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    </button>
+                    <button class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+               <!-- Candidate Row 3 (Pending) -->
+               <tr class="group hover:bg-gray-50/50 transition-colors">
+                <td class="px-8 py-5">
+                  <div class="flex items-center gap-4">
+                    <img src="hero8.png" class="w-11 h-11 rounded-1.5xl object-cover shadow-sm opacity-60" />
+                    <div>
+                      <p class="text-sm font-bold text-gray-900">MEKOUO Dylan</p>
+                      <p class="text-[10px] text-gray-400 font-bold">Comptabilité - L2</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-5 text-sm font-semibold text-gray-600">Trésorier Général</td>
+                <td class="px-6 py-5">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-50 text-orange-600 text-[10px] font-bold uppercase tracking-wider">En attente</span>
+                </td>
+                <td class="px-6 py-5">
+                  <p class="text-sm font-bold text-gray-400 italic">---</p>
+                </td>
+                <td class="px-8 py-5 text-right">
+                   <div class="flex items-center justify-end gap-2">
+                    <button class="px-4 py-2 bg-brand-50 text-brand-700 text-xs font-bold rounded-xl hover:bg-brand-700 hover:text-white transition-all">
+                      Valider
+                    </button>
+                    <button class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="p-6 border-t border-gray-50 flex items-center justify-between">
+           <p class="text-xs text-gray-400 font-bold">Affichage de 3 sur 12 candidats</p>
+           <div class="flex gap-2">
+              <button class="px-4 py-2 rounded-xl border border-gray-100 text-xs font-bold text-gray-400 cursor-not-allowed">Précédent</button>
+              <button class="px-4 py-2 rounded-xl border border-gray-100 text-xs font-bold text-gray-900 hover:bg-gray-50 transition-all">Suivant</button>
+           </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

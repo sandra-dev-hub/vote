@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Profil | ICAB Bafoussam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-display: 'Instrument Serif', serif;
+      --color-brand-50: #eff6ff;
+      --color-brand-100: #dbeafe;
+      --color-brand-200: #bfdbfe;
+      --color-brand-500: #3b82f6;
+      --color-brand-600: #2563eb;
+      --color-brand-700: #1d4ed8;
+      --color-brand-800: #1e40af;
+      --color-brand-900: #1e3a8a;
+      --color-brand-950: #0d2054;
+    }
+
+    .sidebar-link-active {
+      @apply bg-brand-800 text-white shadow-md shadow-black/20;
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-gray-50 text-gray-900 antialiased h-screen flex overflow-hidden">
+
+  <!-- SIDEBAR (STUDENT VERSION) -->
+  <aside class="w-72 bg-brand-950 text-blue-100/60 hidden lg:flex flex-col shrink-0 border-r border-white/5">
+    <div class="p-8 pb-10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg">
+          <span class="text-brand-950 text-xs font-black tracking-tight">ICAB</span>
+        </div>
+        <div>
+          <p class="text-white text-sm font-bold tracking-tight leading-none mb-1">Espace Étudiant</p>
+          <p class="text-[10px] font-bold text-blue-400/60 uppercase tracking-widest">Élection 2024</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-grow px-4 space-y-1.5 overflow-y-auto">
+      <p class="px-4 text-[10px] font-bold text-blue-100/30 uppercase tracking-widest mb-4">Personnel</p>
+      
+      <a href="admin_dashboard.html" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 hover:text-white transition-all group">
+        <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        <span class="text-sm font-bold">Tableau de bord</span>
+      </a>
+
+      <a href="profile.html" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl sidebar-link-active group transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        <span class="text-sm font-bold">Mon Profil</span>
+      </a>
+
+      <a href="#" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 hover:text-white transition-all group">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="text-sm font-bold">Voter maintenant</span>
+      </a>
+
+      <div class="pt-6">
+        <p class="px-4 text-[10px] font-bold text-blue-100/30 uppercase tracking-widest mb-4">Système</p>
+        <a href="#" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 hover:text-white transition-all group">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span class="text-sm font-bold">Paramètres</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Student Profile Footer -->
+    <div class="p-4 mt-auto">
+      <div class="p-4 bg-white/5 rounded-3xl flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-brand-700 flex items-center justify-center text-white font-bold text-xs uppercase">AM</div>
+        <div class="overflow-hidden">
+          <p class="text-xs font-bold text-white truncate">Aimé MONKAM</p>
+          <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Étudiant</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <main class="flex-grow overflow-y-auto bg-gray-50 flex flex-col">
+    <!-- Top Header -->
+    <header class="h-20 bg-white border-b border-gray-100 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
+      <div>
+        <h2 class="text-lg font-bold text-gray-900 italic font-display">Mon Profil Académique</h2>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="px-3 py-1 bg-green-50 text-green-600 rounded-full flex items-center gap-1.5">
+           <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+           <span class="text-[10px] font-bold uppercase tracking-widest">Identité Vérifiée</span>
+        </div>
+        <button class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 relative">
+           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+           <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Profile Content -->
+    <div class="p-8 max-w-5xl space-y-8">
+      
+      <!-- Top Grid: ID Card & Key Info -->
+      <div class="grid lg:grid-cols-12 gap-8">
+        
+        <!-- Large Profile Card -->
+        <div class="lg:col-span-8 bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
+           <!-- Decorative Background Node -->
+           <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-50 rounded-full blur-[80px]"></div>
+           
+           <div class="flex flex-col md:flex-row items-start gap-10 relative z-10">
+              <div class="relative shrink-0">
+                 <div class="w-32 h-32 rounded-[2rem] bg-brand-900 flex items-center justify-center text-white text-4xl font-black italic font-display shadow-2xl border-4 border-white">
+                    AM
+                 </div>
+                 <button class="absolute -bottom-2 -right-2 w-10 h-10 bg-white shadow-xl rounded-2xl flex items-center justify-center text-gray-400 hover:text-brand-700 transition-colors border border-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                 </button>
+              </div>
+
+              <div class="space-y-6 flex-grow">
+                 <div>
+                    <h3 class="text-3xl font-black text-gray-900 mb-1">Aimé MONKAM</h3>
+                    <p class="text-sm font-bold text-brand-700 uppercase tracking-widest">Filière Informatique de Gestion (IG)</p>
+                 </div>
+
+                 <div class="grid grid-cols-2 gap-8 pt-6 border-t border-gray-50">
+                    <div>
+                       <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Identifiant Étudiant</p>
+                       <p class="text-sm font-bold text-gray-900">ICAB-2024-8842</p>
+                    </div>
+                    <div>
+                       <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Session Électorale</p>
+                       <p class="text-sm font-bold text-gray-900 italic font-display text-lg">2024 / 2025</p>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <!-- Voting Status Summary -->
+        <div class="lg:col-span-4 bg-brand-900 p-8 rounded-[2.5rem] text-white flex flex-col items-center justify-center text-center relative overflow-hidden group">
+           <div class="absolute inset-0 bg-gradient-to-br from-brand-700/50 to-transparent"></div>
+           <div class="relative z-10 space-y-4">
+              <div class="w-16 h-16 rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                 <svg class="w-8 h-8 text-blue-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <h4 class="text-xs font-bold text-blue-200 uppercase tracking-widest">Ma Participation</h4>
+              <p class="text-3xl font-black leading-tight italic font-display">Statut : <span class="text-white">Non Voté</span></p>
+              <p class="text-[10px] text-blue-300/60 leading-relaxed pt-4">Vous avez jusqu'au 24 Octobre pour exprimer votre choix.</p>
+           </div>
+        </div>
+      </div>
+
+      <!-- Secondary Grid: Advanced Settings & Logs -->
+      <div class="grid lg:grid-cols-12 gap-8">
+         
+         <!-- Account Settings -->
+         <div class="lg:col-span-7 bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100">
+            <h4 class="text-sm font-bold text-gray-900 border-b border-gray-50 pb-6 mb-8 uppercase tracking-widest flex items-center gap-3">
+               <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+               Sécurité du Compte
+            </h4>
+            
+            <form class="space-y-6">
+               <div class="grid md:grid-cols-2 gap-6">
+                  <div class="space-y-2">
+                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Email académique</label>
+                     <input type="email" value="am.monkam@icab.cm" disabled class="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-semibold text-gray-500 italic opacity-60" />
+                  </div>
+                  <div class="space-y-2">
+                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Ancien mot de passe</label>
+                     <input type="password" placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-semibold focus:ring-2 focus:ring-brand-500/20" />
+                  </div>
+               </div>
+               
+               <div class="grid md:grid-cols-2 gap-6">
+                  <div class="space-y-2">
+                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nouveau mot de passe</label>
+                     <input type="password" placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-semibold focus:ring-2 focus:ring-brand-500/20" />
+                  </div>
+                  <div class="space-y-2">
+                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Confirmer le mot de passe</label>
+                     <input type="password" placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-semibold focus:ring-2 focus:ring-brand-500/20" />
+                  </div>
+               </div>
+
+               <button type="submit" class="mt-4 px-8 py-4 bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold rounded-2xl transition-all shadow-lg shadow-brand-100">
+                  Mettre à jour mes accès
+               </button>
+            </form>
+         </div>
+
+         <!-- Activity Logs -->
+         <div class="lg:col-span-5 space-y-8">
+            <div class="bg-gray-900 p-10 rounded-[2.5rem] text-white">
+               <h4 class="text-xs font-bold text-blue-400 uppercase tracking-[0.2em] mb-8">Activités Récentes</h4>
+               <div class="space-y-6">
+                  <div class="flex items-start gap-4">
+                     <div class="w-2 h-2 rounded-full bg-brand-500 mt-2"></div>
+                     <div>
+                        <p class="text-xs font-bold text-white">Connexion réussie</p>
+                        <p class="text-[10px] text-blue-100/40">Aujourd'hui à 15:45 • Chrome (Bafoussam)</p>
+                     </div>
+                  </div>
+                  <div class="flex items-start gap-4">
+                     <div class="w-2 h-2 rounded-full bg-gray-700 mt-2"></div>
+                     <div>
+                        <p class="text-xs font-bold text-blue-100/60">Mise à jour du profil</p>
+                        <p class="text-[10px] text-blue-100/40">Hier à 10:20 • Admin Verification</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="p-8 bg-brand-50 rounded-[2rem] border border-brand-100">
+               <p class="text-xs font-bold text-brand-900 mb-2 underline decoration-brand-200 underline-offset-4">Besoin d'aide ?</p>
+               <p class="text-xs text-brand-700/70 leading-relaxed mb-4">Si vous remarquez un changement non autorisé sur votre profil, contactez immédiatement le BDE.</p>
+               <a href="contact.html" class="text-[10px] font-black text-brand-800 uppercase tracking-widest hover:text-brand-950 transition-colors">Signaler un problème →</a>
+            </div>
+         </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>

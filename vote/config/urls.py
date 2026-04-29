@@ -5,6 +5,7 @@ from django.urls import include
 from django.urls import path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -14,10 +15,47 @@ urlpatterns = [
     path("connexion/", TemplateView.as_view(template_name="pages/connexion.html"), name="connexion"),
     path("contact/", TemplateView.as_view(template_name="pages/contact.html"), name="contact"),
     path("detail/candidat/", TemplateView.as_view(template_name="pages/detail_candidat.html"), name="detail_candidat"),
-    path("fonctionnalites/", TemplateView.as_view(template_name="pages/fonctionnalite.html"), name="fonctionnalites"),
+    path("fonctionnalites/", TemplateView.as_view(template_name="pages/fonctionnalites.html"), name="fonction"),
     path("profile/", TemplateView.as_view(template_name="pages/profile.html"), name="profile"),
-    path("inscription/", TemplateView.as_view(template_name="pages/inscription.html"), name="inscription"),
     path("register/", TemplateView.as_view(template_name="pages/register.html"), name="register"),
+
+   
+
+# 1. Formulaire (envoi email)
+path(
+    'password_reset/',
+    auth_views.PasswordResetView.as_view(
+        template_name='pages/password_reset.html'
+    ),
+    name='password_reset'
+),
+
+# 2. Page "lien envoyé"
+path(
+    'password_reset/done/',
+    auth_views.PasswordResetDoneView.as_view(
+        template_name='pages/password_reset_done.html'
+    ),
+    name='password_reset_done'
+),
+
+# 3. Lien reçu par email
+path(
+    'reset/<uidb64>/<token>/',
+    auth_views.PasswordResetConfirmView.as_view(
+        template_name='pages/password_reset_confirm.html'
+    ),
+    name='password_reset_confirm'
+),
+
+# 4. Succès final
+path(
+    'reset/done/',
+    auth_views.PasswordResetCompleteView.as_view(
+        template_name='pages/password_reset_complete.html'
+    ),
+    name='password_reset_complete'
+),
 
 
     path(

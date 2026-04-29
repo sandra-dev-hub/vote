@@ -1,115 +1,89 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
+{% load static %} <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inscription | ICAB Bafoussam</title>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-  <style type="text/tailwindcss">
-    @theme {
-      --font-sans: 'Plus Jakarta Sans', sans-serif;
-      --font-display: 'Instrument Serif', serif;
-      --color-brand-50: #eff6ff;
-      --color-brand-100: #dbeafe;
-      --color-brand-200: #bfdbfe;
-      --color-brand-500: #3b82f6;
-      --color-brand-600: #2563eb;
-      --color-brand-700: #1d4ed8;
-      --color-brand-800: #1e40af;
-      --color-brand-900: #1e3a8a;
-      --color-brand-950: #0d2054;
-    }
-
-    .hero-mesh {
-      background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 50%),
-                  radial-gradient(at 100% 0%, #1d4ed8 0%, transparent 50%),
-                  radial-gradient(at 100% 100%, #1e40af 0%, transparent 50%),
-                  radial-gradient(at 0% 100%, #3b82f6 0%, transparent 50%);
-      background-color: #0d2054;
-    }
-
-    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .anim-slide-up { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
-  </style>
+  <title>Connexion | ICAB Bafoussam</title>
+  
+  <link href="{% static 'css/output.css' %}" rel="stylesheet" />
 </head>
 
-<body class="font-sans antialiased min-h-screen py-20 flex items-center justify-center hero-mesh relative overflow-x-hidden px-6">
-  
-  <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;"></div>
+      <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <main class="w-full max-w-xl relative z-10 anim-slide-up">
+      </head>
+  <body class="font-sans antialiased min-h-screen py-20 flex items-center justify-center hero-mesh relative overflow-x-hidden px-6">
     
-    <div class="flex flex-col items-center mb-10 text-center">
-      <div class="w-14 h-14 rounded-2xl bg-white shadow-2xl flex items-center justify-center mb-4">
-        <span class="text-brand-950 text-base font-black">ICAB</span>
-      </div>
-      <h1 class="text-white text-3xl font-black italic font-display tracking-tight">Créer votre compte</h1>
-      <p class="text-blue-100/60 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">Rejoignez la vie citoyenne de l'ICAB</p>
-    </div>
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;"></div>
 
-    <div class="bg-white/95 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20">
-      <form action="conection.html" class="space-y-6">
-        
-        <div class="space-y-4">
-          <div class="space-y-2">
-            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nom Complet</label>
-            <input type="text" placeholder="Ex: Jean Dupont" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Identifiant étudiant</label>
-              <input type="text" placeholder="ICAB-2024-XXX" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-            </div>
-            <div class="space-y-2">
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Filière</label>
-              <select class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold appearance-none cursor-pointer">
-                <option>Marketing</option>
-                <option>Gestion</option>
-                <option>Comptabilité</option>
-                <option>Informatique</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Email académique</label>
-            <input type="email" placeholder="etudiant@icab.cm" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Mot de passe</label>
-            <input type="password" placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-          </div>
+    <main class="w-full max-w-xl relative z-10 anim-slide-up">
+      
+      <div class="flex flex-col items-center mb-10 text-center">
+        <div class="w-14 h-14 rounded-2xl bg-white shadow-2xl flex items-center justify-center mb-4">
+          <span class="text-brand-950 text-base font-black">ICAB</span>
         </div>
-
-        <div class="flex items-start gap-3 px-1">
-          <input type="checkbox" id="terms" class="mt-1 w-4 h-4 rounded-md border-gray-200 text-brand-600 focus:ring-brand-500/20 transition-all cursor-pointer" />
-          <label for="terms" class="text-xs font-bold text-gray-500 cursor-pointer leading-relaxed">
-            J'accepte les <a href="#" class="text-brand-600 hover:underline">Conditions d'utilisation</a> et la <a href="#" class="text-brand-600 hover:underline">Politique de confidentialité</a> du vote.
-          </label>
-        </div>
-
-        <button type="submit" class="w-full py-5 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-2xl shadow-xl shadow-brand-200 transition-all hover:shadow-2xl hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]">
-           Créer mon compte
-        </button>
-
-      </form>
-
-      <div class="mt-10 pt-8 border-t border-gray-100 text-center">
-        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Déjà inscrit ?</p>
-        <a href="conection.html" class="text-xs font-black text-brand-700 hover:text-brand-900 transition-colors underline decoration-brand-200 underline-offset-4">Connectez-vous à votre espace</a>
+        <h1 class="text-white text-3xl font-black italic font-display tracking-tight">Créer votre compte</h1>
+        <p class="text-blue-100/60 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">Rejoignez la vie citoyenne de l'ICAB</p>
       </div>
-    </div>
 
-    <a href="home.html" class="flex items-center justify-center gap-2 mt-8 text-blue-100/50 hover:text-white text-xs font-bold transition-colors">
-       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
-       Retour au portail
-    </a>
+      <div class="bg-white/95 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20">
+        <form action="conection.html" class="space-y-6">
+          
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nom Complet</label>
+              <input type="text" placeholder="Ex: Jean Dupont" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
+            </div>
 
-  </main>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Identifiant étudiant</label>
+                <input type="text" placeholder="ICAB-2024-XXX" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Filière</label>
+                <select class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold appearance-none cursor-pointer">
+                  <option>Marketing</option>
+                  <option>Gestion</option>
+                  <option>Comptabilité</option>
+                  <option>Informatique</option>
+                </select>
+              </div>
+            </div>
 
-</body>
-</html>
+            <div class="space-y-2">
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Email académique</label>
+              <input type="email" placeholder="etudiant@icab.cm" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Mot de passe</label>
+              <input type="password" placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 px-1">
+            <input type="checkbox" id="terms" class="mt-1 w-4 h-4 rounded-md border-gray-200 text-brand-600 focus:ring-brand-500/20 transition-all cursor-pointer" />
+            <label for="terms" class="text-xs font-bold text-gray-500 cursor-pointer leading-relaxed">
+              J'accepte les <a href="#" class="text-brand-600 hover:underline">Conditions d'utilisation</a> et la <a href="#" class="text-brand-600 hover:underline">Politique de confidentialité</a> du vote.
+            </label>
+          </div>
+
+          <button type="submit" class="w-full py-5 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-2xl shadow-xl shadow-brand-200 transition-all hover:shadow-2xl hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]">
+            Créer mon compte
+          </button>
+
+        </form>
+
+        <div class="mt-10 pt-8 border-t border-gray-100 text-center">
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Déjà inscrit ?</p>
+          <a href="conection.html" class="text-xs font-black text-brand-700 hover:text-brand-900 transition-colors underline decoration-brand-200 underline-offset-4">Connectez-vous à votre espace</a>
+        </div>
+      </div>
+
+      <a href="{% url 'home' %}" class="flex items-center justify-center gap-2 mt-8 text-blue-100/50 hover:text-white text-xs font-bold transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+        Retour au portail
+      </a>
+
+    </main>
+
+  </body>
+  </html>

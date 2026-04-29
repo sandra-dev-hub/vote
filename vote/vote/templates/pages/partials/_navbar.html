@@ -1,0 +1,33 @@
+<!-- ma navbar -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <a href="{% url 'home' %}" class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-brand-900 flex items-center justify-center shadow-md">
+        <span class="text-white text-xs font-extrabold tracking-tight leading-none">ICAB</span>
+      </div>
+      <div class="leading-tight">
+        <p class="text-sm font-bold text-gray-900">ICAB</p>
+        <p class="text-[11px] text-gray-400 font-medium">Bafoussam</p>
+      </div>
+    </div>
+</a>
+    <!-- Links -->
+    <div class="hidden md:flex items-center gap-1">
+      <a href="{% url 'home' %}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Accueil</a>
+      <a href="{% url 'about' %}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">À propos</a>
+      <a href="{% url 'fonction' %}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Fonctionnalités</a>
+      <a href="{% url 'contact' %}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Contact</a>
+    </div>
+
+    <!-- CTA -->
+    <div class="flex items-center gap-3">
+      <a href="{% url 'register' %}" class="hidden sm:block text-sm font-semibold text-brand-700 hover:text-brand-900 transition-colors">S'inscrire</a>
+      <a href="{% url 'connexion' %}" class="px-5 py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold rounded-xl shadow-md shadow-brand-200 transition-all hover:shadow-lg hover:-translate-y-px">
+        Se connecter
+      </a>
+    </div>
+  </div>
+</nav>

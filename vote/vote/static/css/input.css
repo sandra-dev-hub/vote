@@ -201,97 +201,37 @@
 }
 
 
-/* =========================
-   COMPONENTS (PAGE LOGIN)
-========================= */
-@layer components {
+/* ====================== STYLES POUR CONNEXION & INSCRIPTION ====================== */
 
-  /* Champ input */
-  /* HTML: <input class="input"> */
-  .input {
-    @apply w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200
-           focus:ring-2 focus:ring-brand-500 focus:border-brand-500;
-  }
-
-  /* Label */
-  /* HTML: <label class="label"> */
-  .label {
-    @apply text-xs font-bold text-gray-400 uppercase;
-  }
-
-  /* Bouton principal */
-  /* HTML: <button class="btn"> */
-  .btn {
-    @apply w-full py-3 bg-brand-700 text-white font-bold rounded-xl;
-  }
-
-  /* Carte formulaire */
-  /* HTML: <div class="card"> */
-  .card {
-    @apply bg-white p-8 rounded-3xl shadow-2xl;
-  }
-
+.hero-mesh {
+  background: radial-gradient(at 0% 0%, #1e3a8a 0%, transparent 50%),
+              radial-gradient(at 100% 0%, #1d4ed8 0%, transparent 50%),
+              radial-gradient(at 100% 100%, #1e40af 0%, transparent 50%),
+              radial-gradient(at 0% 100%, #3b82f6 0%, transparent 50%);
+  background-color: #0d2054;
 }
 
-
-/* =========================
-   ANCIENNES CLASSES (À VÉRIFIER)
-========================= */
-@layer components {
-
-  /* Input ancien */
-  .full{
-    @apply w-full bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-white mb-6;
+@keyframes slideUp {
+  from { 
+    transform: translateY(20px); 
+    opacity: 0; 
   }
-
-  /* Barre recherche */
-  .recherche{
-    @apply w-full bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-white text-sm;
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
   }
-
-  /* Bouton custom */
-  .bouton{
-    @apply bg-amber-600 px-5 font-bold rounded-r-xl text-white;
-  }
-
-  /* Bouton confirmation */
-  .confirmation{
-    @apply bg-amber-600 px-6 py-2 rounded-lg text-white;
-  }
-
-  /* Bouton annulation */
-  .annulation{
-    @apply px-4 py-2 text-slate-400;
-  }
-
 }
 
-
-/* =========================
-   STATES (INTERACTIONS)
-========================= */
-
-/* Input spécifique */
-#taskInput { 
-  @apply bg-white text-slate-900; 
+.anim-slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Élément liste */
-.task-item { 
-  @apply transition-all duration-300; 
+/* Améliorations pour les formulaires */
+.input-focus {
+  transition: all 0.2s ease;
 }
 
-/* Hover item */
-.task-item:hover { 
-  @apply translate-x-1; 
-}
-
-/* Tâche complétée (texte barré) */
-.completed span {
-  @apply line-through text-slate-500 opacity-50;
-}
-
-/* Style item complété */
-.task-item.completed {
-  @apply bg-slate-950 border-l-slate-600;
+.input-focus:focus {
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }

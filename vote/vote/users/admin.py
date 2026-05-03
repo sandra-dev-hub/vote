@@ -38,3 +38,4 @@ class UserAdmin(auth_admin.UserAdmin):
     )
     list_display = ("id", "username", "email")
     search_fields = ["name"]
+

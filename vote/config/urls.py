@@ -5,7 +5,16 @@ from django.urls import include
 from django.urls import path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
-from django.contrib.auth import views as auth_views
+
+
+# c'est pour le 1,2,3,4
+from django.contrib.auth import views as auth_views 
+
+from django.contrib import admin
+from django.urls import path
+
+# === IMPORT DES VUES PERSONNALISÉES ===
+from users.views import password_reset_request, password_reset_verify
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -19,7 +28,14 @@ urlpatterns = [
     path("profile/", TemplateView.as_view(template_name="pages/profile.html"), name="profile"),
     path("register/", TemplateView.as_view(template_name="pages/register.html"), name="register"),
 
-   
+    path('admin/', admin.site.urls),
+    
+    # Authentification
+    path('connexion/', include('django.contrib.auth.urls')),   # Optionnel si tu utilises les vues par défaut
+    
+    # Tes nouvelles vues pour la réinitialisation par code
+    path('password_reset/', password_reset_request, name='password_reset_request'),
+    path('password_reset/verify/', password_reset_verify, name='password_reset_verify'),
 
 # 1. Formulaire (envoi email)
 path(
@@ -58,11 +74,6 @@ path(
 ),
 
 
-    path(
-        "about/",
-        TemplateView.as_view(template_name="pages/about.html"),
-        name="about",
-    ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management

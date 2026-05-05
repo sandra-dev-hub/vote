@@ -12,12 +12,10 @@ urlpatterns = [
     path("about/", TemplateView.as_view(template_name="pages/about.html"), name="about"),
     path("admin/candidat/", TemplateView.as_view(template_name="pages/admin_candidat.html"), name="admin_candidat"),
     path("admin/dashboard/", TemplateView.as_view(template_name="pages/admin_dashboard.html"), name="admin_dashboard"),
-    path("connexion/", TemplateView.as_view(template_name="pages/connexion.html"), name="connexion"),
     path("contact/", TemplateView.as_view(template_name="pages/contact.html"), name="contact"),
     path("detail/candidat/", TemplateView.as_view(template_name="pages/detail_candidat.html"), name="detail_candidat"),
     path("fonctionnalites/", TemplateView.as_view(template_name="pages/fonctionnalites.html"), name="fonction"),
     path("profile/", TemplateView.as_view(template_name="pages/profile.html"), name="profile"),
-    path("register/", TemplateView.as_view(template_name="pages/register.html"), name="register"),
 
    
 
@@ -67,7 +65,6 @@ path(
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("vote.users.urls", namespace="users")),
-    path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     # ...
     # Media files

@@ -24,38 +24,46 @@
       </div>
 
       <div class="bg-white/95 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20">
-        <form action="conection.html" class="space-y-6">
+        <form method="post" action="{% url 'users:register' %}" class="space-y-6">
+          {% csrf_token %}
           
+          <!-- Affichage des erreurs du formulaire -->
+          {% if form.errors %}
+          <div class="p-4 mb-4 text-sm text-red-800 rounded-2xl bg-red-50" role="alert">
+            <span class="font-bold">Veuillez corriger les erreurs suivantes :</span>
+            <ul class="mt-1.5 list-disc list-inside">
+              {% for field in form %}
+                {% for error in field.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
           <div class="space-y-4">
             <div class="space-y-2">
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nom Complet</label>
-              <input type="text" placeholder="Ex: Jean Dupont" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-              <div class="space-y-2">
-                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Identifiant étudiant</label>
-                <input type="text" placeholder="ICAB-2024-XXX" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-              </div>
-              <div class="space-y-2">
-                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Filière</label>
-                <select class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold appearance-none cursor-pointer">
-                  <option>Marketing</option>
-                  <option>Gestion</option>
-                  <option>Comptabilité</option>
-                  <option>Informatique</option>
-                </select>
-              </div>
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Identifiant étudiant (Matricule)</label>
+              <input type="text" name="matricule" required placeholder="Ex: ICAB-2024-XXX" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
             </div>
 
             <div class="space-y-2">
               <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Email académique</label>
-              <input type="email" placeholder="etudiant@icab.cm" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
+              <input type="email" name="email" required placeholder="etudiant@icab.cm" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
             </div>
 
-            <div class="space-y-2">
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Mot de passe</label>
-              <input type="password" placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Mot de passe</label>
+                <input type="password" name="password1" required placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Confirmer mot de passe</label>
+                <input type="password" name="password2" required placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
+              </div>
             </div>
           </div>
 
@@ -74,7 +82,7 @@
 
         <div class="mt-10 pt-8 border-t border-gray-100 text-center">
           <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Déjà inscrit ?</p>
-          <a href="conection.html" class="text-xs font-black text-brand-700 hover:text-brand-900 transition-colors underline decoration-brand-200 underline-offset-4">Connectez-vous à votre espace</a>
+          <a href="{% url 'users:login' %}" class="text-xs font-black text-brand-700 hover:text-brand-900 transition-colors underline decoration-brand-200 underline-offset-4">Connectez-vous à votre espace</a>
         </div>
       </div>
 

@@ -1,40 +1,39 @@
-from allauth.account.forms import SignupForm
-from allauth.socialaccount.forms import SignupForm as SocialSignupForm
-from django.contrib.auth import forms as admin_forms
+from django import forms
 from django.utils.translation import gettext_lazy as _
-
 from .models import Utilisateur
 
 
-class UserAdminChangeForm(admin_forms.UserChangeForm):
-    class Meta(admin_forms.UserChangeForm.Meta):
+# -----------------------------
+# ADMIN FORMS (CUSTOM)
+# -----------------------------
+
+class UserAdminChangeForm(forms.ModelForm):
+    class Meta:
         model = Utilisateur
+        fields = ("email", "matricule", "is_active", "is_staff", "is_superuser")
 
 
-class UserAdminCreationForm(admin_forms.AdminUserCreationForm):
-    """
-    Form for User Creation in the Admin Area.
-    To change user signup, see UserSignupForm and UserSocialSignupForm.
-    """
+class UserAdminCreationForm(forms.ModelForm):
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
 
-    class Meta(admin_forms.UserCreationForm.Meta):
+    class Meta:
         model = Utilisateur
-        error_messages = {
-            "username": {"unique": _("This username has already been taken.")},
-        }
+        fields = ("email", "matricule")
 
+    def clean_password2(self):
+        if self.cleaned_data["password1"] != self.cleaned_data["password2"]:
+            raise forms.ValidationError("Passwords do not match")
+        return self.cleaned_data["password2"]
 
-class UserSignupForm(SignupForm):
-    """
-    Form that will be rendered on a user sign up section/screen.
-    Default fields will be added automatically.
-    Check UserSocialSignupForm for accounts created from social.
-    """
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+from django.contrib.auth.forms import UserCreationForm
 
-
-class UserSocialSignupForm(SocialSignupForm):
-    """
-    Renders the form when user has signed up using social accounts.
-    Default fields will be added automatically.
-    See UserSignupForm otherwise.
-    """
+class UserRegisterForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = Utilisateur
+        fields = ("email", "matricule")

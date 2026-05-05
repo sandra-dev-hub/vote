@@ -51,18 +51,36 @@
 
             <!-- Buttons -->
             <div class="anim-fade-up delay-200 flex items-center gap-3 mb-4">
-                <a href=""
-                   style="background: #1d4ed8; color: white; padding: .75rem 1.8rem; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; border: 2px solid rgba(255,255,255,0.3); transition: all .2s;"
-                   onmouseover="this.style.background='#1e40af'" 
-                   onmouseout="this.style.background='#1d4ed8'">
-                    Se connecter
-                </a>
-                <a href="{% url 'register' %}"
-                   style="background: #16a34a; color: white; padding: .75rem 1.8rem; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; transition: all .2s;"
-                   onmouseover="this.style.background='#15803d'" 
-                   onmouseout="this.style.background='#16a34a'">
-                    S'inscrire
-                </a>
+                {% if user.is_authenticated %}
+                    {% if user.is_admin %}
+                        <a href="{% url 'users:admin_dashboard' %}"
+                           style="background: #1d4ed8; color: white; padding: .75rem 1.8rem; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; border: 2px solid rgba(255,255,255,0.3); transition: all .2s;"
+                           onmouseover="this.style.background='#1e40af'" 
+                           onmouseout="this.style.background='#1d4ed8'">
+                            Accéder à mon espace
+                        </a>
+                    {% else %}
+                        <a href="{% url 'users:user_dashboard' %}"
+                           style="background: #1d4ed8; color: white; padding: .75rem 1.8rem; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; border: 2px solid rgba(255,255,255,0.3); transition: all .2s;"
+                           onmouseover="this.style.background='#1e40af'" 
+                           onmouseout="this.style.background='#1d4ed8'">
+                            Accéder à mon espace
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'users:login' %}"
+                       style="background: #1d4ed8; color: white; padding: .75rem 1.8rem; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; border: 2px solid rgba(255,255,255,0.3); transition: all .2s;"
+                       onmouseover="this.style.background='#1e40af'" 
+                       onmouseout="this.style.background='#1d4ed8'">
+                        Se connecter
+                    </a>
+                    <a href="{% url 'users:register' %}"
+                       style="background: #16a34a; color: white; padding: .75rem 1.8rem; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; transition: all .2s;"
+                       onmouseover="this.style.background='#15803d'" 
+                       onmouseout="this.style.background='#16a34a'">
+                        S'inscrire
+                    </a>
+                {% endif %}
             </div>
 
             <!-- Trust badges -->

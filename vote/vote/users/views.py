@@ -9,8 +9,13 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
+from django.views.generic import CreateView
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy, reverse
 
 from vote.users.models import Utilisateur
+from vote.users.forms import UserRegisterForm
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
@@ -18,8 +23,8 @@ if TYPE_CHECKING:
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = Utilisateur
-    slug_field = "username"
-    slug_url_kwarg = "username"
+    slug_field = "id"
+    slug_url_kwarg = "pk"
 
 
 user_detail_view = UserDetailView.as_view()
@@ -27,7 +32,7 @@ user_detail_view = UserDetailView.as_view()
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Utilisateur
-    fields = ["name"]
+    fields = ["matricule"]
     success_message = _("Information successfully updated")
 
     def get_success_url(self) -> str:
@@ -46,7 +51,32 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self) -> str:
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
+        return reverse("users:detail", kwargs={"pk": self.request.user.pk})
 
 
 user_redirect_view = UserRedirectView.as_view()
+
+class UserLoginView(LoginView):
+    template_name = "pages/connexion.html"
+    
+    def get_success_url(self):
+        user = self.request.user
+        if user.is_authenticated:
+            if hasattr(user, 'is_admin') and user.is_admin():
+                return reverse("users:admin_dashboard")
+            else:
+                return reverse("users:user_dashboard")
+        return super().get_success_url()
+    
+class UserLogoutView(LogoutView):
+    next_page = reverse_lazy("home")
+
+class UserRegisterView(SuccessMessageMixin, CreateView):
+    template_name = "pages/register.html"
+    form_class = UserRegisterForm
+    success_url = reverse_lazy("users:login")
+    success_message = "Votre compte a été créé avec succès ! Veuillez vous connecter."
+    
+user_login_view = UserLoginView.as_view()
+user_logout_view = UserLogoutView.as_view()
+user_register_view = UserRegisterView.as_view()

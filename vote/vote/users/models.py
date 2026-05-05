@@ -6,44 +6,81 @@ from django.contrib.auth.models import AbstractUser
 # from django.utils.translation import gettext_lazy as _
 # from django.contrib.auth.hashers import make_password
 from django.db import models
-
-
+from django_extensions.db.models import ActivatorModel
+from django_extensions.db.models import TimeStampedModel
+from django.db import models
+from django.contrib.auth.hashers import make_password, check_password
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.hashers import make_password, check_password
 from vote.global_data.enums import Role, StatutDemande, StatutScrutin
 from vote.users.managers import UserManager
 
-class BaseModel(models.Model):
-    date_creation = models.DateTimeField(auto_now_add=True)
-    date_modification = models.DateTimeField(auto_now=True)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, blank=False)    
+import uuid
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+
+class BaseModel(TimeStampedModel, ActivatorModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         abstract = True
 
 
-class Utilisateur(AbstractUser, BaseModel):
+
+class Utilisateur(AbstractBaseUser, PermissionsMixin, BaseModel):
+    """
+    Modèle utilisateur global du système.
+    Aucun rôle métier ici (électeur/candidat = contextuel via scrutin).
+    """
+
     email = models.EmailField(unique=True)
+    matricule = models.CharField(
+        max_length=50,
+        unique=True,
+        null=True,
+        blank=True
+    )
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.ELECTEUR)
 
-    role = models.CharField(max_length=50, choices=Role.choices, default=Role.ELECTEUR)
-    est_actif = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
 
-    id_electeur = models.BooleanField(default=False)
-    id_candidat = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
 
-    REQUIRED_FIELDS = ["email"]
+    # permissions système (admin technique uniquement)
+    is_staff = models.BooleanField(default=False)
+
     objects = UserManager()
 
-    def se_connecter(self):
-        pass
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
-    def se_deconnecter(self):
-        pass
+
+    # timestamps et UUID viennent de BaseModel
+
     class Meta:
-        managed = True
-        verbose_name = 'utilisateur'
-        verbose_name_plural = 'utilisateurs'
+        db_table = "utilisateurs"
+        verbose_name = "Utilisateur"
+        verbose_name_plural = "Utilisateurs"
+        indexes = [
+            models.Index(fields=["email"]),
+            models.Index(fields=["matricule"]),
+        ]
 
 
+
+    # -----------------------------
+    # 🧠 HELPERS MÉTIER
+    # -----------------------------
+    def is_admin(self) -> bool:
+        return self.is_staff or self.is_superuser or self.role == Role.ADMIN
+
+
+    def __str__(self):
+        return f"{self.email} ({self.matricule})"
+    
 class Administrateur(Utilisateur):
     nom_admin = models.CharField(max_length=100, verbose_name="Nom de l'administrateur")
     prenom_admin = models.CharField(max_length=100, verbose_name="Prénom de l'administrateur")

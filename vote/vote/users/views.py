@@ -86,5 +86,9 @@ from django.views.generic import TemplateView
 class UserDashboardView(LoginRequiredMixin, TemplateView):
     template_name = "pages/user_dashboard/user.html"
 
+
 def liste_scrutins(request):
- return render(request, 'pages/admin_dashboard/scrutin.html')
+    return TemplateView.as_view(template_name="pages/admin_dashboard/scrutin.html")(request)
+
+def create_scrutin(request):
+    return TemplateView.as_view(template_name="pages/admin_dashboard/create_scrutin.html")(request) 

@@ -1,0 +1,66 @@
+{% extends "pages/admin_dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Gestion des Scrutins | ICAB{% endblock %}
+
+{% block sidebar %}
+<aside class="w-72 bg-brand-950 text-blue-100/60 hidden lg:flex flex-col shrink-0 border-r border-white/5">
+    <div class="p-8 pb-10">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg"><span class="text-brand-950 text-xs font-black">ICAB</span></div>
+            <div>
+                <p class="text-white text-sm font-bold leading-none mb-1">Admin Panel</p>
+                <p class="text-[10px] font-bold text-blue-400/60 uppercase">Election 2024</p>
+            </div>
+        </div>
+    </div>
+    <nav class="flex-grow px-4 space-y-1.5">
+        <a href="{% url 'admin_dashboard' %}" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 hover:text-white transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <span class="text-sm font-bold">Tableau de bord</span>
+        </a>
+        <a href="{% url 'liste_scrutins' %}" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl sidebar-link-active">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <span class="text-sm font-bold">Scrutins</span>
+        </a>
+    </nav>
+</aside>
+{% endblock %}
+
+{% block header %}
+<header class="h-20 bg-white border-b border-gray-100 px-8 flex items-center justify-between sticky top-0 z-30">
+    <div>
+        <h2 class="text-lg font-bold text-gray-900">Gestion des Scrutins</h2>
+        <p class="text-xs text-gray-400 font-bold uppercase">Planification des votes</p>
+    </div>
+    <button class="px-5 py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+        Nouveau Scrutin
+    </button>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Carte Scrutin Existant -->
+    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all">
+        <div class="flex justify-between items-start mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-wider">Actif</span>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Élection delegue</h3>
+        <p class="text-xs text-gray-400 font-bold uppercase mb-6">2024-2025</p>
+        <button class="w-full py-3 bg-gray-50 hover:bg-brand-50 text-brand-700 text-xs font-bold rounded-xl transition-all">Gérer</button>
+    </div>
+
+    <!-- Carte Ajouter -->
+    <div class="border-2 border-dashed border-gray-200 p-6 rounded-[2rem] flex flex-col items-center justify-center text-center group hover:border-brand-300 transition-all cursor-pointer">
+        <div class="w-14 h-14 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 group-hover:bg-brand-50 group-hover:text-brand-500 transition-all mb-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+        </div>
+        <p class="text-sm font-bold text-gray-400 group-hover:text-brand-600">Créer un scrutin</p>
+    </div>
+</div>
+{% endblock %}

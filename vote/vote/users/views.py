@@ -80,3 +80,11 @@ class UserRegisterView(SuccessMessageMixin, CreateView):
 user_login_view = UserLoginView.as_view()
 user_logout_view = UserLogoutView.as_view()
 user_register_view = UserRegisterView.as_view()
+
+from django.views.generic import TemplateView
+
+class UserDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/user_dashboard/user.html"
+
+def liste_scrutins(request):
+ return render(request, 'pages/admin_dashboard/scrutin.html')

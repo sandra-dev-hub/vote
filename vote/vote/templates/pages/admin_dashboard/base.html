@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Tableau de Bord Candidat | ICAB Bafoussam{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-display: 'Instrument Serif', serif;
+      --color-brand-50: #eff6ff;
+      --color-brand-100: #dbeafe;
+      --color-brand-200: #bfdbfe;
+      --color-brand-500: #3b82f6;
+      --color-brand-600: #2563eb;
+      --color-brand-700: #1d4ed8;
+      --color-brand-800: #1e40af;
+      --color-brand-900: #1e3a8a;
+      --color-brand-950: #0d2054;
+    }
+    .sidebar-link-active {
+      @apply bg-brand-800 text-white shadow-md shadow-black/20;
+    }
+  </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-900 antialiased h-screen flex overflow-hidden">
+
+  <!-- Injection de la Sidebar -->
+  {% block sidebar %}{% endblock %}
+
+  <main class="flex-grow overflow-y-auto bg-gray-50 flex flex-col">
+    <!-- Injection du Header -->
+    {% block header %}{% endblock %}
+
+    <!-- Injection du Contenu -->
+    <div class="p-8 space-y-8">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+</body>
+</html>

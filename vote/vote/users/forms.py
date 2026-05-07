@@ -10,7 +10,7 @@ from .models import Utilisateur
 class UserAdminChangeForm(forms.ModelForm):
     class Meta:
         model = Utilisateur
-        fields = ("email", "matricule", "is_active", "is_staff", "is_superuser")
+        fields = ("email", "matricule")
 
 
 class UserAdminCreationForm(forms.ModelForm):

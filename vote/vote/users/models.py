@@ -1,7 +1,7 @@
 import uuid
 from django.db import models
 from django_extensions.db.models import ActivatorModel, TimeStampedModel
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from vote.global_data.enums import Role, StatutDemande, StatutScrutin
 from vote.users.managers import UserManager
 
@@ -14,7 +14,7 @@ class BaseModel(TimeStampedModel, ActivatorModel):
         abstract = True
 
 
-class Utilisateur(AbstractBaseUser, BaseModel):
+class Utilisateur(AbstractBaseUser, PermissionsMixin, BaseModel):
     email = models.EmailField(unique=True)
     matricule = models.CharField(max_length=50, unique=True, null=True, blank=True)
     photo = models.ImageField(upload_to="utilisateurs/", null=True, blank=True)
@@ -47,7 +47,7 @@ class Utilisateur(AbstractBaseUser, BaseModel):
         ]
 
     def is_admin(self):
-        return self.is_staff or self.is_superuser or self.role == Role.ADMIN
+        return self.is_staff or self.role == Role.ADMIN
 
     def __str__(self):
         return f"{self.email} ({self.matricule})"
@@ -130,7 +130,6 @@ class DemandeElecteur(BaseModel):
     commentaire = models.TextField(null=True, blank=True)
 
     class Meta:
-        unique_together = ('matricule', 'scrutin')
         verbose_name = 'DemandeElecteur'
         verbose_name_plural = 'DemandeElecteurs'
     
@@ -140,12 +139,12 @@ class DemandeElecteur(BaseModel):
 
 
 class Electeur(BaseModel):
-    demande = models.OneToOneField( #TODO: Verifier si la relation ne sera pas un ForeingKey
+    demande = models.OneToOneField( 
         DemandeElecteur,
         on_delete=models.CASCADE,
         related_name="electeur"
     )
-    scrutin = models.ForeignKey( #TODO: Verifier si la relation ne sera pas un ForeingKey
+    scrutin = models.ForeignKey( 
         Scrutin,
         on_delete=models.CASCADE,
         related_name="electeurs"
@@ -154,7 +153,6 @@ class Electeur(BaseModel):
     date_inscription = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('matricule', 'scrutin')
         verbose_name = 'Electeur'
         verbose_name_plural = 'Electeurs'
 
@@ -184,13 +182,12 @@ class DemandeCandidature(BaseModel):
 
 
     class Meta:
-        unique_together = ('matricule', 'scrutin')
         verbose_name = 'DemandeCandidature'
         verbose_name_plural = 'DemandeCandidatures'
 
 
 class Candidat(BaseModel):
-    demande = models.OneToOneField( #TODO: Verifier si la relation ne sera pas un ForeingKey
+    demande = models.OneToOneField( 
         DemandeCandidature,
         on_delete=models.CASCADE,
         related_name="candidat"
@@ -199,14 +196,13 @@ class Candidat(BaseModel):
 
     slug = models.SlugField(unique=True)
 
-    scrutin = models.ForeignKey( #TODO: Verifier si la relation ne sera pas un ForeingKey
+    scrutin = models.ForeignKey( 
         Scrutin,
         on_delete=models.CASCADE,
         related_name="candidats"
     )
 
     class Meta:
-        unique_together = ('matricule', 'scrutin')
         verbose_name = 'Candidat'
         verbose_name_plural = 'Candidats'
 
@@ -225,7 +221,7 @@ class Vote(BaseModel):
     horodatage = models.DateTimeField(auto_now_add=True)
     adresse_ip = models.GenericIPAddressField()
 
-    electeur = models.OneToOneField( #TODO: Verifier si la relation ne sera pas un ForeingKey
+    electeur = models.OneToOneField( 
         Electeur,
         on_delete=models.CASCADE,
         related_name="votes_electeur"
@@ -238,7 +234,6 @@ class Vote(BaseModel):
     )
 
     class Meta:
-        unique_together = ('electeur', 'scrutin')
         verbose_name = 'Vote'
         verbose_name_plural = 'Votes'
 

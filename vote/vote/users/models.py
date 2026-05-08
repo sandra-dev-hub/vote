@@ -53,24 +53,6 @@ class Utilisateur(AbstractBaseUser, PermissionsMixin, BaseModel):
         return f"{self.email} ({self.matricule})"
 
 
-class Administrateur(BaseModel):
-    user = models.OneToOneField(
-        Utilisateur,
-        on_delete=models.CASCADE,
-        related_name="admin"
-    )
-    
-    class Meta:
-        verbose_name = 'Administrateur'
-        verbose_name_plural = 'Administrateurs'
-
-    def creer_scrutin(self):
-        pass
-
-    def publier_resultat(self):
-        pass
-
-
 class Scrutin(BaseModel):
     titre = models.CharField(max_length=255)
     description = models.TextField()
@@ -119,6 +101,12 @@ class DemandeElecteur(BaseModel):
         related_name="demande_electeur"
     )
 
+    scrutin = models.ForeignKey(
+        Scrutin,
+        on_delete=models.CASCADE,
+        related_name="demandes_electeur"
+    )
+
     statut = models.CharField(
     max_length=50,
     choices=StatutDemande.choices,
@@ -144,11 +132,6 @@ class Electeur(BaseModel):
         on_delete=models.CASCADE,
         related_name="electeur"
     )
-    scrutin = models.ForeignKey( 
-        Scrutin,
-        on_delete=models.CASCADE,
-        related_name="electeurs"
-    )
 
     date_inscription = models.DateTimeField(auto_now_add=True)
 
@@ -157,7 +140,7 @@ class Electeur(BaseModel):
         verbose_name_plural = 'Electeurs'
 
     def __str__(self):
-        return f"{self.demande.utilisateur.email} - {self.scrutin.titre}"
+        return f"{self.demande.utilisateur.email} - {self.demande.scrutin.titre}"
     
 
 class DemandeCandidature(BaseModel):
@@ -171,14 +154,14 @@ class DemandeCandidature(BaseModel):
         choices=StatutDemande.choices,
         default=StatutDemande.EN_ATTENTE
     )
-    date_soumission = models.DateTimeField(auto_now_add=True)
-    date_traitement = models.DateTimeField(null=True, blank=True)
-    commentaire = models.TextField(null=True, blank=True)
     scrutin = models.ForeignKey(
         Scrutin,
         on_delete=models.CASCADE,
-        related_name="demandes"
+        related_name="demandes_candidature"
     )
+    date_soumission = models.DateTimeField(auto_now_add=True)
+    date_traitement = models.DateTimeField(null=True, blank=True)
+    commentaire = models.TextField(null=True, blank=True)
 
 
     class Meta:
@@ -196,24 +179,18 @@ class Candidat(BaseModel):
 
     slug = models.SlugField(unique=True)
 
-    scrutin = models.ForeignKey( 
-        Scrutin,
-        on_delete=models.CASCADE,
-        related_name="candidats"
-    )
-
     class Meta:
         verbose_name = 'Candidat'
         verbose_name_plural = 'Candidats'
 
     def __str__(self):
-        return f"{self.nom} {self.prenom} - {self.scrutin.titre}"
+        return f"{self.demande.utilisateur.nom} {self.demande.utilisateur.prenom} - {self.demande.scrutin.titre}"
 
     def get_pourcentage(self):
-        total_votes = self.scrutin.votes.count()
+        total_votes = self.demande.scrutin.votes_candidat.count()
         if total_votes == 0:
             return 0
-        return round((self.nb_vote / total_votes) * 100, 2)
+        return round((self.nombre_vote / total_votes) * 100, 2)
 
 
 
@@ -239,18 +216,18 @@ class Vote(BaseModel):
 
     def clean(self):
         #  Empêche incohérence scrutin
-        if self.candidat.scrutin_id != self.scrutin_id:
-            raise ValueError("Le candidat n'appartient pas à ce scrutin")
+        if self.candidat.demande.scrutin_id != self.electeur.demande.scrutin_id:
+            raise ValueError("Le candidat n'appartient pas au scrutin de l'électeur")
 
-        if self.electeur.scrutin_id != self.scrutin_id:
-            raise ValueError("L'électeur n'appartient pas à ce scrutin")
+        if self.electeur.demande.scrutin_id != self.candidat.demande.scrutin_id:
+            raise ValueError("L'électeur n'appartient pas au scrutin du candidat")
 
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
 
         #  incrément automatique
-        self.candidat.nb_vote += 1
+        self.candidat.nombre_vote += 1
         self.candidat.save()
 
 

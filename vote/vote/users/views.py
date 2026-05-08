@@ -1,94 +1,198 @@
-from __future__ import annotations
+import uuid
 
-from typing import TYPE_CHECKING
-
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView
-from django.views.generic import RedirectView
-from django.views.generic import UpdateView
-from django.views.generic import CreateView
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
+from django.utils.text import slugify
+from django.views.generic import (
+    CreateView,
+    TemplateView,
+    UpdateView,
+    DeleteView
+)
 
-from vote.users.models import Utilisateur
-from vote.users.forms import UserRegisterForm
+from .forms import (
+    UserRegisterForm,
+    ScrutinForm,
+    DemandeElecteurForm,
+    DemandeCandidatureForm,
+)
 
-if TYPE_CHECKING:
-    from django.db.models import QuerySet
-
-
-class UserDetailView(LoginRequiredMixin, DetailView):
-    model = Utilisateur
-    slug_field = "id"
-    slug_url_kwarg = "pk"
+# ✅ FIX IMPORTANT : imports manquants
+from .models import Scrutin, DemandeElecteur, DemandeCandidature
 
 
-user_detail_view = UserDetailView.as_view()
-
-
-class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Utilisateur
-    fields = ["matricule"]
-    success_message = _("Information successfully updated")
-
-    def get_success_url(self) -> str:
-        assert self.request.user.is_authenticated  # type guard
-        return self.request.user.get_absolute_url()
-
-    def get_object(self, queryset: QuerySet | None = None) -> User:
-        assert self.request.user.is_authenticated  # type guard
-        return self.request.user
-
-
-user_update_view = UserUpdateView.as_view()
-
-
-class UserRedirectView(LoginRequiredMixin, RedirectView):
-    permanent = False
-
-    def get_redirect_url(self) -> str:
-        return reverse("users:detail", kwargs={"pk": self.request.user.pk})
-
-
-user_redirect_view = UserRedirectView.as_view()
-
+# ======================
+# LOGIN
+# ======================
 class UserLoginView(LoginView):
     template_name = "pages/connexion.html"
-    
+    redirect_authenticated_user = True
+
     def get_success_url(self):
         user = self.request.user
-        if user.is_authenticated:
-            if hasattr(user, 'is_admin') and user.is_admin():
-                return reverse("users:admin_dashboard")
-            else:
-                return reverse("users:user_dashboard")
-        return super().get_success_url()
-    
-class UserLogoutView(LogoutView):
-    next_page = reverse_lazy("home")
+        if user.is_staff or user.role == "ADMIN":
+            return reverse_lazy("admin_dashboard")
+        return reverse_lazy("user_dashboard")
 
+
+# ======================
+# REGISTER
+# ======================
 class UserRegisterView(SuccessMessageMixin, CreateView):
     template_name = "pages/register.html"
     form_class = UserRegisterForm
-    success_url = reverse_lazy("users:login")
+    success_url = reverse_lazy("login")
     success_message = "Votre compte a été créé avec succès ! Veuillez vous connecter."
-    
-user_login_view = UserLoginView.as_view()
-user_logout_view = UserLogoutView.as_view()
-user_register_view = UserRegisterView.as_view()
 
-from django.views.generic import TemplateView
 
+# ======================
+# DASHBOARD
+# ======================
 class UserDashboardView(LoginRequiredMixin, TemplateView):
     template_name = "pages/user_dashboard/user.html"
+    login_url = "/users/login/"
 
 
-def liste_scrutins(request):
-    return TemplateView.as_view(template_name="pages/admin_dashboard/scrutin.html")(request)
+class AdminDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/admin_dashboard/admin.html"
+    login_url = "/users/login/"
 
-def create_scrutin(request):
-    return TemplateView.as_view(template_name="pages/admin_dashboard/create_scrutin.html")(request) 
+
+# ======================
+# SCRUTINS ADMIN
+# ======================
+class ScrutinListCreateView(LoginRequiredMixin, CreateView):
+    model = Scrutin
+    form_class = ScrutinForm
+    template_name = "pages/admin_dashboard/scrutin.html"
+    success_url = reverse_lazy("liste_scrutins")
+
+    def form_valid(self, form):
+        scrutin = form.save(commit=False)
+        scrutin.admin = self.request.user
+        scrutin.slug = f"{slugify(scrutin.titre)}-{str(uuid.uuid4())[:8]}"
+        scrutin.save()
+        messages.success(self.request, "Scrutin créé avec succès !")
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["scrutins"] = Scrutin.objects.all().order_by("-created")
+        return ctx
+
+
+liste_scrutins = ScrutinListCreateView.as_view()
+
+
+# ======================
+# SCRUTINS UTILISATEUR
+# ======================
+class ScrutinUserView(TemplateView):
+    template_name = "pages/scrutins.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+
+        ctx["scrutins_ouverts"] = Scrutin.objects.filter(
+            statut="ouvert"
+        ).order_by("-date_debut")
+
+        if self.request.user.is_authenticated:
+            ctx["demandes_electeur_ids"] = set(
+                DemandeElecteur.objects.filter(utilisateur=self.request.user)
+                .values_list("scrutin_id", flat=True)
+            )
+
+            ctx["demandes_candidature_ids"] = set(
+                DemandeCandidature.objects.filter(utilisateur=self.request.user)
+                .values_list("scrutin_id", flat=True)
+            )
+        else:
+            ctx["demandes_electeur_ids"] = set()
+            ctx["demandes_candidature_ids"] = set()
+
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            from django.shortcuts import redirect
+            from django.urls import reverse
+            return redirect(f"{reverse('login')}?next={request.path}")
+
+        type_demande = request.POST.get("type_demande")
+        scrutin_id = request.POST.get("scrutin_id")
+        commentaire = request.POST.get("commentaire", "").strip()
+
+        try:
+            scrutin = Scrutin.objects.get(pk=scrutin_id, statut="ouvert")
+        except Scrutin.DoesNotExist:
+            messages.error(request, "Scrutin introuvable ou fermé.")
+            return self.get(request, *args, **kwargs)
+
+        # ELECTEUR
+        if type_demande == "electeur":
+
+            if DemandeElecteur.objects.filter(
+                utilisateur=request.user,
+                scrutin=scrutin
+            ).exists():
+                messages.error(request, "Vous avez déjà soumis une demande d'électeur.")
+            else:
+                DemandeElecteur.objects.create(
+                    utilisateur=request.user,
+                    scrutin=scrutin,
+                    commentaire=commentaire or None,
+                )
+                messages.success(request, "Demande électeur envoyée avec succès !")
+
+        # CANDIDATURE
+        elif type_demande == "candidature":
+
+            if DemandeCandidature.objects.filter(
+                utilisateur=request.user,
+                scrutin=scrutin
+            ).exists():
+                messages.error(request, "Vous avez déjà soumis une candidature.")
+            else:
+                DemandeCandidature.objects.create(
+                    utilisateur=request.user,
+                    scrutin=scrutin,
+                    commentaire=commentaire or None,
+                )
+                messages.success(request, "Candidature envoyée avec succès !")
+
+        return self.get(request, *args, **kwargs)
+
+
+# ======================
+# UPDATE SCRUTIN
+# ======================
+class ScrutinUpdateView(LoginRequiredMixin, UpdateView):
+    model = Scrutin
+    form_class = ScrutinForm
+    template_name = "pages/admin_dashboard/scrutin_edit.html"
+    success_url = reverse_lazy("liste_scrutins")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Scrutin modifié avec succès !")
+        return super().form_valid(form)
+
+
+# ======================
+# DELETE SCRUTIN
+# ======================
+class ScrutinDeleteView(LoginRequiredMixin, DeleteView):
+    model = Scrutin
+    template_name = "pages/admin_dashboard/scrutin_confirm_delete.html"
+    success_url = reverse_lazy("liste_scrutins")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Scrutin supprimé avec succès !")
+        return super().form_valid(form)
+
+
+scrutin_update = ScrutinUpdateView.as_view()
+scrutin_delete = ScrutinDeleteView.as_view()

@@ -1,27 +1,41 @@
-from django.urls import path
-from django.views.generic import TemplateView
-from .views import UserDashboardView, liste_scrutins, user_detail_view, user_redirect_view, user_update_view
-from .views import user_login_view, user_logout_view, user_register_view
-
+from django.urls import path, include
+from django.contrib.auth.views import LogoutView
 app_name = "users"
 
-urlpatterns = [
-    path("login/", user_login_view, name="login"),
-    path("logout/", user_logout_view, name="logout"),
-    path("register/", user_register_view, name="register"),
-    
-#     path("dashboard/admin/", 
-#          TemplateView.as_view(template_name="pages/admin_dashboard/admin.html"), 
-#          name="admin_dashboard"),
-    
-#     path("dashboard/user/", 
-#          TemplateView.as_view(template_name="pages/admin_dashboard/user.html"), 
-#          name="user_dashboard"),
+from .views import (
+    UserLoginView,
+    UserRegisterView,
+    UserDashboardView,
+    ScrutinUserView,
+    liste_scrutins,
+    AdminDashboardView,
+    scrutin_update,
+    scrutin_delete,
+)
 
-    path("dashboard/admin/", TemplateView.as_view(template_name="pages/admin_dashboard/admin.html"), name="admin_dashboard"),
-    path("dashboard/user/", UserDashboardView.as_view(), name="user_dashboard"),
-    path("scrutins/", liste_scrutins, name="liste_scrutins"),
-    path("~redirect/", user_redirect_view, name="redirect"),
-    path("~update/", user_update_view, name="update"),
-    path("<uuid:pk>/", user_detail_view, name="detail"),
+urlpatterns = [
+    path("login/", UserLoginView.as_view(), name="login"),
+    path("register/", UserRegisterView.as_view(), name="register"),
+    path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
+
+    path("admin/dashboard/", AdminDashboardView.as_view(), name="admin_dashboard"),
+
+    path("dashboard/", UserDashboardView.as_view(), name="user_dashboard"),
+
+    path("scrutins/", ScrutinUserView.as_view(), name="scrutins"),
+
+    path("admin/scrutins/", liste_scrutins, name="liste_scrutins"),
+
+    # AJOUTER ÇA
+   path(
+    "admin/scrutins/<uuid:pk>/modifier/",
+    scrutin_update,
+    name="scrutin_update"
+),
+
+path(
+    "admin/scrutins/<uuid:pk>/supprimer/",
+    scrutin_delete,
+    name="scrutin_delete"
+),
 ]

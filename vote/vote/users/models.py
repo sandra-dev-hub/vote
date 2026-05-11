@@ -133,6 +133,12 @@ class Electeur(BaseModel):
         related_name="electeur"
     )
 
+    scrutin = models.ForeignKey(
+        Scrutin,
+        on_delete=models.CASCADE,
+        related_name="electeurs"
+    )
+
     date_inscription = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -140,7 +146,7 @@ class Electeur(BaseModel):
         verbose_name_plural = 'Electeurs'
 
     def __str__(self):
-        return f"{self.demande.utilisateur.email} - {self.demande.scrutin.titre}"
+        return f"{self.demande.utilisateur.email} - {self.scrutin.titre}"
     
 
 class DemandeCandidature(BaseModel):
@@ -175,6 +181,11 @@ class Candidat(BaseModel):
         on_delete=models.CASCADE,
         related_name="candidat"
     )
+    scrutin = models.ForeignKey(
+        Scrutin,
+        on_delete=models.CASCADE,
+        related_name="candidats"
+    )
     nombre_vote = models.PositiveIntegerField(default=0)
 
     slug = models.SlugField(unique=True)
@@ -184,7 +195,7 @@ class Candidat(BaseModel):
         verbose_name_plural = 'Candidats'
 
     def __str__(self):
-        return f"{self.demande.utilisateur.nom} {self.demande.utilisateur.prenom} - {self.demande.scrutin.titre}"
+        return f"{self.demande.utilisateur.nom} {self.demande.utilisateur.prenom} - {self.scrutin.titre}"
 
     def get_pourcentage(self):
         total_votes = self.demande.scrutin.votes_candidat.count()
@@ -216,10 +227,10 @@ class Vote(BaseModel):
 
     def clean(self):
         #  Empêche incohérence scrutin
-        if self.candidat.demande.scrutin_id != self.electeur.demande.scrutin_id:
+        if self.candidat.scrutin_id != self.electeur.scrutin_id:
             raise ValueError("Le candidat n'appartient pas au scrutin de l'électeur")
 
-        if self.electeur.demande.scrutin_id != self.candidat.demande.scrutin_id:
+        if self.electeur.scrutin_id != self.candidat.scrutin_id:
             raise ValueError("L'électeur n'appartient pas au scrutin du candidat")
 
     def save(self, *args, **kwargs):

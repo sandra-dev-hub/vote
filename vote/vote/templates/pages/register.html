@@ -1,97 +1,343 @@
-{% load static %} <head>
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Connexion | ICAB Bafoussam</title>
-  
+
+  <title>Inscription | ICAB Bafoussam</title>
+
   <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
 </head>
 
-      <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<body class="font-sans antialiased min-h-screen py-20 flex items-center justify-center hero-mesh relative overflow-x-hidden px-6">
 
-      </head>
-  <body class="font-sans antialiased min-h-screen py-20 flex items-center justify-center hero-mesh relative overflow-x-hidden px-6">
-    
-    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;"></div>
+  <!-- Background -->
+  <div
+    class="absolute inset-0 opacity-10"
+    style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;">
+  </div>
 
-    <main class="w-full max-w-xl relative z-10 anim-slide-up">
-      
-      <div class="flex flex-col items-center mb-10 text-center">
-        <div class="w-14 h-14 rounded-2xl bg-white shadow-2xl flex items-center justify-center mb-4">
-          <span class="text-brand-950 text-base font-black">ICAB</span>
-        </div>
-        <h1 class="text-white text-3xl font-black italic font-display tracking-tight">Créer votre compte</h1>
-        <p class="text-blue-100/60 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">Rejoignez la vie citoyenne de l'ICAB</p>
+  <main class="w-full max-w-xl relative z-10 anim-slide-up">
+
+    <!-- Header -->
+    <div class="flex flex-col items-center mb-10 text-center">
+
+      <div class="w-14 h-14 rounded-2xl bg-white shadow-2xl flex items-center justify-center mb-4">
+        <span class="text-brand-950 text-base font-black">ICAB</span>
       </div>
 
-      <div class="bg-white/95 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20">
-        <form method="post" action="{% url 'users:register' %}" class="space-y-6">
-          {% csrf_token %}
-          
-          <!-- Affichage des erreurs du formulaire -->
-          {% if form.errors %}
-          <div class="p-4 mb-4 text-sm text-red-800 rounded-2xl bg-red-50" role="alert">
-            <span class="font-bold">Veuillez corriger les erreurs suivantes :</span>
-            <ul class="mt-1.5 list-disc list-inside">
-              {% for field in form %}
-                {% for error in field.errors %}
-                  <li>{{ error }}</li>
-                {% endfor %}
-              {% endfor %}
-              {% for error in form.non_field_errors %}
+      <h1 class="text-white text-3xl font-black italic font-display tracking-tight">
+        Créer votre compte
+      </h1>
+
+      <p class="text-blue-100/60 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">
+        Rejoignez la vie citoyenne de l'ICAB
+      </p>
+
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white/95 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20">
+
+      <form
+        method="post"
+        action="{% url 'users:register' %}"
+        enctype="multipart/form-data"
+        class="space-y-6">
+
+        {% csrf_token %}
+
+        <!-- Errors -->
+        {% if form.errors %}
+        <div class="p-4 mb-6 text-sm text-red-800 rounded-2xl bg-red-50">
+          <span class="font-bold">
+            Veuillez corriger les erreurs suivantes :
+          </span>
+
+          <ul class="mt-2 list-disc list-inside">
+            {% for field in form %}
+              {% for error in field.errors %}
                 <li>{{ error }}</li>
               {% endfor %}
-            </ul>
-          </div>
-          {% endif %}
-
-          <div class="space-y-4">
-            <div class="space-y-2">
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Identifiant étudiant (Matricule)</label>
-              <input type="text" name="matricule" required placeholder="Ex: ICAB-2024-XXX" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-            </div>
-
-            <div class="space-y-2">
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Email académique</label>
-              <input type="email" name="email" required placeholder="etudiant@icab.cm" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-              <div class="space-y-2">
-                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Mot de passe</label>
-                <input type="password" name="password1" required placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-              </div>
-              <div class="space-y-2">
-                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Confirmer mot de passe</label>
-                <input type="password" name="password2" required placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold" />
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3 px-1">
-            <input type="checkbox" id="terms" class="mt-1 w-4 h-4 rounded-md border-gray-200 text-brand-600 focus:ring-brand-500/20 transition-all cursor-pointer" />
-            <label for="terms" class="text-xs font-bold text-gray-500 cursor-pointer leading-relaxed">
-              J'accepte les <a href="#" class="text-brand-600 hover:underline">Conditions d'utilisation</a> et la <a href="#" class="text-brand-600 hover:underline">Politique de confidentialité</a> du vote.
-            </label>
-          </div>
-
-          <button type="submit" class="w-full py-5 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-2xl shadow-xl shadow-brand-200 transition-all hover:shadow-2xl hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]">
-            Créer mon compte
-          </button>
-
-        </form>
-
-        <div class="mt-10 pt-8 border-t border-gray-100 text-center">
-          <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Déjà inscrit ?</p>
-          <a href="{% url 'users:login' %}" class="text-xs font-black text-brand-700 hover:text-brand-900 transition-colors underline decoration-brand-200 underline-offset-4">Connectez-vous à votre espace</a>
+            {% endfor %}
+          </ul>
         </div>
+        {% endif %}
+
+        <div class="space-y-5">
+
+          <!-- MATRICULE -->
+          <div class="space-y-2">
+
+            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+              Matricule
+            </label>
+
+            <div class="flex items-center">
+
+              <!-- Fixed part -->
+              <span
+                class="px-4 py-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-2xl text-sm font-bold text-gray-600">
+                ICAB-2026-
+              </span>
+
+              <!-- User part -->
+              <input
+                type="text"
+                name="matricule"
+                required
+                maxlength="6"
+                pattern="[0-9]{6}"
+                placeholder="000001"
+                class="w-full px-5 py-3 border border-gray-300 rounded-r-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:outline-none text-sm font-semibold"
+              />
+
+            </div>
+
+            <p class="text-xs text-gray-500">
+              Entrez uniquement les 6 derniers chiffres
+            </p>
+
+          </div>
+
+          <!-- EMAIL -->
+          <div class="space-y-2">
+
+            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+              Email académique
+            </label>
+
+            {{ form.email }}
+
+          </div>
+
+          <!-- NOM / PRENOM -->
+          <div class="grid md:grid-cols-2 gap-6">
+
+            <div class="space-y-2">
+
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                Nom
+              </label>
+
+              {{ form.nom }}
+
+            </div>
+
+            <div class="space-y-2">
+
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                Prénom
+              </label>
+
+              {{ form.prenom }}
+
+            </div>
+
+          </div>
+
+          <!-- FILIERE / NIVEAU -->
+          <div class="grid md:grid-cols-2 gap-6">
+
+            <div class="space-y-2">
+
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                Filière
+              </label>
+
+              {{ form.filiere }}
+
+            </div>
+
+            <div class="space-y-2">
+
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                Niveau
+              </label>
+
+              {{ form.niveau }}
+
+            </div>
+
+          </div>
+
+          <!-- PHOTO PROFIL -->
+          <div class="space-y-3">
+
+            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+              Photo de profil
+            </label>
+
+            <div class="flex items-center gap-6">
+
+              <!-- Avatar -->
+              <div class="relative">
+
+                <!-- Preview image -->
+                <img
+                  id="preview-image"
+                  src="{% static 'images/default-avatar.png' %}"
+                  class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl"
+                />
+
+                <!-- Camera button -->
+                <label
+                  for="id_photo"
+                  class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-brand-700 hover:bg-brand-800 text-white flex items-center justify-center cursor-pointer shadow-lg transition-all">
+
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24">
+
+                    <path d="M3 7h4l2-2h6l2 2h4v12H3V7z"/>
+                    <circle cx="12" cy="13" r="4"/>
+
+                  </svg>
+
+                </label>
+
+                <!-- Hidden input -->
+                {{ form.photo }}
+
+              </div>
+
+              <!-- Text -->
+              <div>
+
+                <h3 class="text-sm font-bold text-gray-800">
+                  Ajouter une photo
+                </h3>
+
+                <p class="text-xs text-gray-500 mt-1">
+                  JPG ou PNG • 5 Mo max
+                </p>
+
+                <p
+                  id="file-name"
+                  class="text-xs text-brand-700 font-semibold mt-2">
+                  Aucune photo sélectionnée
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- PASSWORDS -->
+          <div class="grid md:grid-cols-2 gap-6">
+
+            <div class="space-y-2">
+
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                Mot de passe
+              </label>
+
+              {{ form.password1 }}
+
+            </div>
+
+            <div class="space-y-2">
+
+              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                Confirmer le mot de passe
+              </label>
+
+              {{ form.password2 }}
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Terms -->
+        <div class="flex items-start gap-3 px-1">
+
+          <input
+            type="checkbox"
+            id="terms"
+            required
+            class="mt-1 w-4 h-4 rounded border-gray-300 text-brand-600"
+          />
+
+          <label for="terms" class="text-xs font-medium text-gray-500">
+            J'accepte les conditions d'utilisation et la politique de confidentialité
+          </label>
+
+        </div>
+
+        <!-- Button -->
+        <button
+          type="submit"
+          class="w-full py-5 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-2xl transition-all">
+
+          Créer mon compte
+
+        </button>
+
+      </form>
+
+      <!-- Login -->
+      <div class="mt-10 text-center">
+
+        <p class="text-xs text-gray-400">
+
+          Déjà un compte ?
+
+          <a
+            href="{% url 'users:login' %}"
+            class="text-brand-700 font-bold hover:underline">
+
+            Se connecter
+
+          </a>
+
+        </p>
+
       </div>
 
-      <a href="{% url 'home' %}" class="flex items-center justify-center gap-2 mt-8 text-blue-100/50 hover:text-white text-xs font-bold transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
-        Retour au portail
-      </a>
+    </div>
 
-    </main>
+  </main>
 
-  </body>
-  </html>
+  <!-- IMAGE PREVIEW SCRIPT -->
+  <script>
+
+    const input = document.getElementById("id_photo");
+    const preview = document.getElementById("preview-image");
+    const fileName = document.getElementById("file-name");
+
+    input.addEventListener("change", function () {
+
+      const file = this.files[0];
+
+      if (file) {
+
+        fileName.textContent = file.name;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>

@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.utils.translation import gettext_lazy as _
 from .models import Utilisateur, Scrutin, DemandeElecteur, DemandeCandidature
 
 
@@ -14,14 +13,8 @@ class UserAdminChangeForm(forms.ModelForm):
 
 
 class UserAdminCreationForm(forms.ModelForm):
-    password1 = forms.CharField(
-        label="Mot de passe",
-        widget=forms.PasswordInput(attrs={'class': 'form-control'})
-    )
-    password2 = forms.CharField(
-        label="Confirmation du mot de passe",
-        widget=forms.PasswordInput(attrs={'class': 'form-control'})
-    )
+    password1 = forms.CharField(label="Mot de passe", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password2 = forms.CharField(label="Confirmation du mot de passe", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Utilisateur
@@ -46,9 +39,40 @@ class UserAdminCreationForm(forms.ModelForm):
 # USER FORMS
 # ======================
 class UserRegisterForm(UserCreationForm):
+    filiere = forms.CharField(
+        label="Filière", required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold',
+            'placeholder': 'Ex: Génie Logiciel, Management...'
+        })
+    )
+    niveau = forms.CharField(
+        label="Niveau", required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold',
+            'placeholder': 'Ex: L3, Master 1...'
+        })
+    )
+    photo = forms.ImageField(
+        label="Photo de profil",
+        required=True,
+        widget=forms.FileInput(attrs={
+            'class': 'hidden',
+            'accept': 'image/*',
+            'id': 'id_photo'
+        })
+    )
+
     class Meta(UserCreationForm.Meta):
         model = Utilisateur
-        fields = ("email", "matricule")
+        fields = ("email", "matricule", "nom", "prenom", "filiere", "niveau", "photo")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in ['email', 'matricule', 'nom', 'prenom', 'password1', 'password2']:
+            self.fields[field].widget.attrs.update({
+                'class': 'w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold'
+            })
 
 
 class ScrutinForm(forms.ModelForm):
@@ -66,12 +90,7 @@ class DemandeElecteurForm(forms.ModelForm):
     class Meta:
         model = DemandeElecteur
         fields = ["scrutin", "commentaire"]
-        widgets = {
-            "commentaire": forms.Textarea(attrs={
-                "rows": 3,
-                "placeholder": "Commentaire optionnel..."
-            }),
-        }
+        widgets = {"commentaire": forms.Textarea(attrs={"rows": 3, "placeholder": "Commentaire optionnel..."})}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -83,12 +102,7 @@ class DemandeCandidatureForm(forms.ModelForm):
     class Meta:
         model = DemandeCandidature
         fields = ["scrutin", "commentaire"]
-        widgets = {
-            "commentaire": forms.Textarea(attrs={
-                "rows": 4,
-                "placeholder": "Lettre de motivation ou commentaire..."
-            }),
-        }
+        widgets = {"commentaire": forms.Textarea(attrs={"rows": 4, "placeholder": "Lettre de motivation..."})}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

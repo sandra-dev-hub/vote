@@ -1,109 +1,411 @@
 {% extends "pages/admin_dashboard/base.html" %}
 {% load static %}
 
-{% block title %}Gestion Candidats | ICAB Bafoussam{% endblock %}
-
-{% block active_candidat %}sidebar-link-active{% endblock %}
+{% block title %}Tableau de Bord | ICAB Bafoussam{% endblock %}
+{% block nav_dashboard %}sidebar-link-active{% endblock %}
 
 {% block content %}
-    <!-- Top Header (Exactement ton code) -->
-    <header class="h-20 bg-white border-b border-gray-100 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
-      <div>
-        <h2 class="text-lg font-bold text-gray-900">Gestion des Candidats</h2>
-        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Liste des participants</p>
-      </div>
-      <div class="flex items-center gap-4">
-        <button class="px-5 py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
-            Ajouter un candidat
-        </button>
-      </div>
-    </header>
 
-    <!-- Content (Avec la div p-8 space-y-8 pour respecter ton design) -->
-    <div class="p-8 space-y-8">
-      
-      <!-- Stats Summary -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-          <p class="text-sm font-bold text-gray-400 mb-1">Total Candidats</p>
-          <p class="text-3xl font-black text-gray-900">12</p>
-        </div>
-        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-          <p class="text-sm font-bold text-green-500 mb-1">Validés</p>
-          <p class="text-3xl font-black text-gray-900">10</p>
-        </div>
-        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-          <p class="text-sm font-bold text-orange-400 mb-1">En attente</p>
-          <p class="text-3xl font-black text-gray-900">2</p>
-        </div>
-      </div>
+<header class="h-20 bg-white border-b border-gray-100 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
+    
+    <div>
+        <h2 class="text-2xl font-black text-gray-900">
+            Tableau de Bord
+        </h2>
 
-      <!-- Candidate Table Card -->
-      <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
-        <div class="p-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
-           <div class="relative">
-              <input type="text" placeholder="Rechercher un candidat..." class="w-64 pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition-all" />
-              <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-           </div>
-           <div class="flex gap-2">
-              <button class="p-2.5 rounded-xl border border-gray-200 text-gray-500 hover:bg-white transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 4.5h18m-18 5h18m-18 5h18m-18 5h18"/></svg>
-              </button>
-           </div>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50">
-                <th class="px-8 py-5">Candidat</th>
-                <th class="px-6 py-5">Poste</th>
-                <th class="px-6 py-5">Status</th>
-                <th class="px-6 py-5">Votes</th>
-                <th class="px-8 py-5 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-50">
-              <!-- Ligne 1 -->
-              <tr class="group hover:bg-gray-50/50 transition-colors">
-                <td class="px-8 py-5">
-                  <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-1.5xl bg-blue-100 flex items-center justify-center text-blue-600 font-bold">LF</div>
-                    <div>
-                      <p class="text-sm font-bold text-gray-900">FOUDA Laura</p>
-                      <p class="text-[10px] text-gray-400 font-bold">Marketing - L3</p>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-6 py-5 text-sm font-semibold text-gray-600">Vice-présidente</td>
-                <td class="px-6 py-5">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-wider">Validé</span>
-                </td>
-                <td class="px-6 py-5 text-sm font-bold text-gray-900">367</td>
-                <td class="px-8 py-5 text-right">
-                  <div class="flex items-center justify-end gap-2">
-                    <button class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:bg-brand-50 hover:text-brand-600 transition-all">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                    </button>
-                    <button class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination -->
-        <div class="p-6 border-t border-gray-50 flex items-center justify-between">
-           <p class="text-xs text-gray-400 font-bold">Affichage de 1 sur 12 candidats</p>
-           <div class="flex gap-2">
-              <button class="px-4 py-2 rounded-xl border border-gray-100 text-xs font-bold text-gray-400 cursor-not-allowed">Précédent</button>
-              <button class="px-4 py-2 rounded-xl border border-gray-100 text-xs font-bold text-gray-900 hover:bg-gray-50 transition-all">Suivant</button>
-           </div>
-        </div>
-      </div>
+        <p class="text-sm text-gray-500">
+            Élection 2026 - Vue d'ensemble
+        </p>
     </div>
+
+    <div class="text-right">
+        <p class="text-xs text-gray-400">
+            Aujourd'hui
+        </p>
+
+        <p class="text-sm font-semibold">
+            {{ today|date:"d M Y" }}
+        </p>
+    </div>
+
+</header>
+
+<div class="p-8 space-y-10">
+
+    <!-- Debug -->
+    <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl text-sm text-blue-700">
+        <strong>Debug :</strong>
+        {{ derniers_candidats|length }} candidat(s) affiché(s)
+        |
+        Total Candidats : {{ total_candidats|default:0 }}
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+            <p class="text-sm font-bold text-gray-400">
+                Total Candidats
+            </p>
+
+            <p class="text-4xl font-black text-gray-900 mt-2">
+                {{ total_candidats|default:0 }}
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+            <p class="text-sm font-bold text-green-600">
+                Validés
+            </p>
+
+            <p class="text-4xl font-black text-gray-900 mt-2">
+                {{ candidats_valides|default:0 }}
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+            <p class="text-sm font-bold text-amber-500">
+                En attente
+            </p>
+
+            <p class="text-4xl font-black text-gray-900 mt-2">
+                {{ candidats_en_attente|default:0 }}
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+            <p class="text-sm font-bold text-gray-500">
+                Total Électeurs
+            </p>
+
+            <p class="text-4xl font-black text-gray-900 mt-2">
+                {{ total_electeurs|default:0 }}
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Graphiques -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+            
+            <h3 class="font-bold text-lg mb-4">
+                Candidats par Poste
+            </h3>
+
+            <canvas id="chartPostes" height="130"></canvas>
+
+        </div>
+
+        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+            
+            <h3 class="font-bold text-lg mb-4">
+                Évolution des Demandes
+            </h3>
+
+            <canvas id="chartEvolution" height="130"></canvas>
+
+        </div>
+
+    </div>
+
+    <!-- Tableau -->
+    <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
+
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+
+            <div>
+                <h3 class="font-bold text-lg text-gray-900">
+                    Liste des Candidats
+                </h3>
+
+                <p class="text-xs text-gray-400 mt-1">
+                    Dernières candidatures validées et en attente
+                </p>
+            </div>
+
+            <a href="{% url 'users:demandes_candidatures' %}"
+               class="text-sm font-bold text-brand-600 hover:text-brand-700 transition-all">
+                Voir toutes les demandes →
+            </a>
+
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+
+            <table class="w-full">
+
+                <thead>
+
+                    <tr class="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-400 uppercase tracking-widest">
+
+                        <th class="px-8 py-5 text-left">
+                            Candidat
+                        </th>
+
+                        <th class="px-6 py-5 text-left">
+                            Poste
+                        </th>
+
+                        <th class="px-6 py-5 text-left">
+                            Statut
+                        </th>
+
+                        <th class="px-6 py-5 text-left">
+                            Date
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody class="divide-y divide-gray-100">
+
+                    {% for candidat in derniers_candidats %}
+
+                    <tr class="hover:bg-gray-50 transition-all">
+
+                        <!-- Candidat -->
+                        <td class="px-8 py-5">
+
+                            <div class="flex items-center gap-4">
+
+                                {% if candidat.demande.utilisateur.photo %}
+
+                                    <img
+                                        src="{{ candidat.demande.utilisateur.photo.url }}"
+                                        alt=""
+                                        class="w-12 h-12 rounded-2xl object-cover border border-gray-200"
+                                    >
+
+                                {% else %}
+
+                                    <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-700 font-black">
+                                        
+                                        {% if candidat.demande.utilisateur.nom %}
+                                            {{ candidat.demande.utilisateur.nom|slice:":1"|upper }}
+                                        {% else %}
+                                            U
+                                        {% endif %}
+
+                                    </div>
+
+                                {% endif %}
+
+                                <div>
+
+                                    <!-- Nom -->
+                                    <p class="font-bold text-gray-900">
+
+                                        {% if candidat.demande.utilisateur.nom or candidat.demande.utilisateur.prenom %}
+
+                                            {{ candidat.demande.utilisateur.nom|default:"" }}
+                                            {{ candidat.demande.utilisateur.prenom|default:"" }}
+
+                                        {% else %}
+
+                                            Utilisateur inconnu
+
+                                        {% endif %}
+
+                                    </p>
+
+                                    <!-- Email -->
+                                    <p class="text-sm text-gray-500">
+                                        {{ candidat.demande.utilisateur.email }}
+                                    </p>
+
+                                    <!-- Filière -->
+                                    <p class="text-xs text-gray-400 mt-1">
+
+                                        {{ candidat.demande.utilisateur.filiere|default:"—" }}
+                                        
+                                        •
+
+                                        {{ candidat.demande.utilisateur.niveau|default:"—" }}
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <!-- Poste -->
+                        <td class="px-6 py-5">
+
+                            <p class="font-semibold text-gray-800">
+                                {{ candidat.scrutin.titre|default:"—" }}
+                            </p>
+
+                        </td>
+
+                        <!-- Statut -->
+                        <td class="px-6 py-5">
+
+                            {% if candidat.demande.statut == "en_attente" %}
+
+                                <span class="px-4 py-1.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">
+                                    ⏳ En attente
+                                </span>
+
+                            {% elif candidat.demande.statut == "approuve" %}
+
+                                <span class="px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold">
+                                    ✅ Approuvé
+                                </span>
+
+                            {% else %}
+
+                                <span class="px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-xs font-bold">
+                                    ❌ Rejeté
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- Date -->
+                        <td class="px-6 py-5 text-sm text-gray-500">
+
+                            {{ candidat.demande.date_soumission|date:"d M Y" }}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center py-20 text-gray-400">
+
+                            Aucun candidat enregistré pour le moment
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Graphique Postes
+    new Chart(document.getElementById('chartPostes'), {
+
+        type: 'bar',
+
+        data: {
+
+            labels: {{ postes_labels|safe|default:"[]" }},
+
+            datasets: [{
+
+                label: 'Nombre de candidats',
+
+                data: {{ postes_data|safe|default:"[]" }},
+
+                backgroundColor: '#2563eb',
+
+                borderRadius: 8
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+
+                }
+
+            }
+
+        }
+
+    });
+
+    // Graphique Évolution
+    new Chart(document.getElementById('chartEvolution'), {
+
+        type: 'line',
+
+        data: {
+
+            labels: {{ evolution_labels|safe|default:"[]" }},
+
+            datasets: [
+
+                {
+
+                    label: 'Demandes Candidats',
+
+                    data: {{ evolution_candidats|safe|default:"[]" }},
+
+                    borderColor: '#eab308',
+
+                    tension: 0.4,
+
+                    fill: false
+
+                },
+
+                {
+
+                    label: 'Demandes Électeurs',
+
+                    data: {{ evolution_electeurs|safe|default:"[]" }},
+
+                    borderColor: '#22c55e',
+
+                    tension: 0.4,
+
+                    fill: false
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true
+
+        }
+
+    });
+
+});
+
+</script>
+
 {% endblock %}

@@ -5,179 +5,144 @@
 {% block nav_electeurs %}sidebar-link-active{% endblock %}
 
 {% block content %}
-
-<!-- HEADER -->
-<header class="h-20 bg-white border-b border-gray-100 px-6 lg:px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
-  <div>
-    <h2 class="text-lg font-black text-gray-900 tracking-tight">Demandes d'inscription Électeurs</h2>
-    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
-      Gérez les demandes en attente
-    </p>
-  </div>
-  <div class="flex items-center gap-3">
-    <!-- Filtre statut -->
-    <form method="get" class="flex items-center gap-2">
-      <select name="statut" onchange="this.form.submit()"
-        class="text-xs font-bold border border-gray-200 rounded-xl px-3 py-2 bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-200">
-        <option value="">Tous les statuts</option>
-        <option value="en_attente" {% if request.GET.statut == 'en_attente' %}selected{% endif %}>En attente</option>
-        <option value="approuve"   {% if request.GET.statut == 'approuve'   %}selected{% endif %}>Approuvés</option>
-        <option value="rejete"     {% if request.GET.statut == 'rejete'     %}selected{% endif %}>Rejetés</option>
-      </select>
-    </form>
-    <span class="text-xs text-gray-400 font-semibold bg-gray-100 px-3 py-1.5 rounded-xl">
-      {{ demandes.count }} demande{{ demandes.count|pluralize }}
-    </span>
-  </div>
+<header class="h-20 bg-white border-b border-gray-100 px-6 lg:px-8 flex items-center justify-between">
+    <div>
+        <h2 class="text-lg font-black text-gray-900">Demandes d'inscription Électeurs</h2>
+        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Gérez les demandes</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <form method="get" class="flex items-center gap-2">
+            <select name="statut" onchange="this.form.submit()" class="text-xs font-bold border border-gray-200 rounded-xl px-3 py-2">
+                <option value="">Tous les statuts</option>
+                <option value="en_attente" {% if request.GET.statut == 'en_attente' %}selected{% endif %}>En attente</option>
+                <option value="approuve" {% if request.GET.statut == 'approuve' %}selected{% endif %}>Approuvés</option>
+                <option value="rejete" {% if request.GET.statut == 'rejete' %}selected{% endif %}>Rejetés</option>
+            </select>
+        </form>
+    </div>
 </header>
 
-<!-- MESSAGES -->
-<div class="px-6 lg:px-8 pt-5">
-  {% if messages %}
-    <div class="space-y-3 mb-5">
-      {% for message in messages %}
-        <div class="flex items-center gap-3 px-5 py-3 rounded-xl border text-sm font-semibold
-          {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-700
-          {% else %}bg-red-50 border-red-200 text-red-700{% endif %}">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          {{ message }}
+<div class="px-6 lg:px-8 py-6">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="mb-4 px-5 py-3 rounded-xl border {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-700{% else %}bg-red-50 border-red-200 text-red-700{% endif %}">
+            {{ message }}
         </div>
-      {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 divide-x divide-gray-100 bg-white rounded-3xl border border-gray-100 mb-8">
+        <div class="px-6 py-5 text-center">
+            <p class="text-3xl font-black text-amber-500">{{ nb_en_attente }}</p>
+            <p class="text-xs font-bold text-gray-400">EN ATTENTE</p>
+        </div>
+        <div class="px-6 py-5 text-center">
+            <p class="text-3xl font-black text-green-600">{{ nb_approuve }}</p>
+            <p class="text-xs font-bold text-gray-400">APPROUVÉS</p>
+        </div>
+        <div class="px-6 py-5 text-center">
+            <p class="text-3xl font-black text-red-500">{{ nb_rejete }}</p>
+            <p class="text-xs font-bold text-gray-400">REJETÉS</p>
+        </div>
     </div>
-  {% endif %}
+
+    <!-- Tableau -->
+    <div class="bg-white rounded-3xl border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                <tr class="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-widest">
+                    <th class="px-8 py-5 text-left">Utilisateur</th>
+                    <th class="px-6 py-5 text-left">Filière / Niveau</th>
+                    <th class="px-6 py-5 text-left">Scrutin</th>
+                    <th class="px-6 py-5 text-left">Commentaire</th>
+                    <th class="px-6 py-5 text-left">Soumis le</th>
+                    <th class="px-6 py-5 text-left">Statut</th>
+                    <th class="px-8 py-5 text-right">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                {% for demande in demandes %}
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <!-- Utilisateur + Photo -->
+                    <td class="px-8 py-5">
+                        <div class="flex items-center gap-4">
+                            {% if demande.utilisateur.photo %}
+                                <img src="{{ demande.utilisateur.photo.url }}" 
+                                     class="w-11 h-11 rounded-2xl object-cover border border-gray-200" alt="">
+                            {% else %}
+                                <div class="w-11 h-11 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xl">
+                                    {{ demande.utilisateur.email|first|upper }}
+                                </div>
+                            {% endif %}
+                            <div>
+                                <p class="font-bold">{{ demande.utilisateur.nom }} {{ demande.utilisateur.prenom }}</p>
+                                <p class="text-sm text-gray-500">{{ demande.utilisateur.email }}</p>
+                                {% if demande.utilisateur.matricule %}
+                                    <p class="text-xs font-mono text-gray-400">{{ demande.utilisateur.matricule }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Filière & Niveau -->
+                    <td class="px-6 py-5">
+                        <div class="text-sm">
+                            <p><span class="text-gray-400">Filière :</span> <strong>{{ demande.utilisateur.filiere|default:"—" }}</strong></p>
+                            <p><span class="text-gray-400">Niveau :</span> <strong>{{ demande.utilisateur.niveau|default:"—" }}</strong></p>
+                        </div>
+                    </td>
+
+                    <td class="px-6 py-5">
+                        <p class="font-semibold text-gray-800">{{ demande.scrutin.titre }}</p>
+                    </td>
+
+                    <td class="px-6 py-5 max-w-xs">
+                        <p class="text-sm text-gray-600 line-clamp-2">{{ demande.commentaire|default:"—" }}</p>
+                    </td>
+
+                    <td class="px-6 py-5 text-sm text-gray-500">
+                        {{ demande.date_soumission|date:"d M Y à H:i" }}
+                    </td>
+
+                    <td class="px-6 py-5">
+                        {% if demande.statut == "en_attente" %}
+                            <span class="px-4 py-1.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">⏳ En attente</span>
+                        {% elif demande.statut == "approuve" %}
+                            <span class="px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold">✅ Approuvé</span>
+                        {% else %}
+                            <span class="px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-xs font-bold">❌ Rejeté</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="px-8 py-5 text-right">
+                        {% if demande.statut == "en_attente" %}
+                        <div class="flex gap-2 justify-end">
+                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="approuver">
+                                <button type="submit" class="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-2xl text-sm font-bold">Approuver</button>
+                            </form>
+                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="rejeter">
+                                <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-2xl text-sm font-bold">Rejeter</button>
+                            </form>
+                        </div>
+                        {% else %}
+                            <span class="text-xs text-gray-400">Traité</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-20 text-gray-400">Aucune demande trouvée</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
-<!-- TABLEAU -->
-<div class="px-6 lg:px-8 pb-10">
-  <div class="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm overflow-hidden">
-
-    <!-- Stats rapides -->
-    <div class="grid grid-cols-3 divide-x divide-gray-100 border-b border-gray-100">
-      <div class="px-6 py-4 text-center">
-        <p class="text-2xl font-black text-amber-500">{{ nb_en_attente }}</p>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">En attente</p>
-      </div>
-      <div class="px-6 py-4 text-center">
-        <p class="text-2xl font-black text-green-600">{{ nb_approuve }}</p>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Approuvés</p>
-      </div>
-      <div class="px-6 py-4 text-center">
-        <p class="text-2xl font-black text-red-500">{{ nb_rejete }}</p>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Rejetés</p>
-      </div>
-    </div>
-
-    <div class="overflow-x-auto">
-      <table class="w-full text-left min-w-[700px]">
-        <thead>
-          <tr class="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">
-            <th class="px-7 py-4">Utilisateur</th>
-            <th class="px-5 py-4">Scrutin</th>
-            <th class="px-5 py-4">Commentaire</th>
-            <th class="px-5 py-4">Date soumission</th>
-            <th class="px-5 py-4">Statut</th>
-            <th class="px-7 py-4 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-50">
-          {% for demande in demandes %}
-          <tr class="hover:bg-gray-50/60 transition-colors">
-
-            <!-- Utilisateur -->
-            <td class="px-7 py-4">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700 font-black text-sm shrink-0">
-                  {{ demande.utilisateur.email|first|upper }}
-                </div>
-                <div>
-                  <p class="font-bold text-gray-900 text-sm">
-                    {{ demande.utilisateur.nom }} {{ demande.utilisateur.prenom }}
-                  </p>
-                  <p class="text-xs text-gray-400">{{ demande.utilisateur.email }}</p>
-                  {% if demande.utilisateur.matricule %}
-                    <p class="text-[10px] text-gray-400 font-mono">{{ demande.utilisateur.matricule }}</p>
-                  {% endif %}
-                </div>
-              </div>
-            </td>
-
-            <!-- Scrutin -->
-            <td class="px-5 py-4">
-              <p class="text-sm font-semibold text-gray-700">{{ demande.scrutin.titre }}</p>
-              <p class="text-[10px] text-gray-400 mt-0.5">{{ demande.scrutin.date_debut|date:"d M Y" }} → {{ demande.scrutin.date_fin|date:"d M Y" }}</p>
-            </td>
-
-            <!-- Commentaire -->
-            <td class="px-5 py-4 max-w-[200px]">
-              <p class="text-xs text-gray-500 line-clamp-2">
-                {{ demande.commentaire|default:"—" }}
-              </p>
-            </td>
-
-            <!-- Date soumission -->
-            <td class="px-5 py-4">
-              <p class="text-xs text-gray-500 font-semibold">{{ demande.date_soumission|date:"d M Y" }}</p>
-              <p class="text-[10px] text-gray-400">{{ demande.date_soumission|date:"H:i" }}</p>
-            </td>
-
-            <!-- Statut -->
-            <td class="px-5 py-4">
-              {% if demande.statut == "en_attente" %}
-                <span class="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-xs font-bold">⏳ En attente</span>
-              {% elif demande.statut == "approuve" %}
-                <span class="px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-bold">✅ Approuvé</span>
-              {% elif demande.statut == "rejete" %}
-                <span class="px-3 py-1 bg-red-50 text-red-700 border border-red-200 rounded-full text-xs font-bold">❌ Rejeté</span>
-              {% endif %}
-            </td>
-
-            <!-- Actions -->
-            <td class="px-7 py-4 text-right">
-              {% if demande.statut == "en_attente" %}
-                <div class="flex items-center justify-end gap-2">
-                  <!-- APPROUVER -->
-                  <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="approuver">
-                    <button type="submit"
-                      class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm shadow-green-200">
-                      Approuver
-                    </button>
-                  </form>
-                  <!-- REJETER -->
-                  <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="rejeter">
-                    <button type="submit"
-                      class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-bold transition-all shadow-sm shadow-red-200">
-                      Rejeter
-                    </button>
-                  </form>
-                </div>
-              {% else %}
-                <span class="text-xs text-gray-300 font-semibold">Traité</span>
-              {% endif %}
-            </td>
-
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="6" class="text-center py-16">
-              <div class="flex flex-col items-center gap-3 text-gray-300">
-                <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                  <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <p class="font-semibold text-sm">Aucune demande trouvée</p>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
 {% endblock %}

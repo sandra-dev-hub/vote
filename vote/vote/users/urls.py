@@ -5,6 +5,7 @@ app_name = "users"
 
 from .views import (
     # Auth
+    AdminSettingsView,
     UserLoginView,
     UserRegisterView,
     # Dashboards
@@ -66,4 +67,5 @@ urlpatterns = [
         traiter_demande_candidature,
         name="traiter_demande_candidature",
     ),
+    path("admin/parametres/", AdminSettingsView.as_view(), name="admin_settings"),
 ]

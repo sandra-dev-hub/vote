@@ -98,13 +98,80 @@ class DemandeElecteurForm(forms.ModelForm):
         self.fields["scrutin"].queryset = Scrutin.objects.filter(statut="ouvert")
 
 
+from django import forms
+
+from vote.users.models import DemandeCandidature
+from vote.users.models import Scrutin
+
+
 class DemandeCandidatureForm(forms.ModelForm):
     class Meta:
         model = DemandeCandidature
-        fields = ["scrutin", "commentaire"]
-        widgets = {"commentaire": forms.Textarea(attrs={"rows": 4, "placeholder": "Lettre de motivation..."})}
+
+        fields = [
+            "scrutin",
+            "slogan",
+            "programme",
+            "image",
+            "commentaire",
+        ]
+
+        widgets = {
+            "programme": forms.Textarea(
+                attrs={
+                    "rows": 5,
+                    "placeholder": "Présentez votre programme électoral...",
+                    "class": "w-full",
+                }
+            ),
+
+            "commentaire": forms.Textarea(
+                attrs={
+                    "rows": 4,
+                    "placeholder": "Lettre de motivation...",
+                    "class": "w-full",
+                }
+            ),
+
+            "slogan": forms.TextInput(
+                attrs={
+                    "placeholder": "Votre slogan...",
+                    "class": "w-full",
+                }
+            ),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.fields["commentaire"].required = False
-        self.fields["scrutin"].queryset = Scrutin.objects.filter(statut="ouvert")
+        self.fields["programme"].required = False
+        self.fields["slogan"].required = False
+        self.fields["image"].required = False
+
+        self.fields["scrutin"].queryset = Scrutin.objects.filter(
+            statut="ouvert"
+        )
+
+    def clean_image(self):
+        image = self.cleaned_data.get("image")
+
+        if image:
+            # max 5MB
+            if image.size > 5 * 1024 * 1024:
+                raise forms.ValidationError(
+                    "Image trop volumineuse (max 5MB)."
+                )
+
+            allowed_types = [
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+            ]
+
+            if image.content_type not in allowed_types:
+                raise forms.ValidationError(
+                    "Format image invalide."
+                )
+
+        return image

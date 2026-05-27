@@ -168,6 +168,9 @@ class DemandeCandidature(BaseModel):
     date_soumission = models.DateTimeField(auto_now_add=True)
     date_traitement = models.DateTimeField(null=True, blank=True)
     commentaire = models.TextField(null=True, blank=True)
+    programme = models.TextField(null=True, blank=True)
+    slogan = models.CharField(max_length=255, null=True, blank=True)
+    image = models.ImageField(upload_to="candidatures/", null=True, blank=True)
 
 
     class Meta:
@@ -184,7 +187,9 @@ class Candidat(BaseModel):
     scrutin = models.ForeignKey(
         Scrutin,
         on_delete=models.CASCADE,
-        related_name="candidats"
+        related_name="candidats",
+        null=True,
+        blank=True
     )
     nombre_vote = models.PositiveIntegerField(default=0)
 

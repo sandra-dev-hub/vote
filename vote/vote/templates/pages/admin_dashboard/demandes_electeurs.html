@@ -50,7 +50,7 @@
     <!-- Tableau -->
     <div class="bg-white rounded-3xl border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table id="demandes-electeurs-table" class="w-full">
                 <thead>
                 <tr class="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-widest">
                     <th class="px-8 py-5 text-left">Utilisateur</th>
@@ -145,4 +145,24 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  $(function () {
+    $("#demandes-electeurs-table").DataTable({
+      responsive: true,
+      pageLength: 10,
+      order: [[4, "desc"]],
+      language: {
+        search: "Rechercher :",
+        lengthMenu: "Afficher _MENU_ lignes",
+        info: "_START_ - _END_ sur _TOTAL_",
+        paginate: { previous: "Precedent", next: "Suivant" },
+        zeroRecords: "Aucun resultat",
+      },
+      columnDefs: [{ orderable: false, targets: [6] }],
+    });
+  });
+</script>
 {% endblock %}

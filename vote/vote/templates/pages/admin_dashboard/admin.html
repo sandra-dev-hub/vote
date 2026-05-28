@@ -32,13 +32,34 @@
 
 <div class="p-8 space-y-10">
 
-    <!-- Debug -->
-    <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl text-sm text-blue-700">
-        <strong>Debug :</strong>
-        {{ derniers_candidats|length }} candidat(s) affiché(s)
-        |
-        Total Candidats : {{ total_candidats|default:0 }}
+    {% if scrutin_live %}
+    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h3 class="font-black text-gray-900">Resultats en temps reel</h3>
+                <p class="text-sm text-gray-500">
+                    {{ scrutin_live.titre }} - fermeture {{ scrutin_live.date_fin|date:"d M Y H:i" }}
+                </p>
+            </div>
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                LIVE
+            </span>
+        </div>
+        <div id="live-results" class="mt-4 space-y-2">
+            {% for candidat in scrutin_live_resultats %}
+            <div class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-2">
+                <span class="font-semibold text-gray-800">
+                    {{ candidat.demande__utilisateur__nom|default:"" }} {{ candidat.demande__utilisateur__prenom|default:"" }}
+                </span>
+                <span class="text-sm font-black text-brand-700">{{ candidat.nombre_vote }} vote(s)</span>
+            </div>
+            {% empty %}
+            <p class="text-sm text-gray-400">Aucun candidat pour ce scrutin.</p>
+            {% endfor %}
+        </div>
     </div>
+    {% endif %}
 
     <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -311,6 +332,29 @@
 <script>
 
 document.addEventListener('DOMContentLoaded', function () {
+    {% if scrutin_live %}
+    const liveContainer = document.getElementById("live-results");
+    const scheme = window.location.protocol === "https:" ? "wss" : "ws";
+    const socket = new WebSocket(`${scheme}://${window.location.host}/ws/scrutins/{{ scrutin_live.slug }}/results/`);
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        if (data.type !== "vote_update" || !Array.isArray(data.payload)) return;
+        liveContainer.innerHTML = "";
+        data.payload.forEach((row) => {
+            const item = document.createElement("div");
+            item.className = "flex items-center justify-between rounded-xl border border-gray-100 px-4 py-2";
+            item.innerHTML = `
+                <span class="font-semibold text-gray-800">${row.nom || "Candidat"}</span>
+                <span class="text-sm font-black text-brand-700">${row.votes} vote(s)</span>
+            `;
+            liveContainer.appendChild(item);
+        });
+        if (!data.payload.length) {
+            liveContainer.innerHTML = '<p class="text-sm text-gray-400">Aucun candidat pour ce scrutin.</p>';
+        }
+    };
+    {% endif %}
+
 
     // Graphique Postes
     new Chart(document.getElementById('chartPostes'), {

@@ -1,5 +1,8 @@
 asgiref==3.11.1
+celery==5.5.3
 Django==6.0.5
+channels==4.3.1
+channels-redis==4.3.0
 django-environ==0.13.0
 pillow==12.2.0
 sqlparse==0.5.5

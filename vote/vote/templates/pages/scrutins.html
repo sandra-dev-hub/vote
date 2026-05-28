@@ -4,10 +4,10 @@
 {% block title %}Scrutins | ICAB Bafoussam{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-6 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
 
   <div class="mb-10 pt-10">
-    <h1 class="text-4xl font-black text-gray-900">Scrutins Ouverts</h1>
+    <h1 class="text-3xl sm:text-4xl font-black text-gray-900">Scrutins Ouverts</h1>
     <p class="text-gray-600 mt-2">Participez aux élections en cours</p>
   </div>
 
@@ -51,10 +51,15 @@
 
         <!-- Bouton Électeur -->
         {% if user.is_authenticated %}
-          {% if scrutin.pk in demandes_electeur_ids %}
+          {% if scrutin.pk in electeur_scrutin_ids %}
+            <a href="{% url 'users:scrutin_vote' scrutin.slug %}"
+              class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold text-center transition-all">
+              🗳️ Acceder au vote
+            </a>
+          {% elif scrutin.pk in demandes_electeur_ids %}
             <button disabled
               class="flex-1 py-2.5 rounded-xl bg-gray-100 text-gray-400 text-xs font-bold cursor-not-allowed">
-              🗳️ Déjà inscrit
+              🗳️ Demande envoyee
             </button>
           {% else %}
             <button
@@ -95,7 +100,7 @@
     {% if user.is_authenticated %}
     <div id="modal-electeur-{{ scrutin.pk }}"
          class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-      <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative">
+      <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
         <button onclick="closeModal('modal-electeur-{{ scrutin.pk }}')"
                 class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 text-lg font-bold transition-all">
           &times;
@@ -126,7 +131,7 @@
     <!-- ===== MODAL CANDIDATURE ===== -->
     <div id="modal-candidature-{{ scrutin.pk }}"
          class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-      <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative">
+      <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
         <button onclick="closeModal('modal-candidature-{{ scrutin.pk }}')"
                 class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 text-lg font-bold transition-all">
           &times;
@@ -177,7 +182,7 @@
     {% endif %}
 
     {% empty %}
-    <div class="col-span-3 bg-white border border-dashed border-gray-300 rounded-3xl p-16 text-center">
+    <div class="sm:col-span-2 lg:col-span-3 bg-white border border-dashed border-gray-300 rounded-3xl p-10 sm:p-16 text-center">
       <p class="text-gray-400 text-lg font-semibold">Aucun scrutin ouvert pour le moment.</p>
     </div>
     {% endfor %}

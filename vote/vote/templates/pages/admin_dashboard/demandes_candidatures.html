@@ -124,7 +124,7 @@
 
         <!-- Version desktop - tableau horizontal -->
         <div class="hidden lg:block overflow-x-auto">
-            <table class="w-full min-w-[1400px]">
+            <table id="demandes-candidatures-table" class="w-full min-w-[1400px]">
 
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-white border-b-2 border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-widest">
@@ -520,4 +520,24 @@
     });
 </script>
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  $(function () {
+    $("#demandes-candidatures-table").DataTable({
+      responsive: true,
+      pageLength: 10,
+      order: [[7, "desc"]],
+      language: {
+        search: "Rechercher :",
+        lengthMenu: "Afficher _MENU_ lignes",
+        info: "_START_ - _END_ sur _TOTAL_",
+        paginate: { previous: "Precedent", next: "Suivant" },
+        zeroRecords: "Aucun resultat",
+      },
+      columnDefs: [{ orderable: false, targets: [9] }],
+    });
+  });
+</script>
 {% endblock %}

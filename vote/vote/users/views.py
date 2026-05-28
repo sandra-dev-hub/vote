@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import transaction
@@ -17,7 +18,7 @@ from django.views.generic import (
 
 
 from django.views.generic import TemplateView
-from .models import Candidat, Electeur, DemandeCandidature, DemandeElecteur
+from .models import Candidat, Electeur, DemandeCandidature, DemandeElecteur, Vote
 
 from .forms import (
     UserRegisterForm,
@@ -86,6 +87,22 @@ class UserDashboardView(LoginRequiredMixin, TemplateView):
     template_name = "pages/user_dashboard/user.html"
     login_url = "/users/login/"
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        now = timezone.now()
+        scrutins_accessibles = (
+            Scrutin.objects.filter(
+                statut="ouvert",
+                date_debut__lte=now,
+                date_fin__gte=now,
+                electeurs__demande__utilisateur=self.request.user,
+            )
+            .distinct()
+            .order_by("date_fin")
+        )
+        ctx["scrutins_accessibles"] = scrutins_accessibles
+        return ctx
+
 
 class AdminDashboardView(LoginRequiredMixin, TemplateView):
     template_name = "pages/admin_dashboard/admin.html"
@@ -104,6 +121,32 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
         ctx['derniers_candidats'] = Candidat.objects.select_related(
             'demande__utilisateur', 'scrutin'
         ).order_by('-created')[:6]
+
+        now = timezone.now()
+        scrutin_live = (
+            Scrutin.objects.filter(
+                statut="ouvert",
+                date_debut__lte=now,
+                date_fin__gte=now,
+            )
+            .order_by("date_fin")
+            .first()
+        )
+        ctx["scrutin_live"] = scrutin_live
+        if scrutin_live:
+            ctx["scrutin_live_resultats"] = list(
+                Candidat.objects.filter(scrutin=scrutin_live)
+                .select_related("demande__utilisateur")
+                .order_by("-nombre_vote")
+                .values(
+                    "slug",
+                    "nombre_vote",
+                    "demande__utilisateur__nom",
+                    "demande__utilisateur__prenom",
+                )
+            )
+        else:
+            ctx["scrutin_live_resultats"] = []
 
         # Données graphiques (temporaire)
         ctx['postes_labels'] = ['Président', 'Vice-Président', 'Trésorier', 'Secrétaire']
@@ -176,8 +219,11 @@ class ScrutinUserView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        now = timezone.now()
         ctx["scrutins_ouverts"] = Scrutin.objects.filter(
-            statut="ouvert"
+            statut="ouvert",
+            date_debut__lte=now,
+            date_fin__gte=now,
         ).order_by("-date_debut")
 
         if self.request.user.is_authenticated:
@@ -189,9 +235,13 @@ class ScrutinUserView(TemplateView):
                 DemandeCandidature.objects.filter(utilisateur=self.request.user)
                 .values_list("scrutin_id", flat=True)
             )
+            ctx["electeur_scrutin_ids"] = set(
+                Electeur.objects.filter(demande__utilisateur=self.request.user).values_list("scrutin_id", flat=True)
+            )
         else:
             ctx["demandes_electeur_ids"] = set()
             ctx["demandes_candidature_ids"] = set()
+            ctx["electeur_scrutin_ids"] = set()
         return ctx
 
     def post(self, request, *args, **kwargs):
@@ -205,7 +255,12 @@ class ScrutinUserView(TemplateView):
         commentaire = request.POST.get("commentaire", "").strip()
 
         try:
-            scrutin = Scrutin.objects.get(pk=scrutin_id, statut="ouvert")
+            scrutin = Scrutin.objects.get(
+                pk=scrutin_id,
+                statut="ouvert",
+                date_debut__lte=timezone.now(),
+                date_fin__gte=timezone.now(),
+            )
         except Scrutin.DoesNotExist:
             messages.error(request, "Scrutin introuvable ou fermé.")
             return self.get(request, *args, **kwargs)
@@ -229,6 +284,9 @@ class ScrutinUserView(TemplateView):
                     utilisateur=request.user,
                     scrutin=scrutin,
                     commentaire=commentaire or None,
+                    programme=request.POST.get("programme", "").strip() or None,
+                    slogan=request.POST.get("slogan", "").strip() or None,
+                    image=request.FILES.get("image"),
                 )
                 messages.success(request, "Candidature envoyée avec succès !")
 
@@ -391,6 +449,51 @@ class TraiterDemandeCandidatureView(LoginRequiredMixin, View):
             messages.warning(request, f"❌ Candidature de {demande.utilisateur.email} rejetée.")
 
         return redirect("users:demandes_candidatures")
+
+
+class ScrutinVoteView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/vote_room.html"
+    login_url = "/users/login/"
+
+    def get_scrutin(self):
+        return get_object_or_404(Scrutin, slug=self.kwargs["slug"])
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        scrutin = self.get_scrutin()
+        ctx["scrutin"] = scrutin
+        ctx["candidats"] = Candidat.objects.filter(scrutin=scrutin).select_related("demande__utilisateur").order_by(
+            "-nombre_vote",
+        )
+
+        electeur = Electeur.objects.filter(demande__utilisateur=self.request.user, scrutin=scrutin).first()
+        ctx["est_electeur"] = electeur is not None
+        ctx["a_vote"] = Vote.objects.filter(electeur=electeur).exists() if electeur else False
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        scrutin = self.get_scrutin()
+        electeur = Electeur.objects.filter(demande__utilisateur=request.user, scrutin=scrutin).first()
+        if electeur is None:
+            messages.error(request, "Vous n'etes pas inscrit comme electeur pour ce scrutin.")
+            return redirect("users:scrutin_vote", slug=scrutin.slug)
+
+        candidat = get_object_or_404(Candidat, slug=request.POST.get("candidat_slug"), scrutin=scrutin)
+        if Vote.objects.filter(electeur=electeur).exists():
+            messages.warning(request, "Vous avez deja vote pour ce scrutin.")
+            return redirect("users:scrutin_vote", slug=scrutin.slug)
+
+        try:
+            Vote.objects.create(
+                electeur=electeur,
+                candidat=candidat,
+                adresse_ip=request.META.get("REMOTE_ADDR", "127.0.0.1"),
+            )
+            messages.success(request, "Vote enregistre avec succes.")
+        except ValidationError as exc:
+            messages.error(request, f"Vote refuse: {exc.messages[0]}")
+
+        return redirect("users:scrutin_vote", slug=scrutin.slug)
 
 
 # ====================== URL MAPPING ======================

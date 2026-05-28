@@ -111,7 +111,8 @@
   <!-- LISTE -->
   <div class="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm overflow-hidden">
 
-    <table class="w-full text-left">
+    <div class="overflow-x-auto">
+    <table id="scrutins-table" class="w-full text-left">
 
       <thead>
         <tr class="text-[10px] font-bold text-gray-400 uppercase border-b">
@@ -153,7 +154,8 @@
           </td>
 
           <!-- ACTIONS RESTAUREES -->
-          <td class="px-7 py-4 text-right flex justify-end gap-2">
+          <td class="px-7 py-4 text-right">
+          <div class="flex justify-end gap-2">
 
             <!-- MODIFIER -->
             <a href="{% url 'users:scrutin_update' scrutin.pk %}"
@@ -171,6 +173,7 @@
               </svg>
             </a>
 
+          </div>
           </td>
 
         </tr>
@@ -185,9 +188,31 @@
       </tbody>
 
     </table>
+    </div>
 
   </div>
 
 </div>
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  $(function () {
+    $("#scrutins-table").DataTable({
+      responsive: true,
+      pageLength: 10,
+      autoWidth: false,
+      dom: '<"flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4"lf>rt<"flex flex-col gap-3 md:flex-row md:items-center md:justify-between mt-4"ip>',
+      language: {
+        search: "Rechercher :",
+        lengthMenu: "Afficher _MENU_ lignes",
+        info: "_START_ - _END_ sur _TOTAL_",
+        paginate: { previous: "Precedent", next: "Suivant" },
+        zeroRecords: "Aucun resultat",
+      },
+      columnDefs: [{ orderable: false, targets: [4] }],
+    });
+  });
+</script>
 {% endblock %}

@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Admin | ICAB Bafoussam{% endblock %}</title>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
   <style type="text/tailwindcss">
@@ -36,6 +38,32 @@
     /* Badge compteur (demandes en attente) */
     .sidebar-badge {
       @apply ml-auto text-[10px] font-black px-2 py-0.5 rounded-full;
+    }
+
+    .dataTables_wrapper {
+      @apply p-4 md:p-6;
+    }
+
+    .dataTables_wrapper .dataTables_filter input,
+    .dataTables_wrapper .dataTables_length select {
+      @apply ml-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+      @apply pt-4 text-xs font-semibold text-gray-500;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+      @apply pt-3;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      @apply mx-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-600;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+      @apply border-brand-200 bg-brand-50 text-brand-700;
     }
   </style>
 </head>
@@ -148,6 +176,7 @@
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
   {% block extra_scripts %}{% endblock %}
 </body>

@@ -1,7 +1,9 @@
 import uuid
 from django.db import models
+from django.core.exceptions import ValidationError
 from django_extensions.db.models import ActivatorModel, TimeStampedModel
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.utils import timezone
 from vote.global_data.enums import Role, StatutDemande, StatutScrutin
 from vote.users.managers import UserManager
 
@@ -93,6 +95,13 @@ class Scrutin(BaseModel):
     def __str__(self):
         return self.titre
 
+    def is_open_for_vote(self):
+        now = timezone.now()
+        return (
+            self.statut == StatutScrutin.OUVERT
+            and self.date_debut <= now <= self.date_fin
+        )
+
 
 class DemandeElecteur(BaseModel):
     utilisateur = models.ForeignKey(
@@ -140,6 +149,7 @@ class Electeur(BaseModel):
     )
 
     date_inscription = models.DateTimeField(auto_now_add=True)
+    notification_ouverture_envoyee = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Electeur'
@@ -233,10 +243,19 @@ class Vote(BaseModel):
     def clean(self):
         #  Empêche incohérence scrutin
         if self.candidat.scrutin_id != self.electeur.scrutin_id:
-            raise ValueError("Le candidat n'appartient pas au scrutin de l'électeur")
+            raise ValidationError("Le candidat n'appartient pas au scrutin de l'électeur")
 
         if self.electeur.scrutin_id != self.candidat.scrutin_id:
-            raise ValueError("L'électeur n'appartient pas au scrutin du candidat")
+            raise ValidationError("L'électeur n'appartient pas au scrutin du candidat")
+
+        scrutin = self.electeur.scrutin
+        now = timezone.now()
+        if scrutin.statut != StatutScrutin.OUVERT:
+            raise ValidationError("Ce scrutin n'est pas ouvert au vote.")
+        if now < scrutin.date_debut:
+            raise ValidationError("Le scrutin n'a pas encore commence.")
+        if now > scrutin.date_fin:
+            raise ValidationError("Ce scrutin est termine.")
 
     def save(self, *args, **kwargs):
         self.clean()

@@ -372,6 +372,32 @@ class DemandesCandidaturesView(LoginRequiredMixin, ListView):
         return ctx
 
 
+# ====================== UTILISATEURS ======================
+from .models import Utilisateur
+
+class UsersListView(LoginRequiredMixin, ListView):
+    model = Utilisateur
+    template_name = "pages/admin_dashboard/utilisateurs.html"
+    context_object_name = "utilisateurs"
+    login_url = "/users/login/"
+    paginate_by = 25
+
+    def get_queryset(self):
+        qs = Utilisateur.objects.all().order_by("-created")
+        role = self.request.GET.get("role")
+        if role:
+            qs = qs.filter(role=role)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["nb_admin"] = Utilisateur.objects.filter(role="ADMIN").count()
+        ctx["nb_candidat"] = Utilisateur.objects.filter(role="CANDIDAT").count()
+        ctx["nb_electeur"] = Utilisateur.objects.filter(role="ELECTEUR").count()
+        ctx.update(get_sidebar_counts())
+        return ctx
+
+
 class TraiterDemandeCandidatureView(LoginRequiredMixin, View):
     login_url = "/users/login/"
 

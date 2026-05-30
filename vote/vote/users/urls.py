@@ -27,6 +27,8 @@ from .views import (
     # Demandes candidatures
     demandes_candidatures,
     traiter_demande_candidature,
+    # Utilisateurs
+    UsersListView,
 )
 
 urlpatterns = [
@@ -101,5 +103,6 @@ urlpatterns = [
         traiter_demande_candidature,
         name="traiter_demande_candidature",
     ),
+    path("admin/utilisateurs/", UsersListView.as_view(), name="admin_utilisateurs"),
     path("admin/parametres/", AdminSettingsView.as_view(), name="admin_settings"),
 ]

@@ -7,40 +7,50 @@
 <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
 
   <!-- EN-TÊTE DU SCRUTIN -->
-  <div class="mb-8">
-    <div class="flex items-center gap-3 mb-3">
+  <div class="mb-10">
+    <div class="flex items-center gap-3 mb-4">
       {% if scrutin.statut == "en_vote" %}
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold">
-          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-          Vote en cours
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold shadow-sm">
+          <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+          VOTE EN COURS
         </span>
       {% elif scrutin.statut == "ouvert" %}
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold">
-          📋 Période de candidature
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H7M15 5h2a2 2 0 002 2v2a2 2 0 00-2 2h-2"/></svg>
+          CANDIDATURES
         </span>
       {% elif scrutin.statut == "ferme" %}
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold">
-          🔒 Scrutin terminé
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-bold">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+          TERMINÉ
         </span>
       {% endif %}
     </div>
 
     <h1 class="text-3xl sm:text-4xl font-black text-gray-900">{{ scrutin.titre }}</h1>
-    <p class="text-gray-600 mt-2">{{ scrutin.description }}</p>
+    <p class="text-gray-600 mt-3 max-w-2xl">{{ scrutin.description }}</p>
 
-    <!-- DATES DES DEUX PÉRIODES -->
-    <div class="mt-3 flex flex-wrap gap-4 text-xs font-semibold text-gray-500">
-      <span>📋 Candidatures : {{ scrutin.date_debut|date:"d M Y H:i" }} → {{ scrutin.date_fin|date:"d M Y H:i" }}</span>
-      <span>🗳️ Vote : {{ scrutin.date_debut_vote|date:"d M Y H:i" }} → {{ scrutin.date_fin_vote|date:"d M Y H:i" }}</span>
+    <!-- Timeline visuelle -->
+    <div class="mt-6 flex items-center gap-6">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-indigo-500"></div>
+        <span class="text-xs font-semibold text-gray-500">Candidatures :</span>
+        <span class="text-xs font-bold text-gray-700">{{ scrutin.date_debut|date:"d M Y H:i" }} → {{ scrutin.date_fin|date:"d M Y H:i" }}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-brand-600"></div>
+        <span class="text-xs font-semibold text-gray-500">Vote :</span>
+        <span class="text-xs font-bold text-gray-700">{{ scrutin.date_debut_vote|date:"d M Y H:i" }} → {{ scrutin.date_fin_vote|date:"d M Y H:i" }}</span>
+      </div>
     </div>
 
-    <p id="time-left" class="text-sm font-bold text-amber-700 mt-2"></p>
+    <p id="time-left" class="text-sm font-bold mt-4"></p>
   </div>
 
   {% if messages %}
   <div class="mb-6 space-y-3">
     {% for message in messages %}
-    <div class="px-4 py-3 rounded-xl border text-sm font-semibold
+    <div class="px-5 py-3.5 rounded-xl border text-sm font-semibold
       {% if message.tags == 'success' %}bg-green-50 text-green-700 border-green-200
       {% elif message.tags == 'warning' %}bg-amber-50 text-amber-700 border-amber-200
       {% else %}bg-red-50 text-red-700 border-red-200{% endif %}">
@@ -50,86 +60,104 @@
   </div>
   {% endif %}
 
-  <div class="grid lg:grid-cols-2 gap-6">
+  <div class="grid lg:grid-cols-5 gap-6">
 
-    <!-- RÉSULTATS EN DIRECT -->
-    <section class="bg-white border border-gray-100 rounded-3xl p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-black text-gray-900">Candidats</h2>
+    <!-- RÉSULTATS EN DIRECT (70%) -->
+    <section class="lg:col-span-3 bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="font-black text-gray-900 text-lg">Résultats en temps réel</h2>
         {% if est_periode_vote %}
-          <span class="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full font-bold">● LIVE</span>
+          <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-bold flex items-center gap-1">
+            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>LIVE
+          </span>
         {% else %}
-          <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full font-bold">Résultats</span>
+          <span class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full font-bold">FINAL</span>
         {% endif %}
       </div>
+
       <div id="live-results" class="space-y-3">
         {% for candidat in candidats %}
-        <div class="rounded-2xl border border-gray-100 p-4">
-          <div class="flex items-center justify-between gap-3">
-            <p class="font-bold text-gray-900">{{ candidat.demande.utilisateur.nom|default:"" }} {{ candidat.demande.utilisateur.prenom|default:"" }}</p>
-            <span class="text-sm font-black text-brand-700">{{ candidat.nombre_vote }} vote(s)</span>
+        <div class="candidate-card rounded-2xl border border-gray-100 p-4 hover:shadow-md transition-all">
+          <div class="flex items-center gap-4">
+            {% if candidat.demande.utilisateur.photo %}
+              <img src="{{ candidat.demande.utilisateur.photo.url }}" class="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow" alt="">
+            {% else %}
+              <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow">
+                {{ candidat.demande.utilisateur.nom|slice:":1"|upper|default:"?" }}
+              </div>
+            {% endif %}
+            <div class="flex-1">
+              <p class="font-bold text-gray-900 text-base">{{ candidat.demande.utilisateur.nom|default:"" }} {{ candidat.demande.utilisateur.prenom|default:"" }}</p>
+              <p class="text-xs text-gray-500">{{ candidat.demande.utilisateur.filiere|default:"" }} • {{ candidat.demande.utilisateur.niveau|default:"" }}</p>
+            </div>
+            <span class="text-sm font-black text-brand-700 votes-count">{{ candidat.nombre_vote }} vote(s)</span>
           </div>
-          <div class="w-full h-2 bg-gray-100 rounded-full mt-3">
-            <div class="h-2 bg-brand-600 rounded-full result-bar" data-votes="{{ candidat.nombre_vote }}" style="width: 0%"></div>
+          <div class="w-full h-2.5 bg-gray-100 rounded-full mt-4 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-brand-500 to-indigo-600 rounded-full result-bar" data-votes="{{ candidat.nombre_vote }}" style="width: 0%"></div>
           </div>
         </div>
         {% empty %}
-        <p class="text-sm text-gray-400">Aucun candidat pour ce scrutin.</p>
+        <div class="text-center py-12">
+          <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <p class="text-sm text-gray-400">Aucun candidat pour ce scrutin.</p>
+        </div>
         {% endfor %}
       </div>
     </section>
 
-    <!-- SECTION VOTE -->
-    <section class="bg-white border border-gray-100 rounded-3xl p-6">
-      <h2 class="font-black text-gray-900 mb-4">Voter</h2>
+    <!-- SECTION VOTE (30%) -->
+    <section class="lg:col-span-2 bg-white border border-gray-100 rounded-3xl p-6 shadow-sm self-start">
+      <h2 class="font-black text-gray-900 mb-5 text-lg">Mon vote</h2>
 
       {% if not est_electeur %}
-        <div class="p-4 bg-red-50 border border-red-100 rounded-2xl text-sm text-red-700 font-semibold">
-          🚫 Vous n'êtes pas inscrit comme électeur sur ce scrutin.
+        <div class="p-5 bg-red-50 border border-red-100 rounded-2xl text-sm text-red-700 font-semibold">
+          <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Vous n'êtes pas inscrit comme électeur sur ce scrutin.
         </div>
 
       {% elif scrutin.statut == "ouvert" %}
-        <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl text-sm text-indigo-700 font-semibold">
+        <div class="p-5 bg-indigo-50 border border-indigo-100 rounded-2xl text-sm text-indigo-700 font-semibold">
           ⏳ La période de vote n'a pas encore commencé.<br>
-          <span class="font-normal text-indigo-600 mt-1 block">Le vote ouvrira le {{ scrutin.date_debut_vote|date:"d M Y à H:i" }}.</span>
+          <span class="font-normal text-indigo-600 mt-2 block">Ouverture : {{ scrutin.date_debut_vote|date:"d M Y à H:i" }}</span>
         </div>
 
       {% elif scrutin.statut == "ferme" %}
-        <div class="p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-700 font-semibold">
+        <div class="p-5 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-700 font-semibold">
           🔒 Ce scrutin est terminé. Les résultats sont définitifs.
         </div>
 
       {% elif scrutin.statut == "annule" %}
-        <div class="p-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-600 font-semibold">
+        <div class="p-5 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-600 font-semibold">
           ❌ Ce scrutin a été annulé.
         </div>
 
       {% elif not est_periode_vote %}
-        <div class="p-4 bg-amber-50 border border-amber-100 rounded-2xl text-sm text-amber-700 font-semibold">
+        <div class="p-5 bg-amber-50 border border-amber-100 rounded-2xl text-sm text-amber-700 font-semibold">
           ⚠️ La période de vote est temporairement hors plage horaire.
         </div>
 
       {% elif a_vote %}
-        <div class="p-4 bg-green-50 border border-green-200 rounded-2xl text-sm text-green-700 font-semibold">
+        <div class="p-5 bg-green-50 border border-green-200 rounded-2xl text-sm text-green-700 font-semibold">
           ✅ Vous avez déjà voté. Merci pour votre participation !
         </div>
 
       {% else %}
-        <form method="post" class="space-y-3">
+        <form method="post" class="space-y-3" id="vote-form">
           {% csrf_token %}
           {% for candidat in candidats %}
-          <label class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-brand-400 hover:bg-brand-50 cursor-pointer transition-all">
-            <input type="radio" name="candidat_slug" value="{{ candidat.slug }}" required class="accent-brand-600">
-            <span class="font-semibold text-gray-800">
-              {{ candidat.demande.utilisateur.nom|default:"" }} {{ candidat.demande.utilisateur.prenom|default:"" }}
-            </span>
+          <label class="vote-option flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-brand-400 hover:bg-brand-50 cursor-pointer transition-all group">
+            <input type="radio" name="candidat_slug" value="{{ candidat.slug }}" required class="w-5 h-5 accent-brand-600">
+            <div class="flex-1">
+              <span class="font-semibold text-gray-800 group-hover:text-brand-700">{{ candidat.demande.utilisateur.nom|default:"" }} {{ candidat.demande.utilisateur.prenom|default:"" }}</span>
+              <p class="text-xs text-gray-400 mt-0.5">{{ candidat.demande.utilisateur.filiere|default:"" }}</p>
+            </div>
           </label>
           {% empty %}
           <p class="text-sm text-gray-400">Aucun candidat disponible.</p>
           {% endfor %}
           {% if candidats %}
           <button id="vote-submit-btn" type="submit"
-            class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-colors mt-2">
+            class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-indigo-600 text-white font-bold transition-all hover:shadow-lg hover:scale-[1.02] mt-2">
             🗳️ Enregistrer mon vote
           </button>
           {% endif %}
@@ -154,7 +182,7 @@
     }
     renderBars();
 
-    // Countdown — pointe sur date_fin_vote (période 2)
+    // Countdown
     const timeLeftNode = document.getElementById("time-left");
     const submitBtn    = document.getElementById("vote-submit-btn");
     const endAt        = new Date("{{ scrutin.date_fin_vote|date:'c' }}");
@@ -170,7 +198,7 @@
         const m = Math.floor((diff % 3600000)  / 60000);
         const s = Math.floor((diff % 60000)    / 1000);
         if (timeLeftNode) {
-          timeLeftNode.textContent = `Vote dans : ${d}j ${h}h ${m}m ${s}s`;
+          timeLeftNode.textContent = `⏰ Vote dans : ${d}j ${h}h ${m}m ${s}s`;
           timeLeftNode.className   = "text-sm font-bold text-indigo-700 mt-2";
         }
         return;
@@ -179,7 +207,7 @@
       const diff = endAt - now;
       if (diff <= 0) {
         if (timeLeftNode) {
-          timeLeftNode.textContent = "La période de vote est terminée.";
+          timeLeftNode.textContent = "⏰ La période de vote est terminée.";
           timeLeftNode.className   = "text-sm font-bold text-red-700 mt-2";
         }
         if (submitBtn) {
@@ -194,7 +222,7 @@
       const minutes = Math.floor((total % 3600)  / 60);
       const seconds = total % 60;
       if (timeLeftNode) {
-        timeLeftNode.textContent = `Temps restant pour voter : ${days}j ${hours}h ${minutes}m ${seconds}s`;
+        timeLeftNode.textContent = `⏳ Temps restant : ${days}j ${hours}h ${minutes}m ${seconds}s`;
         timeLeftNode.className   = "text-sm font-bold text-amber-700 mt-2";
       }
     }
@@ -210,21 +238,32 @@
       const container = document.getElementById("live-results");
       container.innerHTML = "";
       if (!data.payload.length) {
-        container.innerHTML = '<p class="text-sm text-gray-400">Aucun candidat pour ce scrutin.</p>';
+        container.innerHTML = `
+          <div class="text-center py-12">
+            <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <p class="text-sm text-gray-400">Aucun candidat pour ce scrutin.</p>
+          </div>
+        `;
         return;
       }
       const total = data.payload.reduce((sum, row) => sum + Number(row.votes || 0), 0);
       data.payload.forEach((row) => {
         const pct  = total ? (Number(row.votes || 0) * 100) / total : 0;
         const item = document.createElement("div");
-        item.className = "rounded-2xl border border-gray-100 p-4";
+        item.className = "candidate-card rounded-2xl border border-gray-100 p-4 hover:shadow-md transition-all";
         item.innerHTML = `
-          <div class="flex items-center justify-between gap-3">
-            <p class="font-bold text-gray-900">${row.nom || "Candidat"}</p>
-            <span class="text-sm font-black text-brand-700">${row.votes} vote(s)</span>
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow">
+              ${row.nom ? row.nom[0] : "?"}
+            </div>
+            <div class="flex-1">
+              <p class="font-bold text-gray-900 text-base">${row.nom || "Candidat"}</p>
+              <p class="text-xs text-gray-500">—</p>
+            </div>
+            <span class="text-sm font-black text-brand-700 votes-count">${row.votes} vote(s)</span>
           </div>
-          <div class="w-full h-2 bg-gray-100 rounded-full mt-3">
-            <div class="h-2 bg-brand-600 rounded-full" style="width:${pct}%"></div>
+          <div class="w-full h-2.5 bg-gray-100 rounded-full mt-4 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-brand-500 to-indigo-600 rounded-full" style="width:${pct}%"></div>
           </div>
         `;
         container.appendChild(item);

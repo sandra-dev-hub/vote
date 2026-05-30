@@ -1,0 +1,140 @@
+{% extends "pages/admin_dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Utilisateurs | ICAB Bafoussam{% endblock %}
+{% block nav_dashboard %}sidebar-link-active{% endblock %}
+
+{% block content %}
+<header class="h-20 bg-white border-b border-gray-100 px-6 lg:px-8 flex items-center justify-between">
+    <div>
+        <h2 class="text-lg font-black text-gray-900">Utilisateurs</h2>
+        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Gestion des comptes</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <form method="get" class="flex items-center gap-2">
+            <select name="role" onchange="this.form.submit()" class="text-xs font-bold border border-gray-200 rounded-xl px-3 py-2">
+                <option value="">Tous les rôles</option>
+                <option value="ADMIN" {% if request.GET.role == 'ADMIN' %}selected{% endif %}>Administrateurs</option>
+                <option value="CANDIDAT" {% if request.GET.role == 'CANDIDAT' %}selected{% endif %}>Candidats</option>
+                <option value="ELECTEUR" {% if request.GET.role == 'ELECTEUR' %}selected{% endif %}>Électeurs</option>
+            </select>
+        </form>
+    </div>
+</header>
+
+<div class="px-6 lg:px-8 py-6">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="mb-4 px-5 py-3 rounded-xl border {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-700{% else %}bg-red-50 border-red-200 text-red-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 divide-x divide-gray-100 bg-white rounded-3xl border border-gray-100 mb-8">
+        <div class="px-6 py-5 text-center">
+            <p class="text-3xl font-black text-brand-700">{{ nb_admin }}</p>
+            <p class="text-xs font-bold text-gray-400">ADMINS</p>
+        </div>
+        <div class="px-6 py-5 text-center">
+            <p class="text-3xl font-black text-amber-500">{{ nb_candidat }}</p>
+            <p class="text-xs font-bold text-gray-400">CANDIDATS</p>
+        </div>
+        <div class="px-6 py-5 text-center">
+            <p class="text-3xl font-black text-green-600">{{ nb_electeur }}</p>
+            <p class="text-xs font-bold text-gray-400">ÉLECTEURS</p>
+        </div>
+    </div>
+
+    <!-- Tableau -->
+    <div class="bg-white rounded-3xl border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table id="utilisateurs-table" class="w-full">
+                <thead>
+                <tr class="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-widest">
+                    <th class="px-6 py-5 text-left">Utilisateur</th>
+                    <th class="px-6 py-5 text-left">Email</th>
+                    <th class="px-6 py-5 text-left">Matricule</th>
+                    <th class="px-6 py-5 text-left">Filière</th>
+                    <th class="px-6 py-5 text-left">Niveau</th>
+                    <th class="px-6 py-5 text-left">Rôle</th>
+                    <th class="px-6 py-5 text-left">Statut</th>
+                    <th class="px-6 py-5 text-left">Créé le</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                {% for utilisateur in utilisateurs %}
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <!-- Photo & Nom -->
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-3">
+                            {% if utilisateur.photo %}
+                                <img src="{{ utilisateur.photo.url }}" class="w-10 h-10 rounded-xl object-cover border border-gray-200" alt="">
+                            {% else %}
+                                <div class="w-10 h-10 rounded-xl bg-brand-100 flex items-center justify-center text-brand-700 font-bold text-sm">
+                                    {{ utilisateur.nom|slice:":1"|upper|default:"?" }}
+                                </div>
+                            {% endif %}
+                            <span class="font-semibold text-gray-900">{{ utilisateur.nom|default:"" }} {{ utilisateur.prenom|default:"" }}</span>
+                        </div>
+                    </td>
+
+                    <td class="px-6 py-5 text-sm text-gray-600">{{ utilisateur.email }}</td>
+
+                    <td class="px-6 py-5 font-mono text-xs text-gray-500">{{ utilisateur.matricule|default:"—" }}</td>
+
+                    <td class="px-6 py-5 text-sm text-gray-600">{{ utilisateur.filiere|default:"—" }}</td>
+
+                    <td class="px-6 py-5 text-sm text-gray-600">{{ utilisateur.niveau|default:"—" }}</td>
+
+                    <td class="px-6 py-5">
+                        {% if utilisateur.role == "ADMIN" %}
+                            <span class="px-3 py-1 bg-brand-100 text-brand-700 rounded-full text-xs font-bold">Admin</span>
+                        {% elif utilisateur.role == "CANDIDAT" %}
+                            <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Candidat</span>
+                        {% else %}
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">Électeur</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="px-6 py-5">
+                        {% if utilisateur.is_active %}
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Actif</span>
+                        {% else %}
+                            <span class="px-3 py-1 bg-gray-200 text-gray-600 rounded-full text-xs font-bold">Inactif</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="px-6 py-5 text-sm text-gray-500">{{ utilisateur.created|date:"d M Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-20 text-gray-400">Aucun utilisateur trouvé</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  $(function () {
+    $("#utilisateurs-table").DataTable({
+      responsive: true,
+      pageLength: 25,
+      order: [[7, "desc"]],
+      language: {
+        search: "Rechercher :",
+        lengthMenu: "Afficher _MENU_ lignes",
+        info: "_START_ - _END_ sur _TOTAL_",
+        paginate: { previous: "Précédent", next: "Suivant" },
+        zeroRecords: "Aucun résultat",
+      },
+    });
+  });
+</script>
+{% endblock %}

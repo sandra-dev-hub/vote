@@ -61,7 +61,8 @@ class Scrutin(BaseModel):
 
     date_debut = models.DateTimeField()
     date_fin = models.DateTimeField()
-
+    date_debut_vote = models.DateTimeField()
+    date_fin_vote = models.DateTimeField()
     statut = models.CharField(
         max_length=50,
         choices=StatutScrutin.choices,
@@ -81,7 +82,13 @@ class Scrutin(BaseModel):
         verbose_name_plural = 'Scrutins'
 
     def ouvrir(self):
+        """Passe le scrutin en période 1 (candidatures & inscriptions)."""
         self.statut = StatutScrutin.OUVERT
+        self.save()
+
+    def passer_en_vote(self):
+        """Passe le scrutin en période 2 (vote actif)."""
+        self.statut = StatutScrutin.EN_VOTE
         self.save()
 
     def annuler(self):
@@ -95,12 +102,25 @@ class Scrutin(BaseModel):
     def __str__(self):
         return self.titre
 
-    def is_open_for_vote(self):
+    def est_periode_candidature(self):
+        """Retourne True si on est en période 1 : dépôt des candidatures et demandes électeur."""
         now = timezone.now()
         return (
             self.statut == StatutScrutin.OUVERT
             and self.date_debut <= now <= self.date_fin
         )
+
+    def est_periode_vote(self):
+        """Retourne True si on est en période 2 : vote actif."""
+        now = timezone.now()
+        return (
+            self.statut == StatutScrutin.EN_VOTE
+            and self.date_debut_vote <= now <= self.date_fin_vote
+        )
+
+    def is_open_for_vote(self):
+        """Alias pour est_periode_vote() — compatibilité ascendante."""
+        return self.est_periode_vote()
 
 
 class DemandeElecteur(BaseModel):
@@ -241,21 +261,20 @@ class Vote(BaseModel):
         verbose_name_plural = 'Votes'
 
     def clean(self):
-        #  Empêche incohérence scrutin
+        # Empêche incohérence scrutin
         if self.candidat.scrutin_id != self.electeur.scrutin_id:
-            raise ValidationError("Le candidat n'appartient pas au scrutin de l'électeur")
-
-        if self.electeur.scrutin_id != self.candidat.scrutin_id:
-            raise ValidationError("L'électeur n'appartient pas au scrutin du candidat")
+            raise ValidationError("Le candidat n'appartient pas au scrutin de l'électeur.")
 
         scrutin = self.electeur.scrutin
         now = timezone.now()
-        if scrutin.statut != StatutScrutin.OUVERT:
-            raise ValidationError("Ce scrutin n'est pas ouvert au vote.")
-        if now < scrutin.date_debut:
-            raise ValidationError("Le scrutin n'a pas encore commence.")
-        if now > scrutin.date_fin:
-            raise ValidationError("Ce scrutin est termine.")
+
+        # Vérifier que le scrutin est bien en période de VOTE (période 2)
+        if scrutin.statut != StatutScrutin.EN_VOTE:
+            raise ValidationError("Ce scrutin n'est pas en période de vote.")
+        if now < scrutin.date_debut_vote:
+            raise ValidationError("La période de vote n'a pas encore commencé.")
+        if now > scrutin.date_fin_vote:
+            raise ValidationError("La période de vote est terminée.")
 
     def save(self, *args, **kwargs):
         self.clean()

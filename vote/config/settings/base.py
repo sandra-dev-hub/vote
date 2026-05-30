@@ -286,9 +286,12 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULE = {
-    "notifier-electeurs-au-demarrage": {
-        "task": "vote.users.tasks.notify_eligible_electors_for_started_scrutins",
-        "schedule": 60.0,
+    # Vérifie toutes les 60s si un scrutin doit changer de période :
+    # OUVERT → EN_VOTE (quand date_debut_vote est atteinte)
+    # EN_VOTE → FERME  (quand date_fin_vote est dépassée)
+    "transition-automatique-periodes-scrutin": {
+        "task": "vote.users.tasks.transition_automatique_periodes",
+        "schedule": 60.0,  # toutes les 60 secondes
     },
 }
 

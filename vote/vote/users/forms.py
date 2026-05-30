@@ -78,12 +78,53 @@ class UserRegisterForm(UserCreationForm):
 class ScrutinForm(forms.ModelForm):
     class Meta:
         model = Scrutin
-        fields = ["titre", "description", "date_debut", "date_fin", "statut"]
+        fields = [
+            "titre", "description",
+            "date_debut", "date_fin",          # Période 1 : candidatures
+            "date_debut_vote", "date_fin_vote", # Période 2 : vote
+            "statut",
+        ]
         widgets = {
-            "date_debut": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "date_fin": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "date_debut": forms.DateTimeInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            "date_fin": forms.DateTimeInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            "date_debut_vote": forms.DateTimeInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            ),
+            "date_fin_vote": forms.DateTimeInput(
+                attrs={"type": "datetime-local"},
+                format="%Y-%m-%dT%H:%M",
+            ),
             "description": forms.Textarea(attrs={"rows": 3}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date_debut = cleaned_data.get("date_debut")
+        date_fin = cleaned_data.get("date_fin")
+        date_debut_vote = cleaned_data.get("date_debut_vote")
+        date_fin_vote = cleaned_data.get("date_fin_vote")
+
+        if date_debut and date_fin and date_debut >= date_fin:
+            self.add_error("date_fin", "La fin de la période 1 doit être après son début.")
+
+        if date_debut_vote and date_fin_vote and date_debut_vote >= date_fin_vote:
+            self.add_error("date_fin_vote", "La fin du vote doit être après son début.")
+
+        if date_fin and date_debut_vote and date_debut_vote <= date_fin:
+            self.add_error(
+                "date_debut_vote",
+                "La période de vote doit commencer après la fin de la période 1."
+            )
+
+        return cleaned_data
+
 
 
 class DemandeElecteurForm(forms.ModelForm):

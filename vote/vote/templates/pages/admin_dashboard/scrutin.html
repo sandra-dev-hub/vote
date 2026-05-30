@@ -55,52 +55,78 @@
     <form method="POST" action="{% url 'users:liste_scrutins' %}" class="p-7">
       {% csrf_token %}
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-5">
+      <!-- TITRE -->
+      <div class="mb-5">
+        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Titre</label>
+        <input type="text" name="titre" required
+          class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
+      </div>
 
-        <!-- TITRE -->
-        <div>
-          <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Titre</label>
-          <input type="text" name="titre" required
-            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
+      <!-- PÉRIODE 1 : CANDIDATURES -->
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
+            <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+            Période 1 — Dépôt des candidatures &amp; inscriptions électeurs
+          </span>
         </div>
-
-        <!-- DEBUT -->
-        <div>
-          <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Ouverture</label>
-          <input type="datetime-local" name="date_debut" required
-            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Ouverture dépôts</label>
+            <input type="datetime-local" name="date_debut" required
+              class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Fermeture dépôts</label>
+            <input type="datetime-local" name="date_fin" required
+              class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
+          </div>
         </div>
+      </div>
 
-        <!-- FIN -->
-        <div>
-          <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Fermeture</label>
-          <input type="datetime-local" name="date_fin" required
-            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
+      <!-- PÉRIODE 2 : VOTE -->
+      <div class="mb-5">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+            Période 2 — Vote
+          </span>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Ouverture du vote</label>
+            <input type="datetime-local" name="date_debut_vote" required
+              class="w-full px-4 py-2.5 bg-gray-50 border border-emerald-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Fermeture du vote</label>
+            <input type="datetime-local" name="date_fin_vote" required
+              class="w-full px-4 py-2.5 bg-gray-50 border border-emerald-200 rounded-xl text-sm focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none">
+          </div>
+        </div>
+      </div>
 
-        <!-- STATUT -->
+      <!-- STATUT + DESCRIPTION -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div>
           <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Statut initial</label>
           <select name="statut"
             class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-            <option value="ouvert">ouvert</option>
-            <option value="ferme">ferme</option>
-            <option value="en attente">en attente</option>
+            <option value="ouvert">Ouvert</option>
+            <option value="ferme">Fermé</option>
+            <option value="annule">Annulé</option>
           </select>
         </div>
-
-      </div>
-
-      <!-- DESCRIPTION -->
-      <div class="mb-6">
-        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Description</label>
-        <textarea name="description" rows="2" required
-          class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm resize-none"></textarea>
+        <div class="md:col-span-2">
+          <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Description</label>
+          <textarea name="description" rows="2" required
+            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm resize-none"></textarea>
+        </div>
       </div>
 
       <div class="flex justify-end">
         <button type="submit"
-          class="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold">
+          class="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors">
           Enregistrer le scrutin
         </button>
       </div>
@@ -137,17 +163,19 @@
             {{ scrutin.date_debut|date:"d M Y" }} → {{ scrutin.date_fin|date:"d M Y" }}
           </td>
 
-          <!-- STATUT CORRIGÉ -->
           <td class="px-5 py-4">
 
             {% if scrutin.statut == "ouvert" %}
-              <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-bold">Ouvert</span>
+              <span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold">📋 Candidatures</span>
+
+            {% elif scrutin.statut == "en_vote" %}
+              <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold">🗳️ En vote</span>
 
             {% elif scrutin.statut == "ferme" %}
               <span class="px-3 py-1 bg-red-50 text-red-700 rounded-full text-xs font-bold">Fermé</span>
 
-            {% elif scrutin.statut == "en attente" %}
-              <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold">En attente</span>
+            {% elif scrutin.statut == "annule" %}
+              <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold">Annulé</span>
 
             {% endif %}
 

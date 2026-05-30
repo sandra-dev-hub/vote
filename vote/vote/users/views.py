@@ -4,8 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
-from django.conf import settings
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -16,9 +14,12 @@ from django.views.generic import (
     CreateView, TemplateView, UpdateView, DeleteView, ListView
 )
 
-
 from django.views.generic import TemplateView
 from .models import Candidat, Electeur, DemandeCandidature, DemandeElecteur, Vote
+from .tasks import (
+    notify_electeur_statut_demande,
+    notify_candidat_statut_demande,
+)
 
 from .forms import (
     UserRegisterForm,
@@ -33,24 +34,10 @@ from .models import (
     Electeur,
     Candidat
 )
-from vote.global_data.enums import StatutDemande
+from vote.global_data.enums import StatutDemande, StatutScrutin
 
 
 # ====================== HELPERS ======================
-def envoyer_notification(utilisateur, sujet, corps):
-    """Envoie un email de notification à l'utilisateur."""
-    try:
-        send_mail(
-            subject=sujet,
-            message=corps,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[utilisateur.email],
-            fail_silently=True,
-        )
-    except Exception:
-        pass  # Ne jamais bloquer sur l'email
-
-
 def get_sidebar_counts():
     """Retourne les compteurs de demandes en attente pour la sidebar."""
     return {
@@ -255,14 +242,18 @@ class ScrutinUserView(TemplateView):
         commentaire = request.POST.get("commentaire", "").strip()
 
         try:
-            scrutin = Scrutin.objects.get(
-                pk=scrutin_id,
-                statut="ouvert",
-                date_debut__lte=timezone.now(),
-                date_fin__gte=timezone.now(),
-            )
+            scrutin = Scrutin.objects.get(pk=scrutin_id, statut__in=["ouvert", "en_vote"])
         except Scrutin.DoesNotExist:
-            messages.error(request, "Scrutin introuvable ou fermé.")
+            messages.error(request, "Scrutin introuvable.")
+            return self.get(request, *args, **kwargs)
+
+        # ── Vérification : on doit être en période 1 pour soumettre ──
+        if not scrutin.est_periode_candidature():
+            messages.error(
+                request,
+                "La période de dépôt des candidatures et des demandes d'électeur est terminée. "
+                "Aucune nouvelle soumission n'est acceptée."
+            )
             return self.get(request, *args, **kwargs)
 
         if type_demande == "electeur":
@@ -340,16 +331,8 @@ class TraiterDemandeElecteurView(LoginRequiredMixin, View):
                 defaults={"scrutin": demande.scrutin}
             )
 
-            envoyer_notification(
-                demande.utilisateur,
-                sujet="✅ Votre demande d'électeur a été approuvée — ICAB",
-                corps=(
-                    f"Bonjour {demande.utilisateur.prenom or demande.utilisateur.email},\n\n"
-                    f"Votre demande d'inscription comme électeur pour le scrutin "
-                    f"« {demande.scrutin.titre} » a été APPROUVÉE.\n\n"
-                    f"Bonne élection !\n\nL'équipe ICAB Bafoussam"
-                ),
-            )
+            # Notification asynchrone via Celery
+            notify_electeur_statut_demande.delay(str(demande.pk))
             messages.success(request, f"✅ Demande de {demande.utilisateur.email} approuvée.")
 
         elif action == "rejeter":
@@ -357,16 +340,8 @@ class TraiterDemandeElecteurView(LoginRequiredMixin, View):
             demande.date_traitement = timezone.now()
             demande.save()
 
-            envoyer_notification(
-                demande.utilisateur,
-                sujet="❌ Votre demande d'électeur a été refusée — ICAB",
-                corps=(
-                    f"Bonjour {demande.utilisateur.prenom or demande.utilisateur.email},\n\n"
-                    f"Votre demande d'inscription comme électeur pour le scrutin "
-                    f"« {demande.scrutin.titre} » n'a pas été acceptée.\n\n"
-                    f"L'équipe ICAB Bafoussam"
-                ),
-            )
+            # Notification asynchrone via Celery
+            notify_electeur_statut_demande.delay(str(demande.pk))
             messages.warning(request, f"❌ Demande de {demande.utilisateur.email} rejetée.")
 
         return redirect("users:demandes_electeurs")
@@ -420,16 +395,8 @@ class TraiterDemandeCandidatureView(LoginRequiredMixin, View):
                 defaults={"slug": slug, "scrutin": demande.scrutin}
             )
 
-            envoyer_notification(
-                demande.utilisateur,
-                sujet="🎉 Votre candidature a été approuvée — ICAB",
-                corps=(
-                    f"Bonjour {demande.utilisateur.prenom or demande.utilisateur.email},\n\n"
-                    f"Félicitations ! Votre candidature pour le scrutin "
-                    f"« {demande.scrutin.titre} » a été APPROUVÉE.\n\n"
-                    f"Bonne chance !\n\nL'équipe ICAB Bafoussam"
-                ),
-            )
+            # Notification asynchrone via Celery
+            notify_candidat_statut_demande.delay(str(demande.pk))
             messages.success(request, f"🎉 Candidature de {demande.utilisateur.email} approuvée.")
 
         elif action == "rejeter":
@@ -437,15 +404,8 @@ class TraiterDemandeCandidatureView(LoginRequiredMixin, View):
             demande.date_traitement = timezone.now()
             demande.save()
 
-            envoyer_notification(
-                demande.utilisateur,
-                sujet="❌ Votre candidature n'a pas été retenue — ICAB",
-                corps=(
-                    f"Bonjour {demande.utilisateur.prenom or demande.utilisateur.email},\n\n"
-                    f"Votre candidature pour le scrutin « {demande.scrutin.titre} » "
-                    f"n'a pas été retenue.\n\nL'équipe ICAB Bafoussam"
-                ),
-            )
+            # Notification asynchrone via Celery
+            notify_candidat_statut_demande.delay(str(demande.pk))
             messages.warning(request, f"❌ Candidature de {demande.utilisateur.email} rejetée.")
 
         return redirect("users:demandes_candidatures")
@@ -462,6 +422,7 @@ class ScrutinVoteView(LoginRequiredMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         scrutin = self.get_scrutin()
         ctx["scrutin"] = scrutin
+        ctx["est_periode_vote"] = scrutin.est_periode_vote()
         ctx["candidats"] = Candidat.objects.filter(scrutin=scrutin).select_related("demande__utilisateur").order_by(
             "-nombre_vote",
         )

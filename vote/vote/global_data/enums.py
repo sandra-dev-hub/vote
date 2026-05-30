@@ -8,9 +8,10 @@ class Role(models.TextChoices):
 
 
 class StatutScrutin(models.TextChoices):
-    OUVERT = "ouvert", "Ouvert"
-    FERME  = "ferme",  "Fermé"
-    ANNULE = "en attente", "En attente"
+    OUVERT  = "ouvert",  "Ouvert"    # Période 1 : dépôt candidatures & demandes électeur
+    EN_VOTE = "en_vote", "En vote"   # Période 2 : vote actif
+    FERME   = "ferme",   "Fermé"     # Scrutin terminé
+    ANNULE  = "annule",  "Annulé"    # Scrutin annulé
 
 
 class StatutDemande(models.TextChoices):

@@ -27,72 +27,87 @@
 
                 <!-- Titre -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Titre du scrutin
-                    </label>
-
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Titre du scrutin</label>
                     {{ form.titre }}
                 </div>
 
                 <!-- Description -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Description
-                    </label>
-
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
                     {{ form.description }}
                 </div>
 
-                <!-- Dates -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Date de début
-                        </label>
-
-                        {{ form.date_debut }}
+                <!-- PÉRIODE 1 : Candidatures -->
+                <div class="border border-indigo-100 rounded-2xl p-5 bg-indigo-50/40">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                        <p class="text-xs font-bold text-indigo-700 uppercase tracking-wider">
+                            Période 1 — Dépôt des candidatures &amp; inscriptions électeurs
+                        </p>
                     </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Date de fin
-                        </label>
-
-                        {{ form.date_fin }}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Ouverture des dépôts</label>
+                            {{ form.date_debut }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Fermeture des dépôts</label>
+                            {{ form.date_fin }}
+                        </div>
                     </div>
+                </div>
 
+                <!-- PÉRIODE 2 : Vote -->
+                <div class="border border-emerald-100 rounded-2xl p-5 bg-emerald-50/40">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                        <p class="text-xs font-bold text-emerald-700 uppercase tracking-wider">
+                            Période 2 — Vote
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Ouverture du vote</label>
+                            {{ form.date_debut_vote }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Fermeture du vote</label>
+                            {{ form.date_fin_vote }}
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Statut -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Statut
-                    </label>
-
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Statut</label>
                     {{ form.statut }}
                 </div>
 
+                <!-- Erreurs formulaire -->
+                {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                        <p class="text-xs text-red-700 font-semibold">{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 <!-- Boutons -->
                 <div class="flex items-center justify-end gap-4 pt-4">
-
-                    <a
-                        href="{% url 'users:liste_scrutins' %}"
-                        class="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all font-medium"
-                    >
+                    <a href="{% url 'users:liste_scrutins' %}"
+                        class="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all font-medium">
                         Annuler
                     </a>
-
-                    <button
-                        type="submit"
-                        class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-all shadow-lg shadow-indigo-200"
-                    >
+                    <button type="submit"
+                        class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-all shadow-lg shadow-indigo-200">
                         Enregistrer les modifications
                     </button>
-
                 </div>
 
             </form>
+
 
         </div>
 

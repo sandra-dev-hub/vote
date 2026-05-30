@@ -4,42 +4,242 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Inscription | ICAB Bafoussam</title>
-
   <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
+  <style>
+    /* ── Champ uniforme ── */
+    .field-input {
+      width: 100%;
+      padding: 0.75rem 1.25rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #1a202c;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field-input:hover {
+      border-color: #a5b4fc;
+    }
+    .field-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+      background: #fafafe;
+    }
+    .field-input.has-error {
+      border-color: #f87171;
+      background: #fff8f8;
+    }
+    .field-input.has-error:focus {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.10);
+    }
+
+    /* Select arrow custom */
+    select.field-input {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+
+    /* Erreur inline sous le champ */
+    .field-error {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #ef4444;
+      margin-top: 5px;
+      margin-left: 4px;
+    }
+    .field-error::before {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      flex-shrink: 0;
+    }
+
+    /* Label uniforme */
+    .field-label {
+      display: block;
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-left: 4px;
+      margin-bottom: 7px;
+    }
+
+    /* Matricule group */
+    .matricule-group {
+      display: flex;
+      align-items: center;
+    }
+    .matricule-prefix {
+      padding: 0.75rem 1rem;
+      background: #f1f5f9;
+      border: 1.5px solid #e2e8f0;
+      border-right: none;
+      border-radius: 1rem 0 0 1rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .matricule-input {
+      border-radius: 0 1rem 1rem 0 !important;
+    }
+
+    /* Bouton submit */
+    .btn-submit {
+      width: 100%;
+      padding: 1.1rem;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+      letter-spacing: 0.01em;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+    }
+    .btn-submit:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+    .btn-submit:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-submit .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 8px;
+    }
+    .btn-submit.loading .spinner { display: inline-block; }
+    .btn-submit.loading .btn-text { opacity: 0.7; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Photo upload zone */
+    .avatar-ring {
+      position: relative;
+      display: inline-block;
+    }
+    .avatar-img {
+      width: 6rem;
+      height: 6rem;
+      border-radius: 9999px;
+      object-fit: cover;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.18), 0 1px 3px rgba(0,0,0,0.1);
+      transition: box-shadow 0.2s ease;
+    }
+    .avatar-btn {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 9999px;
+      background: #4f46e5;
+      border: 2.5px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.15s ease;
+      box-shadow: 0 2px 8px rgba(79,70,229,0.3);
+    }
+    .avatar-btn:hover {
+      background: #4338ca;
+      transform: scale(1.08);
+    }
+    .avatar-btn svg {
+      width: 1rem;
+      height: 1rem;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* Checkbox custom */
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 0 2px;
+    }
+    input[type="checkbox"].custom-check {
+      width: 1.1rem;
+      height: 1.1rem;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: #6366f1;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    /* Animation entrée */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim-slide-up {
+      animation: slideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+  </style>
 </head>
 
 <body class="font-sans antialiased min-h-screen py-20 flex items-center justify-center hero-mesh relative overflow-x-hidden px-6">
 
-  <!-- Background -->
-  <div
-    class="absolute inset-0 opacity-10"
-    style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;">
+  <!-- Background dot grid -->
+  <div class="absolute inset-0 opacity-10"
+       style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;">
   </div>
 
   <main class="w-full max-w-xl relative z-10 anim-slide-up">
 
     <!-- Header -->
     <div class="flex flex-col items-center mb-10 text-center">
-
       <div class="w-14 h-14 rounded-2xl bg-white shadow-2xl flex items-center justify-center mb-4">
         <span class="text-brand-950 text-base font-black">ICAB</span>
       </div>
-
       <h1 class="text-white text-3xl font-black italic font-display tracking-tight">
         Créer votre compte
       </h1>
-
       <p class="text-blue-100/60 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">
         Rejoignez la vie citoyenne de l'ICAB
       </p>
-
     </div>
 
     <!-- Card -->
@@ -49,294 +249,271 @@
         method="post"
         action="{% url 'users:register' %}"
         enctype="multipart/form-data"
-        class="space-y-6">
+        id="register-form"
+        class="space-y-6"
+        novalidate>
 
         {% csrf_token %}
 
-        <!-- Errors -->
-        {% if form.errors %}
-        <div class="p-4 mb-6 text-sm text-red-800 rounded-2xl bg-red-50">
-          <span class="font-bold">
-            Veuillez corriger les erreurs suivantes :
-          </span>
-
-          <ul class="mt-2 list-disc list-inside">
-            {% for field in form %}
-              {% for error in field.errors %}
+        <!-- Erreurs globales non liées à un champ -->
+        {% if form.non_field_errors %}
+        <div class="flex items-start gap-3 p-4 text-sm text-red-800 rounded-2xl bg-red-50 border border-red-200">
+          <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <div>
+            <p class="font-bold mb-1">Erreur</p>
+            <ul class="space-y-0.5">
+              {% for error in form.non_field_errors %}
                 <li>{{ error }}</li>
               {% endfor %}
-            {% endfor %}
-          </ul>
+            </ul>
+          </div>
         </div>
         {% endif %}
 
         <div class="space-y-5">
 
           <!-- MATRICULE -->
-          <div class="space-y-2">
-
-            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-              Matricule
-            </label>
-
-            <div class="flex items-center">
-
-              <!-- Fixed part -->
-              <span
-                class="px-4 py-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-2xl text-sm font-bold text-gray-600">
-                ICAB-2026-
-              </span>
-
-              <!-- User part -->
+          <div>
+            <label class="field-label" for="id_matricule_suffix">Matricule</label>
+            <div class="matricule-group">
+              <span class="matricule-prefix">ICAB-2026-</span>
               <input
                 type="text"
+                id="id_matricule_suffix"
                 name="matricule"
                 required
                 maxlength="6"
                 pattern="[0-9]{6}"
                 placeholder="000001"
-                class="w-full px-5 py-3 border border-gray-300 rounded-r-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:outline-none text-sm font-semibold"
+                class="field-input matricule-input {% if form.matricule.errors %}has-error{% endif %}"
               />
-
             </div>
-
-            <p class="text-xs text-gray-500">
-              Entrez uniquement les 6 derniers chiffres
-            </p>
-
+            {% if form.matricule.errors %}
+              <p class="field-error">{{ form.matricule.errors.0 }}</p>
+            {% else %}
+              <p class="text-xs text-gray-400 mt-1.5 ml-1">Entrez uniquement les 6 derniers chiffres</p>
+            {% endif %}
           </div>
 
           <!-- EMAIL -->
-          <div class="space-y-2">
-
-            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-              Email académique
-            </label>
-
-            {{ form.email }}
-
+          <div>
+            <label class="field-label" for="{{ form.email.id_for_label }}">Email académique</label>
+            <input
+              type="email"
+              name="{{ form.email.html_name }}"
+              id="{{ form.email.id_for_label }}"
+              value="{{ form.email.value|default:'' }}"
+              placeholder="prenom.nom@icab.cm"
+              autocomplete="email"
+              class="field-input {% if form.email.errors %}has-error{% endif %}"
+            />
+            {% if form.email.errors %}
+              <p class="field-error">{{ form.email.errors.0 }}</p>
+            {% endif %}
           </div>
 
           <!-- NOM / PRENOM -->
-          <div class="grid md:grid-cols-2 gap-6">
-
-            <div class="space-y-2">
-
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                Nom
-              </label>
-
-              {{ form.nom }}
-
+          <div class="grid md:grid-cols-2 gap-5">
+            <div>
+              <label class="field-label" for="{{ form.nom.id_for_label }}">Nom</label>
+              <input
+                type="text"
+                name="{{ form.nom.html_name }}"
+                id="{{ form.nom.id_for_label }}"
+                value="{{ form.nom.value|default:'' }}"
+                placeholder="KAMGA"
+                class="field-input {% if form.nom.errors %}has-error{% endif %}"
+              />
+              {% if form.nom.errors %}
+                <p class="field-error">{{ form.nom.errors.0 }}</p>
+              {% endif %}
             </div>
-
-            <div class="space-y-2">
-
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                Prénom
-              </label>
-
-              {{ form.prenom }}
-
+            <div>
+              <label class="field-label" for="{{ form.prenom.id_for_label }}">Prénom</label>
+              <input
+                type="text"
+                name="{{ form.prenom.html_name }}"
+                id="{{ form.prenom.id_for_label }}"
+                value="{{ form.prenom.value|default:'' }}"
+                placeholder="Jean"
+                class="field-input {% if form.prenom.errors %}has-error{% endif %}"
+              />
+              {% if form.prenom.errors %}
+                <p class="field-error">{{ form.prenom.errors.0 }}</p>
+              {% endif %}
             </div>
-
           </div>
 
           <!-- FILIERE / NIVEAU -->
-          <div class="grid md:grid-cols-2 gap-6">
-
-            <div class="space-y-2">
-
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                Filière
-              </label>
-
-              {{ form.filiere }}
-
+          <div class="grid md:grid-cols-2 gap-5">
+            <div>
+              <label class="field-label" for="{{ form.filiere.id_for_label }}">Filière</label>
+              <select
+                name="{{ form.filiere.html_name }}"
+                id="{{ form.filiere.id_for_label }}"
+                class="field-input {% if form.filiere.errors %}has-error{% endif %}">
+                {% for value, label in form.filiere.field.choices %}
+                  <option value="{{ value }}" {% if form.filiere.value == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              {% if form.filiere.errors %}
+                <p class="field-error">{{ form.filiere.errors.0 }}</p>
+              {% endif %}
             </div>
-
-            <div class="space-y-2">
-
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                Niveau
-              </label>
-
-              {{ form.niveau }}
-
+            <div>
+              <label class="field-label" for="{{ form.niveau.id_for_label }}">Niveau</label>
+              <select
+                name="{{ form.niveau.html_name }}"
+                id="{{ form.niveau.id_for_label }}"
+                class="field-input {% if form.niveau.errors %}has-error{% endif %}">
+                {% for value, label in form.niveau.field.choices %}
+                  <option value="{{ value }}" {% if form.niveau.value == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              {% if form.niveau.errors %}
+                <p class="field-error">{{ form.niveau.errors.0 }}</p>
+              {% endif %}
             </div>
-
           </div>
 
           <!-- PHOTO PROFIL -->
-          <div class="space-y-3">
-
-            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-              Photo de profil
-            </label>
-
-            <div class="flex items-center gap-6">
-
-              <!-- Avatar -->
-              <div class="relative">
-
-                <!-- Preview image -->
+          <div>
+            <label class="field-label">Photo de profil</label>
+            <div class="flex items-center gap-6 p-4 rounded-2xl border-2 border-dashed border-gray-200 hover:border-indigo-300 transition-colors">
+              <div class="avatar-ring">
                 <img
                   id="preview-image"
                   src="{% static 'images/default-avatar.png' %}"
-                  class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl"
+                  alt="Aperçu de votre photo de profil"
+                  class="avatar-img"
                 />
-
-                <!-- Camera button -->
-                <label
-                  for="id_photo"
-                  class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-brand-700 hover:bg-brand-800 text-white flex items-center justify-center cursor-pointer shadow-lg transition-all">
-
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    viewBox="0 0 24 24">
-
+                <label for="id_photo" class="avatar-btn" title="Changer la photo">
+                  <svg viewBox="0 0 24 24">
                     <path d="M3 7h4l2-2h6l2 2h4v12H3V7z"/>
                     <circle cx="12" cy="13" r="4"/>
-
                   </svg>
-
                 </label>
-
-                <!-- Hidden input -->
                 {{ form.photo }}
-
               </div>
-
-              <!-- Text -->
               <div>
-
-                <h3 class="text-sm font-bold text-gray-800">
-                  Ajouter une photo
-                </h3>
-
-                <p class="text-xs text-gray-500 mt-1">
-                  JPG ou PNG • 5 Mo max
-                </p>
-
-                <p
-                  id="file-name"
-                  class="text-xs text-brand-700 font-semibold mt-2">
+                <p class="text-sm font-bold text-gray-800">Ajouter une photo</p>
+                <p class="text-xs text-gray-400 mt-0.5">JPG ou PNG · 5 Mo max</p>
+                <p id="file-name" class="text-xs font-semibold mt-2" style="color:#6366f1">
                   Aucune photo sélectionnée
                 </p>
-
               </div>
-
             </div>
-
+            {% if form.photo.errors %}
+              <p class="field-error">{{ form.photo.errors.0 }}</p>
+            {% endif %}
           </div>
 
           <!-- PASSWORDS -->
-          <div class="grid md:grid-cols-2 gap-6">
-
-            <div class="space-y-2">
-
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                Mot de passe
-              </label>
-
-              {{ form.password1 }}
-
+          <div class="grid md:grid-cols-2 gap-5">
+            <div>
+              <label class="field-label" for="{{ form.password1.id_for_label }}">Mot de passe</label>
+              <input
+                type="password"
+                name="{{ form.password1.html_name }}"
+                id="{{ form.password1.id_for_label }}"
+                placeholder="••••••••"
+                autocomplete="new-password"
+                class="field-input {% if form.password1.errors %}has-error{% endif %}"
+              />
+              {% if form.password1.errors %}
+                <p class="field-error">{{ form.password1.errors.0 }}</p>
+              {% endif %}
             </div>
-
-            <div class="space-y-2">
-
-              <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                Confirmer le mot de passe
-              </label>
-
-              {{ form.password2 }}
-
+            <div>
+              <label class="field-label" for="{{ form.password2.id_for_label }}">Confirmer</label>
+              <input
+                type="password"
+                name="{{ form.password2.html_name }}"
+                id="{{ form.password2.id_for_label }}"
+                placeholder="••••••••"
+                autocomplete="new-password"
+                class="field-input {% if form.password2.errors %}has-error{% endif %}"
+              />
+              {% if form.password2.errors %}
+                <p class="field-error">{{ form.password2.errors.0 }}</p>
+              {% endif %}
             </div>
-
           </div>
 
         </div>
 
         <!-- Terms -->
-        <div class="flex items-start gap-3 px-1">
-
-          <input
-            type="checkbox"
-            id="terms"
-            required
-            class="mt-1 w-4 h-4 rounded border-gray-300 text-brand-600"
-          />
-
-          <label for="terms" class="text-xs font-medium text-gray-500">
-            J'accepte les conditions d'utilisation et la politique de confidentialité
+        <div class="checkbox-row">
+          <input type="checkbox" id="terms" required class="custom-check" />
+          <label for="terms" class="text-xs font-medium text-gray-500 leading-relaxed">
+            J'accepte les
+            <a href="#" class="text-indigo-600 font-semibold hover:underline">conditions d'utilisation</a>
+            et la
+            <a href="#" class="text-indigo-600 font-semibold hover:underline">politique de confidentialité</a>
           </label>
-
         </div>
 
-        <!-- Button -->
-        <button
-          type="submit"
-          class="w-full py-5 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-2xl transition-all">
-
-          Créer mon compte
-
+        <!-- Bouton submit -->
+        <button type="submit" class="btn-submit" id="submit-btn">
+          <span class="spinner"></span>
+          <span class="btn-text">Créer mon compte</span>
         </button>
 
       </form>
 
       <!-- Login -->
-      <div class="mt-10 text-center">
-
+      <div class="mt-8 text-center">
         <p class="text-xs text-gray-400">
-
           Déjà un compte ?
-
-          <a
-            href="{% url 'users:login' %}"
-            class="text-brand-700 font-bold hover:underline">
-
+          <a href="{% url 'users:login' %}" class="font-bold hover:underline" style="color:#6366f1">
             Se connecter
-
           </a>
-
         </p>
-
       </div>
 
     </div>
 
   </main>
 
-  <!-- IMAGE PREVIEW SCRIPT -->
   <script>
-
-    const input = document.getElementById("id_photo");
+    /* ── Prévisualisation photo ── */
+    const input   = document.getElementById("id_photo");
     const preview = document.getElementById("preview-image");
     const fileName = document.getElementById("file-name");
 
     input.addEventListener("change", function () {
-
       const file = this.files[0];
+      if (!file) return;
 
-      if (file) {
-
-        fileName.textContent = file.name;
-
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          preview.src = e.target.result;
-        };
-
-        reader.readAsDataURL(file);
-
+      /* Validation taille (5 Mo) */
+      if (file.size > 5 * 1024 * 1024) {
+        fileName.textContent = "⚠ Fichier trop lourd (max 5 Mo)";
+        fileName.style.color = "#ef4444";
+        this.value = "";
+        return;
       }
 
+      fileName.textContent = file.name;
+      fileName.style.color = "#6366f1";
+
+      const reader = new FileReader();
+      reader.onload = e => { preview.src = e.target.result; };
+      reader.readAsDataURL(file);
     });
 
+    /* ── Loading state sur submit ── */
+    const form = document.getElementById("register-form");
+    const btn  = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", function () {
+      if (form.checkValidity()) {
+        btn.disabled = true;
+        btn.classList.add("loading");
+        btn.querySelector(".btn-text").textContent = "Création en cours…";
+      }
+    });
   </script>
 
 </body>

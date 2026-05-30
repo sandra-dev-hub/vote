@@ -434,14 +434,23 @@ class ScrutinVoteView(LoginRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         scrutin = self.get_scrutin()
+
+        # ── Garde de sécurité : vérifier qu'on est bien en période de vote ──
+        if not scrutin.est_periode_vote():
+            messages.error(
+                request,
+                "Le vote n'est pas encore ouvert ou la période de vote est terminée."
+            )
+            return redirect("users:scrutin_vote", slug=scrutin.slug)
+
         electeur = Electeur.objects.filter(demande__utilisateur=request.user, scrutin=scrutin).first()
         if electeur is None:
-            messages.error(request, "Vous n'etes pas inscrit comme electeur pour ce scrutin.")
+            messages.error(request, "Vous n'êtes pas inscrit comme électeur pour ce scrutin.")
             return redirect("users:scrutin_vote", slug=scrutin.slug)
 
         candidat = get_object_or_404(Candidat, slug=request.POST.get("candidat_slug"), scrutin=scrutin)
         if Vote.objects.filter(electeur=electeur).exists():
-            messages.warning(request, "Vous avez deja vote pour ce scrutin.")
+            messages.warning(request, "Vous avez déjà voté pour ce scrutin.")
             return redirect("users:scrutin_vote", slug=scrutin.slug)
 
         try:
@@ -450,11 +459,12 @@ class ScrutinVoteView(LoginRequiredMixin, TemplateView):
                 candidat=candidat,
                 adresse_ip=request.META.get("REMOTE_ADDR", "127.0.0.1"),
             )
-            messages.success(request, "Vote enregistre avec succes.")
+            messages.success(request, "✅ Votre vote a été enregistré avec succès.")
         except ValidationError as exc:
-            messages.error(request, f"Vote refuse: {exc.messages[0]}")
+            messages.error(request, f"Vote refusé : {exc.messages[0]}")
 
         return redirect("users:scrutin_vote", slug=scrutin.slug)
+
 
 
 # ====================== URL MAPPING ======================

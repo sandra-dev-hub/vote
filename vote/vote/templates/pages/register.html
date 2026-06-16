@@ -4,302 +4,677 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inscription | ICAB Bafoussam</title>
+  <title>Inscription — Plateforme Électorale ICAB</title>
   <link href="{% static 'css/output.css' %}" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
 
   <style>
-    /* ── Champ uniforme ── */
-    .field-input {
-      width: 100%;
-      padding: 0.75rem 1.25rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 1rem;
-      font-size: 0.875rem;
-      font-weight: 600;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: #1a202c;
-      background: #fff;
-      outline: none;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-      appearance: none;
-      -webkit-appearance: none;
-    }
-    .field-input:hover {
-      border-color: #a5b4fc;
-    }
-    .field-input:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
-      background: #fafafe;
-    }
-    .field-input.has-error {
-      border-color: #f87171;
-      background: #fff8f8;
-    }
-    .field-input.has-error:focus {
-      border-color: #ef4444;
-      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.10);
+    :root {
+      --bg: #faf9f7;
+      --bg-illus: #f5f0eb;
+      --surface: #ffffff;
+      --text: #2d2a26;
+      --text-secondary: #8a8279;
+      --border: #e8e4df;
+      --border-hover: #d5cfc7;
+      --accent: #7c6f64;
+      --accent-hover: #5e544c;
+      --accent-light: #f0ece6;
+      --error: #c45c4a;
+      --error-bg: #fdf5f3;
+      --error-border: #f0d5cf;
+      --success: #6b9e75;
     }
 
-    /* Select arrow custom */
+    * {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    /* ── Layout principal ── */
+    .layout {
+      display: flex;
+      width: 100%;
+      max-width: 1100px;
+      min-height: 640px;
+      background: var(--surface);
+      border-radius: 2rem;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(45, 42, 38, 0.06), 0 8px 20px rgba(45, 42, 38, 0.04);
+    }
+
+    /* ── Panneau illustration ── */
+    .side-visual {
+      display: none;
+      width: 45%;
+      background: var(--bg-illus);
+      position: relative;
+      overflow: hidden;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+    }
+
+    .side-visual::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 80%;
+      height: 120%;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      filter: blur(60px);
+    }
+
+    .side-visual::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -20%;
+      width: 60%;
+      height: 80%;
+      background: rgba(120, 110, 100, 0.04);
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+
+    .illustration-wrap {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 360px;
+    }
+
+    .illustration-wrap svg {
+      width: 100%;
+      height: auto;
+      max-height: 280px;
+      filter: drop-shadow(0 8px 24px rgba(45, 42, 38, 0.06));
+    }
+
+    .illustration-wrap h2 {
+      font-size: 1.375rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-top: 2rem;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+
+    .illustration-wrap p {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      margin-top: 0.75rem;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    /* ── Panneau formulaire ── */
+    .side-form {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-icon {
+      width: 2.25rem;
+      height: 2.25rem;
+      background: var(--accent);
+      border-radius: 0.625rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .logo-text {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    /* Header */
+    .form-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-header h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .form-header p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-top: 0.375rem;
+      font-weight: 400;
+    }
+
+    /* ── Widget scrollable ── */
+    .widget {
+      width: 100%;
+      max-width: 420px;
+      max-height: calc(100vh - 12rem);
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    /* Scrollbar soft */
+    .widget::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .widget::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .widget::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .widget::-webkit-scrollbar-thumb:hover {
+      background: var(--border-hover);
+    }
+
+    /* ── Champs ── */
+    .field-group {
+      margin-bottom: 1rem;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.375rem;
+      letter-spacing: 0.01em;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 0.625rem 0.875rem;
+      border: 1.5px solid var(--border);
+      border-radius: 0.75rem;
+      font-size: 0.9375rem;
+      font-weight: 400;
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .field-input::placeholder {
+      color: #b8b0a8;
+      font-weight: 400;
+    }
+
+    .field-input:hover {
+      border-color: var(--border-hover);
+      background: #fdfcfb;
+    }
+
+    .field-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 111, 100, 0.08);
+      background: var(--surface);
+    }
+
+    .field-input.has-error {
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+
+    .field-input.has-error:focus {
+      box-shadow: 0 0 0 3px rgba(196, 92, 74, 0.08);
+    }
+
+    /* Select */
     select.field-input {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238a8279' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 1rem center;
+      background-position: right 0.875rem center;
       padding-right: 2.5rem;
       cursor: pointer;
     }
 
-    /* Erreur inline sous le champ */
+    /* ── Matricule ── */
+    .matricule-wrap {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .matricule-prefix {
+      display: flex;
+      align-items: center;
+      padding: 0 0.875rem;
+      background: var(--accent-light);
+      border: 1.5px solid var(--border);
+      border-right: none;
+      border-radius: 0.75rem 0 0 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .matricule-wrap .field-input {
+      border-radius: 0 0.75rem 0.75rem 0;
+      flex: 1;
+    }
+
+    /* ── Grid ── */
+    .grid-2 {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 480px) {
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── Photo ── */
+    .photo-zone {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.875rem;
+      border: 1.5px dashed var(--border);
+      border-radius: 0.875rem;
+      transition: all 0.2s ease;
+      background: #fdfcfb;
+    }
+
+    .photo-zone:hover {
+      border-color: var(--border-hover);
+      background: var(--surface);
+    }
+
+    .photo-preview {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+      background: var(--bg);
+    }
+
+    .photo-meta p:first-child {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .photo-meta p:last-child {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.125rem;
+    }
+
+    .photo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      margin-top: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .photo-btn:hover {
+      background: #e5ded6;
+      color: var(--accent-hover);
+    }
+
+    /* ── Erreurs ── */
     .field-error {
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: #ef4444;
-      margin-top: 5px;
-      margin-left: 4px;
+      gap: 0.375rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--error);
+      margin-top: 0.375rem;
     }
+
     .field-error::before {
       content: '';
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E");
+      width: 0.875rem;
+      height: 0.875rem;
+      background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 3.5V7M7 9.5H7.01M12.5 7C12.5 10.0376 10.0376 12.5 7 12.5C3.96243 12.5 1.5 10.0376 1.5 7C1.5 3.96243 3.96243 1.5 7 1.5C10.0376 1.5 12.5 3.96243 12.5 7Z' stroke='%23c45c4a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-size: contain;
-      background-repeat: no-repeat;
       flex-shrink: 0;
     }
 
-    /* Label uniforme */
-    .field-label {
-      display: block;
-      font-size: 0.625rem;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      margin-left: 4px;
-      margin-bottom: 7px;
-    }
-
-    /* Matricule group */
-    .matricule-group {
+    .alert-error {
       display: flex;
-      align-items: center;
-    }
-    .matricule-prefix {
-      padding: 0.75rem 1rem;
-      background: #f1f5f9;
-      border: 1.5px solid #e2e8f0;
-      border-right: none;
-      border-radius: 1rem 0 0 1rem;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #64748b;
-      white-space: nowrap;
-      line-height: 1;
-    }
-    .matricule-input {
-      border-radius: 0 1rem 1rem 0 !important;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      background: var(--error-bg);
+      border: 1.5px solid var(--error-border);
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
     }
 
-    /* Bouton submit */
+    .alert-error svg {
+      width: 1.125rem;
+      height: 1.125rem;
+      color: var(--error);
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+
+    .alert-error p {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--error);
+    }
+
+    /* ── Checkbox ── */
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.625rem;
+      margin: 1.25rem 0;
+    }
+
+    .custom-check {
+      width: 1.125rem;
+      height: 1.125rem;
+      margin-top: 0.125rem;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+      border-radius: 0.25rem;
+    }
+
+    .checkbox-row label {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .checkbox-row a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .checkbox-row a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+
+    /* ── Bouton ── */
     .btn-submit {
       width: 100%;
-      padding: 1.1rem;
-      background: linear-gradient(135deg, #4f46e5, #6366f1);
-      color: #fff;
-      font-size: 0.9rem;
-      font-weight: 700;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 0.75rem 1rem;
+      background: var(--accent);
+      color: white;
+      font-size: 0.9375rem;
+      font-weight: 500;
       border: none;
-      border-radius: 1rem;
+      border-radius: 0.75rem;
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
-      letter-spacing: 0.01em;
+      transition: all 0.2s ease;
       position: relative;
-      overflow: hidden;
+      letter-spacing: 0.01em;
     }
+
     .btn-submit:hover {
+      background: var(--accent-hover);
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 4px 12px rgba(94, 84, 76, 0.15);
     }
+
     .btn-submit:active {
       transform: translateY(0);
       box-shadow: none;
     }
+
     .btn-submit:disabled {
-      opacity: 0.65;
+      opacity: 0.5;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
+
     .btn-submit .spinner {
       display: none;
-      width: 18px;
-      height: 18px;
-      border: 2.5px solid rgba(255,255,255,0.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin-right: 8px;
-    }
-    .btn-submit.loading .spinner { display: inline-block; }
-    .btn-submit.loading .btn-text { opacity: 0.7; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Photo upload zone */
-    .avatar-ring {
-      position: relative;
-      display: inline-block;
-    }
-    .avatar-img {
-      width: 6rem;
-      height: 6rem;
-      border-radius: 9999px;
-      object-fit: cover;
-      border: 3px solid #fff;
-      box-shadow: 0 4px 16px rgba(99,102,241,0.18), 0 1px 3px rgba(0,0,0,0.1);
-      transition: box-shadow 0.2s ease;
-    }
-    .avatar-btn {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 2.2rem;
-      height: 2.2rem;
-      border-radius: 9999px;
-      background: #4f46e5;
-      border: 2.5px solid #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.15s ease, transform 0.15s ease;
-      box-shadow: 0 2px 8px rgba(79,70,229,0.3);
-    }
-    .avatar-btn:hover {
-      background: #4338ca;
-      transform: scale(1.08);
-    }
-    .avatar-btn svg {
       width: 1rem;
       height: 1rem;
-      stroke: #fff;
-      fill: none;
-      stroke-width: 2;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 0.5rem;
+      vertical-align: middle;
     }
 
-    /* Checkbox custom */
-    .checkbox-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 0 2px;
-    }
-    input[type="checkbox"].custom-check {
-      width: 1.1rem;
-      height: 1.1rem;
-      margin-top: 2px;
-      flex-shrink: 0;
-      accent-color: #6366f1;
-      cursor: pointer;
-      border-radius: 4px;
+    .btn-submit.loading .spinner { display: inline-block; }
+    .btn-submit.loading .btn-text { opacity: 0.8; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Login link ── */
+    .login-link {
+      text-align: center;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1.5px solid var(--border);
     }
 
-    /* Animation entrée */
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .login-link p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-weight: 400;
     }
-    .anim-slide-up {
-      animation: slideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+
+    .login-link a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .login-link a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+
+    /* ── Hint ── */
+    .hint {
+      font-size: 0.75rem;
+      color: #b8b0a8;
+      margin-top: 0.375rem;
+    }
+
+    /* ── Responsive ── */
+    @media (min-width: 1024px) {
+      .side-visual { display: flex; }
+      .side-form { padding: 2.5rem 3rem; }
+      .widget { max-height: 520px; }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 0; }
+      .layout {
+        border-radius: 0;
+        min-height: 100vh;
+        box-shadow: none;
+      }
+      .side-form { padding: 1.5rem; }
+      .widget { max-height: calc(100vh - 8rem); }
     }
   </style>
 </head>
 
-<body class="font-sans antialiased min-h-screen py-20 flex items-center justify-center hero-mesh relative overflow-x-hidden px-6">
+<body>
 
-  <!-- Background dot grid -->
-  <div class="absolute inset-0 opacity-10"
-       style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;">
-  </div>
+  <div class="layout">
 
-  <main class="w-full max-w-xl relative z-10 anim-slide-up">
+    <!-- Illustration -->
+    <aside class="side-visual">
+      <div class="illustration-wrap">
+        <!-- Illustration SVG style flat : personnes discutant/votant -->
+        <svg viewBox="0 0 400 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Fond organique -->
+          <path d="M50 160C50 80 120 40 200 60C280 80 360 40 360 120C360 200 320 280 200 280C80 280 50 240 50 160Z" fill="rgba(255,255,255,0.5)"/>
+          
+          <!-- Personnage 1 (gauche, assis, dos) -->
+          <ellipse cx="130" cy="220" rx="35" ry="12" fill="rgba(120,110,100,0.06)"/>
+          <!-- Corps -->
+          <path d="M100 220V170C100 160 110 150 120 150H140C150 150 160 160 160 170V220" fill="#c9b8a4"/>
+          <!-- Tête -->
+          <circle cx="130" cy="135" r="22" fill="#d4a574"/>
+          <!-- Cheveux -->
+          <path d="M108 130C108 115 118 108 130 108C142 108 152 115 152 130C152 138 148 142 142 142" stroke="#8a6f5b" stroke-width="8" stroke-linecap="round"/>
+          <!-- Bras -->
+          <path d="M105 175C95 185 90 200 95 210" stroke="#c9b8a4" stroke-width="10" stroke-linecap="round"/>
+          <path d="M155 175C165 185 170 200 165 210" stroke="#c9b8a4" stroke-width="10" stroke-linecap="round"/>
+          <!-- Chaise -->
+          <rect x="115" y="220" width="30" height="6" rx="3" fill="#a89888"/>
+          <rect x="120" y="226" width="4" height="24" rx="2" fill="#a89888"/>
+          <rect x="136" y="226" width="4" height="24" rx="2" fill="#a89888"/>
+          
+          <!-- Personnage 2 (droite, face, debout) -->
+          <ellipse cx="280" cy="240" rx="30" ry="10" fill="rgba(120,110,100,0.06)"/>
+          <!-- Corps -->
+          <path d="M255 240V195C255 185 265 175 275 175H285C295 175 305 185 305 195V240" fill="#a89080"/>
+          <!-- Tête -->
+          <circle cx="280" cy="160" r="20" fill="#d4a574"/>
+          <!-- Cheveux -->
+          <ellipse cx="280" cy="152" rx="24" ry="16" fill="#8a6f5b"/>
+          <!-- Visage minimal (juste un sourire) -->
+          <path d="M272 165C275 168 285 168 288 165" stroke="#b08860" stroke-width="2" stroke-linecap="round"/>
+          <!-- Bras -->
+          <path d="M255 200C245 210 240 225 245 235" stroke="#a89080" stroke-width="9" stroke-linecap="round"/>
+          <path d="M305 200C315 210 320 225 315 235" stroke="#a89080" stroke-width="9" stroke-linecap="round"/>
+          
+          <!-- Urne/boîte de vote entre eux -->
+          <rect x="185" y="200" width="50" height="40" rx="6" fill="#8a8279"/>
+          <rect x="190" y="205" width="40" height="30" rx="4" fill="#a89888"/>
+          <rect x="205" y="195" width="10" height="8" rx="2" fill="#7c6f64"/>
+          <!-- Bulletin -->
+          <rect x="210" y="175" width="16" height="22" rx="2" fill="white" stroke="#8a8279" stroke-width="1.5"/>
+          <path d="M214 188L218 192L226 184" stroke="#6b9e75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          
+          <!-- Éléments décoratifs -->
+          <circle cx="60" cy="80" r="20" fill="rgba(201,184,164,0.2)"/>
+          <circle cx="340" cy="100" r="16" fill="rgba(168,144,128,0.15)"/>
+          <circle cx="320" cy="280" r="24" fill="rgba(201,184,164,0.15)"/>
+          
+          <!-- Petite plante -->
+          <path d="M70 260Q75 240 85 230Q90 245 80 260" fill="#6b9e75" opacity="0.3"/>
+          <path d="M80 260Q85 235 95 225Q100 250 90 260" fill="#6b9e75" opacity="0.4"/>
+          <rect x="78" y="260" width="6" height="20" rx="3" fill="#a89888"/>
+        </svg>
 
-    <!-- Header -->
-    <div class="flex flex-col items-center mb-10 text-center">
-      <div class="w-14 h-14 rounded-2xl bg-white shadow-2xl flex items-center justify-center mb-4">
-        <span class="text-brand-950 text-base font-black">ICAB</span>
+        <h2>Votez en toute simplicité</h2>
+        <p>Rejoignez la communauté étudiante de l'ICAB et participez activement aux élections représentatives de votre université.</p>
       </div>
-      <h1 class="text-white text-3xl font-black italic font-display tracking-tight">
-        Créer votre compte
-      </h1>
-      <p class="text-blue-100/60 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">
-        Rejoignez la vie citoyenne de l'ICAB
-      </p>
-    </div>
+    </aside>
 
-    <!-- Card -->
-    <div class="bg-white/95 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20">
+    <!-- Formulaire -->
+    <main class="side-form">
+      <div class="logo">
+        <div class="logo-icon">ICAB</div>
+        <span class="logo-text">Institut Catholique de Bafoussam</span>
+      </div>
 
-      <form
-        method="post"
-        action="{% url 'users:register' %}"
-        enctype="multipart/form-data"
-        id="register-form"
-        class="space-y-6"
-        novalidate>
+      <div class="form-header">
+        <h1>Créer un compte</h1>
+        <p>Accédez à l'espace électeur de votre université</p>
+      </div>
 
-        {% csrf_token %}
+      <div class="widget">
+        <form method="post" action="{% url 'users:register' %}" enctype="multipart/form-data" id="register-form" novalidate>
+          {% csrf_token %}
 
-        <!-- Erreurs globales non liées à un champ -->
-        {% if form.non_field_errors %}
-        <div class="flex items-start gap-3 p-4 text-sm text-red-800 rounded-2xl bg-red-50 border border-red-200">
-          <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-          <div>
-            <p class="font-bold mb-1">Erreur</p>
-            <ul class="space-y-0.5">
-              {% for error in form.non_field_errors %}
-                <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
+          {% if form.non_field_errors %}
+          <div class="alert-error">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div>
+              <p>Erreur de validation</p>
+              <ul class="mt-1 space-y-0.5">
+                {% for error in form.non_field_errors %}
+                  <li class="text-sm font-normal">{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
           </div>
-        </div>
-        {% endif %}
+          {% endif %}
 
-        <div class="space-y-5">
-
-          <!-- MATRICULE -->
-          <div>
-            <label class="field-label" for="id_matricule_suffix">Matricule</label>
-            <div class="matricule-group">
-              <span class="matricule-prefix">ICAB-2026-</span>
-      <input
-          type="text"
-          id="id_matricule_suffix"
-          name="matricule"
-          required
-          maxlength="6"
-          pattern="[0-9]{6}"
-          value="{{ form.data.matricule|default:'' }}"
-          placeholder="000001"
-          class="field-input matricule-input {% if form.matricule.errors %}has-error{% endif %}"
-      />
+          <!-- Matricule -->
+          <div class="field-group">
+            <label class="field-label" for="id_matricule_suffix">Numéro de matricule</label>
+            <div class="matricule-wrap">
+              <span class="matricule-prefix">ICAB-</span>
+              <input
+                type="text"
+                id="id_matricule_suffix"
+                name="matricule"
+                required
+                maxlength="10"
+                pattern="[0-9]{4}-[0-9]{6}"
+                value="{{ form.data.matricule|default:'' }}"
+                placeholder="2026-000001"
+                class="field-input {% if form.matricule.errors %}has-error{% endif %}"
+              />
             </div>
             {% if form.matricule.errors %}
               <p class="field-error">{{ form.matricule.errors.0 }}</p>
             {% else %}
-              <p class="text-xs text-gray-400 mt-1.5 ml-1">Entrez uniquement les 6 derniers chiffres</p>
+              <p class="hint">Format : année-promotion</p>
             {% endif %}
           </div>
 
-          <!-- EMAIL -->
-          <div>
+          <!-- Email -->
+          <div class="field-group">
             <label class="field-label" for="{{ form.email.id_for_label }}">Email académique</label>
             <input
               type="email"
@@ -315,23 +690,23 @@
             {% endif %}
           </div>
 
-          <!-- NOM / PRENOM -->
-          <div class="grid md:grid-cols-2 gap-5">
-            <div>
+          <!-- Nom / Prénom -->
+          <div class="grid-2">
+            <div class="field-group">
               <label class="field-label" for="{{ form.nom.id_for_label }}">Nom</label>
               <input
                 type="text"
                 name="{{ form.nom.html_name }}"
                 id="{{ form.nom.id_for_label }}"
                 value="{{ form.nom.value|default:'' }}"
-                placeholder="KAMGA"
+                placeholder="Kamga"
                 class="field-input {% if form.nom.errors %}has-error{% endif %}"
               />
               {% if form.nom.errors %}
                 <p class="field-error">{{ form.nom.errors.0 }}</p>
               {% endif %}
             </div>
-            <div>
+            <div class="field-group">
               <label class="field-label" for="{{ form.prenom.id_for_label }}">Prénom</label>
               <input
                 type="text"
@@ -347,14 +722,11 @@
             </div>
           </div>
 
-          <!-- FILIERE / NIVEAU -->
-          <div class="grid md:grid-cols-2 gap-5">
-            <div>
+          <!-- Filière / Niveau -->
+          <div class="grid-2">
+            <div class="field-group">
               <label class="field-label" for="{{ form.filiere.id_for_label }}">Filière</label>
-              <select
-                name="{{ form.filiere.html_name }}"
-                id="{{ form.filiere.id_for_label }}"
-                class="field-input {% if form.filiere.errors %}has-error{% endif %}">
+              <select name="{{ form.filiere.html_name }}" id="{{ form.filiere.id_for_label }}" class="field-input {% if form.filiere.errors %}has-error{% endif %}">
                 {% for value, label in form.filiere.field.choices %}
                   <option value="{{ value }}" {% if form.filiere.value == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
@@ -363,12 +735,9 @@
                 <p class="field-error">{{ form.filiere.errors.0 }}</p>
               {% endif %}
             </div>
-            <div>
+            <div class="field-group">
               <label class="field-label" for="{{ form.niveau.id_for_label }}">Niveau</label>
-              <select
-                name="{{ form.niveau.html_name }}"
-                id="{{ form.niveau.id_for_label }}"
-                class="field-input {% if form.niveau.errors %}has-error{% endif %}">
+              <select name="{{ form.niveau.html_name }}" id="{{ form.niveau.id_for_label }}" class="field-input {% if form.niveau.errors %}has-error{% endif %}">
                 {% for value, label in form.niveau.field.choices %}
                   <option value="{{ value }}" {% if form.niveau.value == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
@@ -379,31 +748,24 @@
             </div>
           </div>
 
-          <!-- PHOTO PROFIL -->
-          <div>
-            <label class="field-label">Photo de profil</label>
-            <div class="flex items-center gap-6 p-4 rounded-2xl border-2 border-dashed border-gray-200 hover:border-indigo-300 transition-colors">
-              <div class="avatar-ring">
-                <img
-                  id="preview-image"
-                  src="{% static 'images/default-avatar.png' %}"
-                  alt="Aperçu de votre photo de profil"
-                  class="avatar-img"
-                />
-                <label for="id_photo" class="avatar-btn" title="Changer la photo">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M3 7h4l2-2h6l2 2h4v12H3V7z"/>
-                    <circle cx="12" cy="13" r="4"/>
+          <!-- Photo -->
+          <div class="field-group">
+            <label class="field-label">Photo d'identité</label>
+            <div class="photo-zone">
+              <img id="preview-image" src="{% static 'images/default-avatar.png' %}" alt="Aperçu" class="photo-preview" />
+              <div class="photo-meta">
+                <p>Ajouter une photo</p>
+                <p>JPG ou PNG, 5 Mo max</p>
+                <label for="id_photo" class="photo-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
                   </svg>
+                  Choisir
                 </label>
                 {{ form.photo }}
-              </div>
-              <div>
-                <p class="text-sm font-bold text-gray-800">Ajouter une photo</p>
-                <p class="text-xs text-gray-400 mt-0.5">JPG ou PNG · 5 Mo max</p>
-                <p id="file-name" class="text-xs font-semibold mt-2" style="color:#6366f1">
-                  Aucune photo sélectionnée
-                </p>
+                <p id="file-name" class="hint"></p>
               </div>
             </div>
             {% if form.photo.errors %}
@@ -411,15 +773,15 @@
             {% endif %}
           </div>
 
-          <!-- PASSWORDS -->
-          <div class="grid md:grid-cols-2 gap-5">
-            <div>
+          <!-- Mots de passe -->
+          <div class="grid-2">
+            <div class="field-group">
               <label class="field-label" for="{{ form.password1.id_for_label }}">Mot de passe</label>
               <input
                 type="password"
                 name="{{ form.password1.html_name }}"
                 id="{{ form.password1.id_for_label }}"
-                placeholder="••••••••"
+                placeholder="8 caractères min"
                 autocomplete="new-password"
                 class="field-input {% if form.password1.errors %}has-error{% endif %}"
               />
@@ -427,13 +789,13 @@
                 <p class="field-error">{{ form.password1.errors.0 }}</p>
               {% endif %}
             </div>
-            <div>
-              <label class="field-label" for="{{ form.password2.id_for_label }}">Confirmer</label>
+            <div class="field-group">
+              <label class="field-label" for="{{ form.password2.id_for_label }}">Confirmation</label>
               <input
                 type="password"
                 name="{{ form.password2.html_name }}"
                 id="{{ form.password2.id_for_label }}"
-                placeholder="••••••••"
+                placeholder="Répéter le mot de passe"
                 autocomplete="new-password"
                 class="field-input {% if form.password2.errors %}has-error{% endif %}"
               />
@@ -443,44 +805,32 @@
             </div>
           </div>
 
+          <!-- Conditions -->
+          <div class="checkbox-row">
+            <input type="checkbox" id="terms" required class="custom-check" />
+            <label for="terms">
+              J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a>
+            </label>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn-submit" id="submit-btn">
+            <span class="spinner"></span>
+            <span class="btn-text">Créer mon compte</span>
+          </button>
+
+        </form>
+
+        <div class="login-link">
+          <p>Déjà un compte ? <a href="{% url 'users:login' %}">Se connecter</a></p>
         </div>
-
-        <!-- Terms -->
-        <div class="checkbox-row">
-          <input type="checkbox" id="terms" required class="custom-check" />
-          <label for="terms" class="text-xs font-medium text-gray-500 leading-relaxed">
-            J'accepte les
-            <a href="#" class="text-indigo-600 font-semibold hover:underline">conditions d'utilisation</a>
-            et la
-            <a href="#" class="text-indigo-600 font-semibold hover:underline">politique de confidentialité</a>
-          </label>
-        </div>
-
-        <!-- Bouton submit -->
-        <button type="submit" class="btn-submit" id="submit-btn">
-          <span class="spinner"></span>
-          <span class="btn-text">Créer mon compte</span>
-        </button>
-
-      </form>
-
-      <!-- Login -->
-      <div class="mt-8 text-center">
-        <p class="text-xs text-gray-400">
-          Déjà un compte ?
-          <a href="{% url 'users:login' %}" class="font-bold hover:underline" style="color:#6366f1">
-            Se connecter
-          </a>
-        </p>
       </div>
+    </main>
 
-    </div>
-
-  </main>
+  </div>
 
   <script>
-    /* ── Prévisualisation photo ── */
-    const input   = document.getElementById("id_photo");
+    const input = document.getElementById("id_photo");
     const preview = document.getElementById("preview-image");
     const fileName = document.getElementById("file-name");
 
@@ -488,31 +838,29 @@
       const file = this.files[0];
       if (!file) return;
 
-      /* Validation taille (5 Mo) */
       if (file.size > 5 * 1024 * 1024) {
-        fileName.textContent = "⚠ Fichier trop lourd (max 5 Mo)";
-        fileName.style.color = "#ef4444";
+        fileName.textContent = "Fichier trop volumineux (max 5 Mo)";
+        fileName.style.color = "var(--error)";
         this.value = "";
         return;
       }
 
       fileName.textContent = file.name;
-      fileName.style.color = "#6366f1";
+      fileName.style.color = "var(--accent)";
 
       const reader = new FileReader();
       reader.onload = e => { preview.src = e.target.result; };
       reader.readAsDataURL(file);
     });
 
-    /* ── Loading state sur submit ── */
     const form = document.getElementById("register-form");
-    const btn  = document.getElementById("submit-btn");
+    const btn = document.getElementById("submit-btn");
 
     form.addEventListener("submit", function () {
       if (form.checkValidity()) {
         btn.disabled = true;
         btn.classList.add("loading");
-        btn.querySelector(".btn-text").textContent = "Création en cours…";
+        btn.querySelector(".btn-text").textContent = "Création en cours...";
       }
     });
   </script>

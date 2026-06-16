@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tableau de Bord Candidat | ICAB Bafoussam</title>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+   <link rel="stylesheet" href="{% static 'css/output.css' %}">
 
   <style type="text/tailwindcss">
     @theme {
@@ -97,7 +96,11 @@
   <!-- MAIN AREA -->
   <main class="flex-grow overflow-y-auto bg-gray-50 flex flex-col">
     <!-- Top Header -->
-    <header class="h-20 bg-white border-b border-gray-100 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
+      <header class="h-20 bg-white border-b border-gray-100 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
+         <!-- Mobile sidebar button -->
+         <button id="mobile-sidebar-button" class="lg:hidden mr-2 inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:bg-gray-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+         </button>
       <div>
         <h2 class="text-lg font-bold text-gray-900 italic font-display">Bonjour, Laura !</h2>
         <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Voici l'état de votre campagne</p>
@@ -116,6 +119,31 @@
         </button>
       </div>
     </header>
+
+   <!-- Mobile Sidebar Drawer -->
+   <div id="mobile-sidebar-backdrop" class="fixed inset-0 bg-black/30 z-40 hidden"></div>
+   <aside id="mobile-sidebar" class="fixed inset-y-0 left-0 w-72 transform -translate-x-full transition-transform z-50 bg-brand-950 text-blue-100/60 p-6 overflow-y-auto lg:hidden">
+      <div class="flex items-center justify-between mb-6">
+         <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-md"><span class="text-brand-950 text-xs font-extrabold">ICAB</span></div>
+            <div>
+               <p class="text-white text-sm font-bold">Espace</p>
+            </div>
+         </div>
+         <button id="mobile-sidebar-close" class="text-white/80 hover:text-white">
+            ✕
+         </button>
+      </div>
+      <nav class="space-y-2">
+         <a href="#" class="block px-3 py-2 rounded-lg text-white font-bold">Mon Résumé</a>
+         <a href="#" class="block px-3 py-2 rounded-lg text-white/80">Mon Profil</a>
+         <a href="#" class="block px-3 py-2 rounded-lg text-white/80">Mes Statistiques</a>
+         <a href="#" class="block px-3 py-2 rounded-lg text-white/80">Mon Équipe</a>
+         <div class="pt-6 border-t border-white/5 mt-6">
+            <a href="#" class="block px-3 py-2 rounded-lg text-white/80">Paramètres</a>
+         </div>
+      </nav>
+   </aside>
 
     <!-- Dashboard Content -->
     <div class="p-8 space-y-8">
@@ -192,14 +220,8 @@
               </div>
               
               <!-- Dummy Chart Illustration -->
-              <div class="h-48 w-full flex items-end gap-2 px-2">
-                 <div class="flex-grow bg-brand-50 rounded-t-xl h-[40%] transition-all hover:bg-brand-100"></div>
-                 <div class="flex-grow bg-brand-50 rounded-t-xl h-[60%] transition-all hover:bg-brand-100"></div>
-                 <div class="flex-grow bg-brand-50 rounded-t-xl h-[55%] transition-all hover:bg-brand-100"></div>
-                 <div class="flex-grow bg-brand-100 rounded-t-xl h-[75%] transition-all hover:bg-brand-200"></div>
-                 <div class="flex-grow bg-brand-200 rounded-t-xl h-[85%] transition-all hover:bg-brand-300"></div>
-                 <div class="flex-grow bg-brand-600 rounded-t-xl h-[95%] transition-all hover:shadow-lg"></div>
-                 <div class="flex-grow bg-brand-700 rounded-t-xl h-[100%] transition-all"></div>
+              <div class="h-48 w-full">
+                <canvas id="votesChart" class="w-full h-full"></canvas>
               </div>
               <div class="flex justify-between mt-4 px-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                  <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
@@ -310,9 +332,9 @@
             <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
                <h3 class="text-sm font-bold text-gray-900 mb-6 uppercase tracking-wider">Mon Équipe de Campagne</h3>
                <div class="flex -space-x-3 mb-6">
-                  <img src="https://ui-avatars.com/api/?name=Team+1&background=random" class="w-10 h-10 rounded-full border-4 border-white shadow-sm" />
-                  <img src="https://ui-avatars.com/api/?name=Team+2&background=random" class="w-10 h-10 rounded-full border-4 border-white shadow-sm" />
-                  <img src="https://ui-avatars.com/api/?name=Team+3&background=random" class="w-10 h-10 rounded-full border-4 border-white shadow-sm" />
+                  <img src="{% static 'images/hero1.png' %}" class="w-10 h-10 rounded-full border-4 border-white shadow-sm object-cover" />
+                  <img src="{% static 'images/hero2.png' %}" class="w-10 h-10 rounded-full border-4 border-white shadow-sm object-cover" />
+                  <img src="{% static 'images/hero3.png' %}" class="w-10 h-10 rounded-full border-4 border-white shadow-sm object-cover" />
                   <div class="w-10 h-10 rounded-full bg-gray-100 border-4 border-white flex items-center justify-center text-[10px] font-bold text-gray-400 shadow-sm">+2</div>
                </div>
                <button class="w-full py-3 border border-gray-100 hover:bg-gray-50 text-gray-600 text-xs font-bold rounded-xl transition-all">
@@ -324,6 +346,57 @@
 
     </div>
   </main>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+   (function(){
+      try {
+         const labels = {{ chart_labels|safe }};
+         const data = {{ chart_data|safe }};
+         const ctx = document.getElementById('votesChart');
+         if (!ctx) return;
+         new Chart(ctx, {
+            type: 'line',
+            data: {
+               labels: labels,
+               datasets: [{
+                  label: 'Votes',
+                  data: data,
+                  borderColor: '#2563eb',
+                  backgroundColor: 'rgba(37,99,235,0.08)',
+                  tension: 0.3,
+                  fill: true,
+                  pointRadius: 3,
+               }]
+            },
+            options: {
+               responsive: true,
+               maintainAspectRatio: false,
+               plugins: { legend: { display: false } },
+               scales: {
+                  x: { grid: { display: false } },
+                  y: { grid: { color: '#f3f4f6' }, beginAtZero: true }
+               }
+            }
+         });
+      } catch (e) { console.error('Chart init error', e); }
+   })();
+</script>
+
+<script>
+   (function(){
+      const openBtn = document.getElementById('mobile-sidebar-button');
+      const closeBtn = document.getElementById('mobile-sidebar-close');
+      const drawer = document.getElementById('mobile-sidebar');
+      const backdrop = document.getElementById('mobile-sidebar-backdrop');
+      if (!openBtn || !drawer) return;
+      function open(){ drawer.classList.remove('-translate-x-full'); backdrop.classList.remove('hidden'); }
+      function close(){ drawer.classList.add('-translate-x-full'); backdrop.classList.add('hidden'); }
+      openBtn.addEventListener('click', open);
+      if (closeBtn) closeBtn.addEventListener('click', close);
+      if (backdrop) backdrop.addEventListener('click', close);
+   })();
+</script>
 
 </body>
 </html>

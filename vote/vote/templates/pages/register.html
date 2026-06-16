@@ -279,16 +279,17 @@
             <label class="field-label" for="id_matricule_suffix">Matricule</label>
             <div class="matricule-group">
               <span class="matricule-prefix">ICAB-2026-</span>
-              <input
-                type="text"
-                id="id_matricule_suffix"
-                name="matricule"
-                required
-                maxlength="6"
-                pattern="[0-9]{6}"
-                placeholder="000001"
-                class="field-input matricule-input {% if form.matricule.errors %}has-error{% endif %}"
-              />
+      <input
+          type="text"
+          id="id_matricule_suffix"
+          name="matricule"
+          required
+          maxlength="6"
+          pattern="[0-9]{6}"
+          value="{{ form.data.matricule|default:'' }}"
+          placeholder="000001"
+          class="field-input matricule-input {% if form.matricule.errors %}has-error{% endif %}"
+      />
             </div>
             {% if form.matricule.errors %}
               <p class="field-error">{{ form.matricule.errors.0 }}</p>

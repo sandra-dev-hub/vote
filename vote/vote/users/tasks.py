@@ -2,7 +2,8 @@ import logging
 
 from celery import shared_task
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import send_mail, get_connection, EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.utils import timezone
 
 from vote.global_data.enums import StatutDemande, StatutScrutin
@@ -82,18 +83,19 @@ def notify_ouverture_vote_pour_scrutin(scrutin_id):
     for electeur in electeurs.iterator(chunk_size=100):
         utilisateur = electeur.demande.utilisateur
         try:
-            send_mail(
-                subject=f"🗳️ Le vote est ouvert : {scrutin.titre}",
-                message=(
-                    f"Bonjour {utilisateur.prenom or utilisateur.email},\n\n"
-                    f"La période de vote pour le scrutin « {scrutin.titre} » est maintenant ouverte.\n"
-                    f"Connectez-vous pour voter avant le {scrutin.date_fin_vote.strftime('%d/%m/%Y à %H:%M')}.\n\n"
-                    "Merci de votre participation.\n\nL'équipe ICAB Bafoussam"
-                ),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[utilisateur.email],
-                fail_silently=False,
-            )
+            context = {
+                'utilisateur': utilisateur,
+                'scrutin': scrutin,
+                'protocol': 'http',
+                'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'localhost:8001',
+            }
+            subject = f"🗳️ Le vote est ouvert : {scrutin.titre}"
+            text_body = render_to_string('pages/emails/notify_ouverture_vote.txt', context)
+            html_body = render_to_string('pages/emails/notify_ouverture_vote.html', context)
+            conn = get_connection(fail_silently=False)
+            msg = EmailMultiAlternatives(subject, text_body, settings.DEFAULT_FROM_EMAIL, [utilisateur.email], connection=conn)
+            msg.attach_alternative(html_body, 'text/html')
+            msg.send()
             electeur.notification_ouverture_envoyee = now
             updated.append(electeur)
             logger.info("[notify_ouverture_vote] Email envoyé à %s.", utilisateur.email)
@@ -137,32 +139,39 @@ def notify_electeur_statut_demande(demande_id):
 
     if demande.statut == StatutDemande.APPROUVE:
         sujet = "✅ Votre demande d'électeur a été approuvée — ICAB"
-        message = (
-            f"Bonjour {utilisateur.prenom or utilisateur.email},\n\n"
-            f"Votre demande d'inscription comme électeur pour le scrutin "
-            f"« {scrutin.titre} » a été APPROUVÉE.\n\n"
-            "Vous recevrez un email dès que la période de vote sera ouverte.\n\n"
-            "Bonne élection !\n\nL'équipe ICAB Bafoussam"
-        )
+        message = render_to_string('pages/emails/notify_electeur_statut_approved.txt', {
+            'utilisateur': utilisateur,
+            'scrutin': scrutin,
+            'protocol': 'http',
+            'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'localhost:8001',
+        })
     elif demande.statut == StatutDemande.REJETE:
         sujet = "❌ Votre demande d'électeur a été refusée — ICAB"
-        message = (
-            f"Bonjour {utilisateur.prenom or utilisateur.email},\n\n"
-            f"Votre demande d'inscription comme électeur pour le scrutin "
-            f"« {scrutin.titre} » n'a pas été acceptée.\n\n"
-            "L'équipe ICAB Bafoussam"
-        )
+        message = render_to_string('pages/emails/notify_electeur_statut_rejected.txt', {
+            'utilisateur': utilisateur,
+            'scrutin': scrutin,
+            'protocol': 'http',
+            'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'localhost:8001',
+        })
     else:
         return  # Statut non concerné
 
     try:
-        send_mail(
-            subject=sujet,
-            message=message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[utilisateur.email],
-            fail_silently=False,
-        )
+        # send multipart email (text + optional html)
+        conn = get_connection(fail_silently=False)
+        msg = EmailMultiAlternatives(sujet, message, settings.DEFAULT_FROM_EMAIL, [utilisateur.email], connection=conn)
+        # try to attach HTML variant if it exists
+        try:
+            html = render_to_string(f'pages/emails/notify_electeur_statut_{"approved" if demande.statut==StatutDemande.APPROUVE else "rejected"}.html', {
+                'utilisateur': utilisateur,
+                'scrutin': scrutin,
+                'protocol': 'http',
+                'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'localhost:8001',
+            })
+            msg.attach_alternative(html, 'text/html')
+        except Exception:
+            pass
+        msg.send()
         logger.info(
             "[notify_electeur_statut] Email '%s' envoyé à %s.",
             demande.statut, utilisateur.email
@@ -199,31 +208,37 @@ def notify_candidat_statut_demande(demande_id):
 
     if demande.statut == StatutDemande.APPROUVE:
         sujet = "🎉 Votre candidature a été approuvée — ICAB"
-        message = (
-            f"Bonjour {utilisateur.prenom or utilisateur.email},\n\n"
-            f"Félicitations ! Votre candidature pour le scrutin "
-            f"« {scrutin.titre} » a été APPROUVÉE.\n\n"
-            "Votre profil sera visible par les électeurs dès l'ouverture du vote.\n\n"
-            "Bonne chance !\n\nL'équipe ICAB Bafoussam"
-        )
+        message = render_to_string('pages/emails/notify_candidat_statut_approved.txt', {
+            'utilisateur': utilisateur,
+            'scrutin': scrutin,
+            'protocol': 'http',
+            'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'localhost:8001',
+        })
     elif demande.statut == StatutDemande.REJETE:
         sujet = "❌ Votre candidature n'a pas été retenue — ICAB"
-        message = (
-            f"Bonjour {utilisateur.prenom or utilisateur.email},\n\n"
-            f"Votre candidature pour le scrutin « {scrutin.titre} » "
-            "n'a pas été retenue.\n\nL'équipe ICAB Bafoussam"
-        )
+        message = render_to_string('pages/emails/notify_candidat_statut_rejected.txt', {
+            'utilisateur': utilisateur,
+            'scrutin': scrutin,
+            'protocol': 'http',
+            'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'localhost:8001',
+        })
     else:
         return  # Statut non concerné
 
     try:
-        send_mail(
-            subject=sujet,
-            message=message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[utilisateur.email],
-            fail_silently=False,
-        )
+        conn = get_connection(fail_silently=False)
+        msg = EmailMultiAlternatives(sujet, message, settings.DEFAULT_FROM_EMAIL, [utilisateur.email], connection=conn)
+        try:
+            html = render_to_string(f'pages/emails/notify_candidat_statut_{"approved" if demande.statut==StatutDemande.APPROUVE else "rejected"}.html', {
+                'utilisateur': utilisateur,
+                'scrutin': scrutin,
+                'protocol': 'http',
+                'domain': settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else 'localhost:8001',
+            })
+            msg.attach_alternative(html, 'text/html')
+        except Exception:
+            pass
+        msg.send()
         logger.info(
             "[notify_candidat_statut] Email '%s' envoyé à %s.",
             demande.statut, utilisateur.email

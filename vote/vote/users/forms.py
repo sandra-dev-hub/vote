@@ -39,39 +39,121 @@ class UserAdminCreationForm(forms.ModelForm):
 # USER FORMS
 # ======================
 class UserRegisterForm(UserCreationForm):
-    filiere = forms.CharField(
-        label="Filière", required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold',
-            'placeholder': 'Ex: Génie Logiciel, Management...'
-        })
-    )
-    niveau = forms.CharField(
-        label="Niveau", required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold',
-            'placeholder': 'Ex: L3, Master 1...'
-        })
-    )
-    photo = forms.ImageField(
-        label="Photo de profil",
-        required=True,
-        widget=forms.FileInput(attrs={
-            'class': 'hidden',
-            'accept': 'image/*',
-            'id': 'id_photo'
-        })
+    FILIERES = [
+        ("", "Sélectionner une filière"),
+        ("GL", "Génie Logiciel"),
+        ("RSI", "Réseaux et Sécurité Informatique"),
+        ("MIAGE", "MIAGE"),
+        ("MARKETING", "Marketing Digital"),
+        ("COMPTA", "Comptabilité"),
+    ]
+
+    NIVEAUX = [
+        ("", "Sélectionner un niveau"),
+        ("N1", "Niveau 1"),
+        ("N2", "Niveau 2"),
+        ("N3", "Niveau 3"),
+        ("M1", "Master 1"),
+        ("M2", "Master 2"),
+    ]
+
+    filiere = forms.ChoiceField(
+        choices=FILIERES,
+        required=True
     )
 
-    class Meta(UserCreationForm.Meta):
+    niveau = forms.ChoiceField(
+        choices=NIVEAUX,
+        required=True
+    )
+
+    photo = forms.ImageField(
+        required=True,
+        widget=forms.FileInput(
+            attrs={
+                "class": "hidden",
+                "accept": "image/*",
+                "id": "id_photo",
+            }
+        ),
+    )
+
+    class Meta:
         model = Utilisateur
-        fields = ("email", "matricule", "nom", "prenom", "filiere", "niveau", "photo")
+        fields = (
+            "email",
+            "matricule",
+            "nom",
+            "prenom",
+            "filiere",
+            "niveau",
+            "photo",
+        )
+
+    def clean_matricule(self):
+        matricule = self.cleaned_data.get("matricule")
+
+        if not matricule:
+            raise forms.ValidationError(
+                "Le matricule est obligatoire."
+            )
+
+        if not matricule.isdigit():
+            raise forms.ValidationError(
+                "Le matricule doit contenir uniquement des chiffres."
+            )
+
+        if len(matricule) != 6:
+            raise forms.ValidationError(
+                "Le matricule doit contenir exactement 6 chiffres."
+            )
+
+        matricule_complet = f"ICAB-2026-{matricule}"
+
+        if Utilisateur.objects.filter(
+            matricule=matricule_complet
+        ).exists():
+            raise forms.ValidationError(
+                "Ce matricule existe déjà."
+            )
+
+        return matricule_complet
+
+    def clean_photo(self):
+        photo = self.cleaned_data.get("photo")
+
+        if photo:
+            if photo.size > 5 * 1024 * 1024:
+                raise forms.ValidationError(
+                    "La photo ne doit pas dépasser 5 Mo."
+                )
+
+            allowed_types = [
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+            ]
+
+            if photo.content_type not in allowed_types:
+                raise forms.ValidationError(
+                    "Format invalide. JPG, PNG ou WEBP uniquement."
+                )
+
+        return photo
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in ['email', 'matricule', 'nom', 'prenom', 'password1', 'password2']:
+
+        for field in [
+            "email",
+            "matricule",
+            "nom",
+            "prenom",
+            "password1",
+            "password2",
+        ]:
             self.fields[field].widget.attrs.update({
-                'class': 'w-full px-5 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-100 focus:outline-none transition-all text-sm font-semibold'
+                "class": "field-input"
             })
 
 

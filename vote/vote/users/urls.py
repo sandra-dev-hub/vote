@@ -29,6 +29,7 @@ from .views import (
     traiter_demande_candidature,
     # Utilisateurs
     UsersListView,
+    CandidateDetailView,
 )
 
 urlpatterns = [
@@ -42,6 +43,7 @@ urlpatterns = [
         PasswordResetView.as_view(
             template_name="pages/password_reset.html",
             email_template_name="pages/emails/password_reset_email.txt",
+            html_email_template_name="pages/emails/password_reset_email.html",
             subject_template_name="pages/emails/password_reset_subject.txt",
             success_url="/users/password-reset/done/",
         ),
@@ -105,4 +107,6 @@ urlpatterns = [
     ),
     path("admin/utilisateurs/", UsersListView.as_view(), name="admin_utilisateurs"),
     path("admin/parametres/", AdminSettingsView.as_view(), name="admin_settings"),
+    # Candidate detail
+    path("candidates/<slug:slug>/", CandidateDetailView.as_view(), name="candidate_detail"),
 ]

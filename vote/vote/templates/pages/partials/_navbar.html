@@ -14,6 +14,13 @@
       </div>
     </div>
 </a>
+    <!-- Mobile menu button -->
+    <div class="md:hidden flex items-center">
+      <button id="mobile-menu-button" aria-label="Ouvrir le menu" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:bg-gray-100">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+
     <!-- Links -->
     <div class="hidden md:flex items-center gap-1">
       <a href="{% url 'home' %}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Accueil</a>
@@ -21,6 +28,26 @@
       <a href="{% url 'fonction' %}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Fonctionnalités</a>
       <a href="{% url 'contact' %}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Contact</a>
       <a href="{% url 'scrutins' %}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Scrutin</a>
+    </div>
+
+    <!-- Mobile menu (small screens) -->
+    <div id="mobile-menu" class="hidden md:hidden absolute top-16 left-0 right-0 bg-white border-t border-gray-100 shadow-lg z-40">
+      <div class="px-4 py-4 flex flex-col gap-2">
+        <a href="{% url 'home' %}" class="px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50">Accueil</a>
+        <a href="{% url 'about' %}" class="px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50">À propos</a>
+        <a href="{% url 'fonction' %}" class="px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50">Fonctionnalités</a>
+        <a href="{% url 'contact' %}" class="px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50">Contact</a>
+        <a href="{% url 'scrutins' %}" class="px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50">Scrutin</a>
+        <div class="border-t border-gray-100 mt-2 pt-2 flex flex-col gap-2">
+          {% if user.is_authenticated %}
+            <a href="{% url 'users:user_dashboard' %}" class="px-3 py-2 text-sm font-semibold text-brand-700">Mon Espace</a>
+            <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}<button type="submit" class="w-full text-left px-3 py-2 bg-red-600 text-white rounded-md">Déconnexion</button></form>
+          {% else %}
+            <a href="{% url 'users:register' %}" class="px-3 py-2 text-sm font-semibold text-brand-700">S'inscrire</a>
+            <a href="{% url 'users:login' %}" class="px-3 py-2 bg-brand-700 text-white rounded-md text-sm font-bold text-center">Se connecter</a>
+          {% endif %}
+        </div>
+      </div>
     </div>
 
     <!-- CTA -->
@@ -46,3 +73,23 @@
     </div>
   </div>
 </nav>
+<script>
+  (function(){
+    const btn = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', function(){
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
+    });
+    // close on outside click
+    document.addEventListener('click', function(e){
+      if (!menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
+  })();
+</script>

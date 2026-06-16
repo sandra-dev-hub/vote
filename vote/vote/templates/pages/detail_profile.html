@@ -1,314 +1,80 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profil Candidat | ICAB Bafoussam</title>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+{% extends "base.html" %}
+{% load static %}
 
-  <style type="text/tailwindcss">
-    @theme {
-      --font-sans: 'Plus Jakarta Sans', sans-serif;
-      --font-display: 'Instrument Serif', serif;
-      --color-brand-50: #eff6ff;
-      --color-brand-100: #dbeafe;
-      --color-brand-200: #bfdbfe;
-      --color-brand-500: #3b82f6;
-      --color-brand-600: #2563eb;
-      --color-brand-700: #1d4ed8;
-      --color-brand-800: #1e40af;
-      --color-brand-900: #1e3a8a;
-      --color-brand-950: #0d2054;
-    }
+{% block title %}Profil candidat — {{ candidat.demande.utilisateur.nom }} {{ candidat.demande.utilisateur.prenom }}{% endblock %}
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .anim-fade-in { animation: fadeIn 0.5s ease out both; }
-
-    .glass-card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-  </style>
-</head>
-
-<body class="font-sans bg-gray-50 text-gray-900 antialiased">
-
-  <!-- ══════════════════════════════════════════
-       NAVBAR
-  ══════════════════════════════════════════ -->
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-  
-      <!-- Logo -->
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-brand-900 flex items-center justify-center shadow-md">
-          <span class="text-white text-xs font-extrabold tracking-tight leading-none">ICAB</span>
-        </div>
-        <div class="leading-tight">
-          <p class="text-sm font-bold text-gray-900">ICAB</p>
-          <p class="text-[11px] text-gray-400 font-medium">Bafoussam</p>
-        </div>
-      </div>
-  
-      <!-- Links -->
-      <div class="hidden md:flex items-center gap-1">
-        <a href="#" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Accueil</a>
-        <a href="#" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">À propos</a>
-        <a href="#" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Fonctionnalités</a>
-        <a href="#" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-all">Contact</a>
-      </div>
-  
-      <!-- CTA -->
-      <div class="flex items-center gap-3">
-        <a href="#" class="hidden sm:block text-sm font-semibold text-brand-700 hover:text-brand-900 transition-colors">S'inscrire</a>
-        <a href="#" class="px-5 py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold rounded-xl shadow-md shadow-brand-200 transition-all hover:shadow-lg hover:-translate-y-px">
-          Se connecter
-        </a>
-      </div>
-    </div>
-  </nav>
-
-  <main class="pt-24 pb-16 px-6 max-w-7xl mx-auto">
-    
-    <div class="grid lg:grid-cols-12 gap-8 items-start">
-      
-      <!-- SIDEBAR: Photo & Essential Stats -->
-      <aside class="lg:col-span-4 space-y-6">
-        
-        <!-- Profile Card -->
-        <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 p-4">
-          <div class="aspect-[3/4] rounded-2xl overflow-hidden mb-6 relative group">
-            <img src="hero7.png" alt="Candidate Name" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            <div class="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
-              <span class="bg-brand-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Candidat Officiel</span>
-            </div>
+{% block content %}
+<div class="pt-16 max-w-7xl mx-auto px-6">
+  <div class="grid lg:grid-cols-12 gap-8 items-start">
+    <aside class="lg:col-span-4 space-y-6">
+      <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 p-4">
+        <div class="aspect-[3/4] rounded-2xl overflow-hidden mb-6 relative group">
+          {% if candidat.demande.image %}
+            <img src="{{ candidat.demande.image.url }}" alt="{{ candidat.demande.utilisateur.nom }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          {% elif candidat.demande.utilisateur.photo %}
+            <img src="{{ candidat.demande.utilisateur.photo.url }}" alt="{{ candidat.demande.utilisateur.nom }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          {% else %}
+            <div class="w-full h-full bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl">{{ candidat.demande.utilisateur.nom|slice:":1"|upper }}</div>
+          {% endif %}
+          <div class="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+            <span class="bg-brand-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Candidat Officiel</span>
           </div>
-          
-          <div class="px-4 pb-4">
-            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-1">FOUDA Laura</h1>
-            <p class="text-brand-600 font-bold mb-4">Vice-présidente</p>
-            
-            <div class="grid grid-cols-2 gap-3">
-              <div class="p-4 bg-brand-50 rounded-2xl text-center">
-                <p class="text-2xl font-black text-brand-700 leading-tight">367</p>
-                <p class="text-[10px] text-brand-400 font-bold uppercase tracking-widest">Votes</p>
-              </div>
-              <div class="p-4 bg-gray-50 rounded-2xl text-center">
-                <p class="text-2xl font-black text-gray-900 leading-tight">2<span class="text-xs font-bold text-gray-400">ème</span></p>
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Rang</p>
-              </div>
+        </div>
+        <div class="px-4 pb-4">
+          <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-1">{{ candidat.demande.utilisateur.nom }} {{ candidat.demande.utilisateur.prenom }}</h1>
+          <p class="text-brand-600 font-bold mb-4">{{ candidat.demande.slogan|default:"Candidat" }}</p>
+          <div class="mt-4">
+            <a href="{% url 'users:scrutin_vote' slug=candidat.scrutin.slug %}" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold">Aller au vote</a>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-4 bg-brand-50 rounded-2xl text-center">
+              <p class="text-2xl font-black text-brand-700 leading-tight">{{ candidat.nombre_vote }}</p>
+              <p class="text-[10px] text-brand-400 font-bold uppercase tracking-widest">Votes</p>
+            </div>
+            <div class="p-4 bg-gray-50 rounded-2xl text-center">
+              <p class="text-2xl font-black text-gray-900 leading-tight">—</p>
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Rang</p>
             </div>
           </div>
         </div>
-
-        <!-- Quick Info Card -->
-        <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Informations</h3>
-          <ul class="space-y-4">
-            <li class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-              </div>
-              <div>
-                <p class="text-[10px] font-medium text-gray-400 uppercase">Filière</p>
-                <p class="text-sm font-bold text-gray-900">Marketing - 3ème Année</p>
-              </div>
-            </li>
-            <li class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 0 -2-2H5a2 2 0 0 -2 2v10a2 2 0 0 2 2z"/></svg>
-              </div>
-              <div>
-                <p class="text-[10px] font-medium text-gray-400 uppercase">Contact</p>
-                <p class="text-sm font-bold text-gray-900">l.fouda@icab.cm</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </aside>
-
-      <!-- MAIN CONTENT: Manifesto & Trends -->
-      <div class="lg:col-span-8 space-y-8">
-        
-        <!-- Welcome Header -->
-        <div class="bg-brand-900 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden">
-          <div class="relative z-10">
-            <span class="inline-block bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-6">Ma Vision 2024</span>
-            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl italic leading-tight mb-6">
-              "L'innovation au service de <br/>
-              <span class="not-italic font-bold text-blue-300">l'excellence étudiante.</span>" 
-            </h2>
-            <p class="text-blue-100/80 text-lg max-w-xl leading-relaxed">
-              Mon engagement est de transformer notre cadre de vie pour que chaque étudiant d'ICAB Bafoussam puisse s'épanouir pleinement.
-            </p>
-          </div>
-          <!-- Decorative SVG -->
-          <div class="absolute right-0 bottom-0 opacity-20 pointer-events-none translate-y-1/4 translate-x-1/4">
-             <svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-               <circle cx="200" cy="200" r="180" stroke="white" stroke-width="40" stroke-dasharray="10 20" />
-             </svg>
-          </div>
-        </div>
-
-        <!-- Program Pillars -->
-        <div class="grid md:grid-cols-2 gap-6">
-           <div class="p-8 bg-white rounded-3xl border border-gray-100 shadow-sm hover:border-brand-200 transition-all group">
-             <div class="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 mb-6 group-hover:scale-110 transition-transform">
-               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.642.321a2 2 0 01-1.583 0l-.642-.321a6 6 0 00-3.86-.517l-2.387.477a2 2 0 00-1.022.547l-.37.37a2 2 0 00-.496 1.414V19a2 2 0 002 0l1.5-1.5h10l1.5 1.5a2 2 0 002 0v-2.202a2 2 0 00-.496-1.414l-.37-.37z"/><path d="M12 3v5m0 0l-1.5-1.5M12 8l1.5-1.5"/></svg>
-             </div>
-             <h3 class="text-xl font-bold text-gray-900 mb-3">Vie Étudiante</h3>
-             <p class="text-sm text-gray-500 leading-relaxed">Modernisation des espaces de détente et création d'une cafétéria coopérative autogérée.</p>
-           </div>
-
-           <div class="p-8 bg-white rounded-3xl border border-gray-100 shadow-sm hover:border-brand-200 transition-all group">
-             <div class="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 mb-6 group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-             </div>
-             <h3 class="text-xl font-bold text-gray-900 mb-3">Numérisation</h3>
-             <p class="text-sm text-gray-500 leading-relaxed">Déploiement d'une application mobile pour la consultation des notes et le dépôt de documents.</p>
-           </div>
-        </div>
-
-        <!-- Success Metrics -->
-        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-           <div class="flex items-center justify-between mb-8">
-             <h3 class="text-lg font-bold text-gray-900">Objectifs de Campagne</h3>
-             <span class="text-xs font-bold text-brand-600 bg-brand-50 px-3 py-1 rounded-full uppercase">En cours</span>
-           </div>
-           
-           <div class="space-y-6">
-             <div>
-               <div class="flex justify-between mb-2">
-                 <span class="text-sm font-semibold text-gray-700">Collecte de fonds (Bourse sociale)</span>
-                 <span class="text-sm font-bold text-brand-700">85%</span>
-               </div>
-               <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                 <div class="h-full bg-brand-600 rounded-full" style="width: 85%"></div>
-               </div>
-             </div>
-
-             <div>
-               <div class="flex justify-between mb-2">
-                 <span class="text-sm font-semibold text-gray-700">Partenariats entreprises</span>
-                 <span class="text-sm font-bold text-brand-700">60%</span>
-               </div>
-               <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                 <div class="h-full bg-brand-600 rounded-full" style="width: 60%"></div>
-               </div>
-             </div>
-           </div>
-        </div>
-
-        <!-- Trend Chart Placeholder -->
-        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm overflow-hidden relative">
-           <h3 class="text-lg font-bold text-gray-900 mb-2">Tendance des Votes</h3>
-           <p class="text-xs text-gray-400 mb-8">+12.5% depuis la semaine dernière</p>
-           
-           <div class="h-48 w-full flex items-end gap-2 px-2">
-              <!-- Placeholder bars -->
-              <div class="flex-grow bg-brand-50 rounded-t-lg transition-all hover:bg-brand-100" style="height: 30%"></div>
-              <div class="flex-grow bg-brand-100 rounded-t-lg transition-all hover:bg-brand-200" style="height: 45%"></div>
-              <div class="flex-grow bg-brand-200 rounded-t-lg transition-all hover:bg-brand-300" style="height: 35%"></div>
-              <div class="flex-grow bg-brand-500 rounded-t-lg transition-all hover:bg-brand-600" style="height: 60%"></div>
-              <div class="flex-grow bg-brand-600 rounded-t-lg transition-all hover:bg-brand-700" style="height: 85%"></div>
-              <div class="flex-grow bg-brand-700 rounded-t-lg transition-all hover:bg-brand-800" style="height: 70%"></div>
-              <div class="flex-grow bg-brand-900 rounded-t-lg transition-all hover:bg-black" style="height: 95%"></div>
-           </div>
-           
-           <div class="flex justify-between mt-4 text-[10px] font-bold text-gray-400 px-2">
-             <span>LUN</span>
-             <span>MAR</span>
-             <span>MER</span>
-             <span>JEU</span>
-             <span>VEN</span>
-             <span>SAM</span>
-             <span>DIM</span>
-           </div>
-        </div>
-
       </div>
 
-    </div>
-
-    <!-- Sticky Bottom Bar for Vote -->
-    <div class="fixed bottom-0 left-0 right-0 z-40 bg-white/60 backdrop-blur-xl border-t border-white/30 py-6 px-6">
-       <div class="max-w-7xl mx-auto flex items-center justify-between">
-         <div class="hidden md:block">
-           <p class="text-sm font-bold text-gray-900">Soutenez la vision de Laura</p>
-           <p class="text-xs text-gray-500">Votre vote est anonyme et sécurisé</p>
-         </div>
-         <button class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-10 py-4 rounded-2xl font-bold shadow-xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02] active:scale-95">
-           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"/><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"/></svg>
-           Voter pour Laura maintenant
-         </button>
-       </div>
-    </div>
-
-  </main>
-
-  <footer class="bg-gray-900 text-gray-400 py-16">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid md:grid-cols-4 gap-10 mb-12">
-        <div class="md:col-span-1">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center">
-              <span class="text-white text-xs font-extrabold">ICAB</span>
+      <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Informations</h3>
+        <ul class="space-y-4">
+          <li class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             </div>
             <div>
-              <p class="text-white text-sm font-bold">ICAB Bafoussam</p>
-              <p class="text-gray-500 text-xs">Plateforme de vote sécurisé</p>
+              <p class="text-[10px] font-medium text-gray-400 uppercase">Filière</p>
+              <p class="text-sm font-bold text-gray-900">{{ candidat.demande.utilisateur.filiere|default:'—' }}</p>
             </div>
-          </div>
-          <p class="text-sm leading-relaxed">Votez en toute confiance pour construire ensemble l'avenir de notre établissement.</p>
-        </div>
-        <div>
-          <h4 class="text-white text-sm font-bold mb-4">Navigation</h4>
-          <ul class="space-y-2.5">
-            <li><a href="#" class="text-sm hover:text-white transition-colors">Accueil</a></li>
-            <li><a href="#" class="text-sm hover:text-white transition-colors">À propos</a></li>
-            <li><a href="#" class="text-sm hover:text-white transition-colors">Candidats</a></li>
-            <li><a href="#" class="text-sm hover:text-white transition-colors">Contact</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-white text-sm font-bold mb-4">Élection</h4>
-          <ul class="space-y-2.5">
-            <li><a href="#" class="text-sm hover:text-white transition-colors">Voter maintenant</a></li>
-            <li><a href="#" class="text-sm hover:text-white transition-colors">Résultats</a></li>
-            <li><a href="#" class="text-sm hover:text-white transition-colors">Règlement</a></li>
-            <li><a href="#" class="text-sm hover:text-white transition-colors">FAQ</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-white text-sm font-bold mb-4">Contact</h4>
-          <ul class="space-y-2.5">
-            <li class="text-sm flex items-center gap-2">
-              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              bde@icab.cm
-            </li>
-            <li class="text-sm flex items-center gap-2">
-              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              Bafoussam, Cameroun
-            </li>
-          </ul>
-        </div>
+          </li>
+          <li class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 0 -2-2H5a2 2 0 0 -2 2v10a2 2 0 0 2 2z"/></svg>
+            </div>
+            <div>
+              <p class="text-[10px] font-medium text-gray-400 uppercase">Contact</p>
+              <p class="text-sm font-bold text-gray-900">{{ candidat.demande.utilisateur.email }}</p>
+            </div>
+          </li>
+        </ul>
       </div>
-  
-      <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
-        <p class="text-xs text-gray-500">© 2024 ICAB Bafoussam. Tous droits réservés.</p>
-        <div class="flex items-center gap-4 text-xs text-gray-500">
-          <a href="#" class="hover:text-white transition-colors">Confidentialité</a>
-          <a href="#" class="hover:text-white transition-colors">Conditions d'utilisation</a>
-          <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-            <span>Plateforme opérationnelle</span>
-          </div>
-        </div>
+    </aside>
+
+    <div class="lg:col-span-8 space-y-8">
+      <div class="bg-white rounded-3xl p-8 md:p-12 text-gray-900 relative overflow-hidden">
+        <h2 class="font-display text-3xl mb-4">Programme</h2>
+        <p class="text-sm text-gray-600 leading-relaxed">{{ candidat.demande.programme|default:'Aucun programme fourni.' }}</p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h3 class="text-lg font-bold text-gray-900 mb-3">Tendance des votes</h3>
+        <div class="h-36 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400">Graphique temporaire</div>
       </div>
     </div>
-  </footer>
-
-</body>
-</html>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+Bonjour {{ utilisateur.prenom|default:utilisateur.email }},
+
+Votre candidature pour le scrutin « {{ scrutin.titre }} » n'a pas été retenue.
+
+Merci pour votre intérêt.
+
+L'équipe ICAB

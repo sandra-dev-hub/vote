@@ -1,0 +1,10 @@
+Bonjour {{ utilisateur.prenom|default:utilisateur.email }},
+
+La période de vote pour le scrutin « {{ scrutin.titre }} » est maintenant ouverte.
+
+Vous pouvez voter jusqu'au {{ scrutin.date_fin_vote|date:"d/m/Y \à H:i" }}.
+
+Connectez-vous ici : {{ protocol }}://{{ domain }}/scrutins/
+
+Merci,
+L'équipe ICAB

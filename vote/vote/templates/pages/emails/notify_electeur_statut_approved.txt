@@ -1,0 +1,8 @@
+Bonjour {{ utilisateur.prenom|default:utilisateur.email }},
+
+Votre demande d'inscription comme électeur pour le scrutin « {{ scrutin.titre }} » a été APPROUVÉE.
+
+Vous pourrez voter dès l'ouverture du scrutin.
+
+Merci,
+L'équipe ICAB

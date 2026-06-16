@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from __future__ import annotations
+
 from factory import Faker
 from factory import post_generation
 from factory.django import DjangoModelFactory

@@ -8,6 +8,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
+import json
 from django.utils.text import slugify
 from django.views import View
 from django.views.generic import (
@@ -35,6 +36,70 @@ from .models import (
     Candidat
 )
 from vote.global_data.enums import StatutDemande, StatutScrutin
+
+
+class HomeView(TemplateView):
+    template_name = "pages/home.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        now = timezone.now()
+
+        # Cherche un scrutin actuellement ouvert ou en vote
+        scrutin_live = (
+            Scrutin.objects.filter(
+                statut__in=["ouvert", "en_vote"],
+                date_debut__lte=now,
+                date_fin__gte=now,
+            )
+            .order_by("date_fin")
+            .first()
+        )
+
+        if scrutin_live:
+            candidats_qs = Candidat.objects.filter(scrutin=scrutin_live).select_related("demande__utilisateur").order_by("-nombre_vote")
+            ctx["candidats"] = list(candidats_qs[:4])
+
+            nb_electeurs = Electeur.objects.filter(scrutin=scrutin_live).count()
+            nb_candidats = candidats_qs.count()
+            nb_votes = Vote.objects.filter(candidat__scrutin=scrutin_live).count()
+
+            transparence = round((nb_votes / nb_electeurs) * 100, 1) if nb_electeurs else 0
+
+            ctx["stats"] = {
+                "electeurs_inscrits": nb_electeurs,
+                "candidats": nb_candidats,
+                "transparence_pct": transparence,
+                "securite_pct": 100,
+            }
+            ctx["scrutin"] = scrutin_live
+        else:
+            # Fallback global stats
+            ctx["candidats"] = list(Candidat.objects.select_related("demande__utilisateur").order_by("-nombre_vote")[:4])
+            nb_electeurs = Electeur.objects.count()
+            nb_candidats = Candidat.objects.count()
+            nb_votes = Vote.objects.count()
+            transparence = round((nb_votes / nb_electeurs) * 100, 1) if nb_electeurs else 0
+            ctx["stats"] = {
+                "electeurs_inscrits": nb_electeurs,
+                "candidats": nb_candidats,
+                "transparence_pct": transparence,
+                "securite_pct": 100,
+            }
+
+        return ctx
+
+
+class CandidateDetailView(TemplateView):
+    template_name = "pages/detail_profile.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        slug = self.kwargs.get("slug")
+        ctx["candidat"] = (
+            Candidat.objects.select_related("demande__utilisateur", "scrutin").filter(slug=slug).first()
+        )
+        return ctx
 
 
 # ====================== HELPERS ======================
@@ -66,8 +131,14 @@ class UserRegisterView(SuccessMessageMixin, CreateView):
     template_name = "pages/register.html"
     form_class = UserRegisterForm
     success_url = reverse_lazy("login")
-    success_message = "Votre compte a été créé avec succès ! Veuillez vous connecter."
+    success_message = (
+        "Votre compte a été créé avec succès ! "
+        "Veuillez vous connecter."
+    )
 
+    def form_invalid(self, form):
+        print(form.errors)
+        return super().form_invalid(form)
 
 # ====================== DASHBOARDS ======================
 class UserDashboardView(LoginRequiredMixin, TemplateView):
@@ -88,6 +159,9 @@ class UserDashboardView(LoginRequiredMixin, TemplateView):
             .order_by("date_fin")
         )
         ctx["scrutins_accessibles"] = scrutins_accessibles
+        # Données de test pour les graphiques utilisateur
+        ctx['chart_labels'] = json.dumps(['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'])
+        ctx['chart_data'] = json.dumps([12, 19, 7, 14, 22, 30, 27])
         return ctx
 
 
@@ -396,6 +470,7 @@ class UsersListView(LoginRequiredMixin, ListView):
         ctx["nb_electeur"] = Utilisateur.objects.filter(role="ELECTEUR").count()
         ctx.update(get_sidebar_counts())
         return ctx
+
 
 
 class TraiterDemandeCandidatureView(LoginRequiredMixin, View):

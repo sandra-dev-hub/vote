@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="fr">
+  <body style="font-family:Arial,Helvetica,sans-serif;color:#111;">
+    <div style="max-width:600px;margin:0 auto;padding:20px;background:#fff;border:1px solid #eee;border-radius:8px;">
+      <h2>Le vote est ouvert — {{ scrutin.titre }}</h2>
+      <p>Bonjour {{ utilisateur.prenom|default:utilisateur.email }},</p>
+      <p>La période de vote pour le scrutin <strong>« {{ scrutin.titre }} »</strong> est maintenant ouverte.</p>
+      <p>Vous pouvez voter jusqu'au <strong>{{ scrutin.date_fin_vote|date:"d/m/Y \à H:i" }}</strong>.</p>
+      <p style="text-align:center;"><a href="{{ protocol }}://{{ domain }}/scrutins/" style="display:inline-block;padding:10px 16px;background:#2563eb;color:#fff;border-radius:6px;text-decoration:none;">Accéder aux scrutins</a></p>
+      <p style="color:#666;font-size:13px">Merci,<br/>L'équipe ICAB</p>
+    </div>
+  </body>
+</html>

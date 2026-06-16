@@ -1,0 +1,8 @@
+Bonjour {{ utilisateur.prenom|default:utilisateur.email }},
+
+Nous sommes au regret de vous informer que votre demande d'inscription comme électeur pour le scrutin « {{ scrutin.titre }} » n'a pas été acceptée.
+
+Si vous pensez qu'il s'agit d'une erreur, contactez l'équipe d'administration.
+
+Merci,
+L'équipe ICAB

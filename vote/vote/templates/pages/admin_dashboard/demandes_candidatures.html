@@ -524,11 +524,10 @@
 
 {% block extra_scripts %}
 <script>
-  $(function () {
-    $("#demandes-candidatures-table").DataTable({
-      responsive: true,
-      pageLength: 10,
-      order: [[7, "desc"]],
+    $(function () {
+        $("#demandes-candidatures-table").DataTable({
+            pageLength: 10,
+            order: [[7, "desc"]],
       language: {
         search: "Rechercher :",
         lengthMenu: "Afficher _MENU_ lignes",

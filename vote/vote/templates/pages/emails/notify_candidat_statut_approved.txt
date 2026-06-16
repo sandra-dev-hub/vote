@@ -1,0 +1,8 @@
+Bonjour {{ utilisateur.prenom|default:utilisateur.email }},
+
+Félicitations — votre candidature pour le scrutin « {{ scrutin.titre }} » a été APPROUVÉE.
+
+Votre profil sera visible par les électeurs dès l'ouverture du vote.
+
+Bonne chance,
+L'équipe ICAB

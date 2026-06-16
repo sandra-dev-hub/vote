@@ -11,10 +11,11 @@ from vote.users.views import (
     UserDashboardView,
     UserLoginView,
     UserRegisterView,
+    HomeView,
 )
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("", HomeView.as_view(), name="home"),
     path("about/", TemplateView.as_view(template_name="pages/about.html"), name="about"),
     path("contact/", TemplateView.as_view(template_name="pages/contact.html"), name="contact"),
     path("fonctionnalites/", TemplateView.as_view(template_name="pages/fonctionnalites.html"), name="fonction"),

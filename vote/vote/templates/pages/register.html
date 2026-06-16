@@ -1,852 +1,274 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inscription — Plateforme Électorale ICAB</title>
+  <title>Inscription | ICAB Bafoussam</title>
+
   <link href="{% static 'css/output.css' %}" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg: #faf9f7;
-      --bg-illus: #f5f0eb;
-      --surface: #ffffff;
-      --text: #2d2a26;
-      --text-secondary: #8a8279;
-      --border: #e8e4df;
-      --border-hover: #d5cfc7;
-      --accent: #7c6f64;
-      --accent-hover: #5e544c;
-      --accent-light: #f0ece6;
-      --error: #c45c4a;
-      --error-bg: #fdf5f3;
-      --error-border: #f0d5cf;
-      --success: #6b9e75;
-    }
-
-    * {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-
-    /* ── Layout principal ── */
-    .layout {
-      display: flex;
-      width: 100%;
-      max-width: 1100px;
-      min-height: 640px;
-      background: var(--surface);
-      border-radius: 2rem;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(45, 42, 38, 0.06), 0 8px 20px rgba(45, 42, 38, 0.04);
-    }
-
-    /* ── Panneau illustration ── */
-    .side-visual {
-      display: none;
-      width: 45%;
-      background: var(--bg-illus);
-      position: relative;
-      overflow: hidden;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem;
-    }
-
-    .side-visual::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -30%;
-      width: 80%;
-      height: 120%;
-      background: rgba(255, 255, 255, 0.4);
-      border-radius: 50%;
-      filter: blur(60px);
-    }
-
-    .side-visual::after {
-      content: '';
-      position: absolute;
-      bottom: -20%;
-      left: -20%;
-      width: 60%;
-      height: 80%;
-      background: rgba(120, 110, 100, 0.04);
-      border-radius: 50%;
-      filter: blur(40px);
-    }
-
-    .illustration-wrap {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      max-width: 360px;
-    }
-
-    .illustration-wrap svg {
-      width: 100%;
-      height: auto;
-      max-height: 280px;
-      filter: drop-shadow(0 8px 24px rgba(45, 42, 38, 0.06));
-    }
-
-    .illustration-wrap h2 {
-      font-size: 1.375rem;
-      font-weight: 500;
-      color: var(--text);
-      margin-top: 2rem;
-      line-height: 1.4;
-      letter-spacing: -0.01em;
-    }
-
-    .illustration-wrap p {
-      font-size: 0.9375rem;
-      color: var(--text-secondary);
-      margin-top: 0.75rem;
-      line-height: 1.7;
-      font-weight: 400;
-    }
-
-    /* ── Panneau formulaire ── */
-    .side-form {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      position: relative;
-    }
-
-    /* Logo */
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .logo-icon {
-      width: 2.25rem;
-      height: 2.25rem;
-      background: var(--accent);
-      border-radius: 0.625rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-    }
-
-    .logo-text {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--text);
-      letter-spacing: -0.01em;
-    }
-
-    /* Header */
-    .form-header {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .form-header h1 {
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    .form-header p {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      margin-top: 0.375rem;
-      font-weight: 400;
-    }
-
-    /* ── Widget scrollable ── */
-    .widget {
-      width: 100%;
-      max-width: 420px;
-      max-height: calc(100vh - 12rem);
-      overflow-y: auto;
-      padding-right: 0.5rem;
-    }
-
-    /* Scrollbar soft */
-    .widget::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .widget::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .widget::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
-    }
-
-    .widget::-webkit-scrollbar-thumb:hover {
-      background: var(--border-hover);
-    }
-
-    /* ── Champs ── */
-    .field-group {
-      margin-bottom: 1rem;
-    }
-
-    .field-label {
-      display: block;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 0.375rem;
-      letter-spacing: 0.01em;
-    }
-
-    .field-input {
-      width: 100%;
-      padding: 0.625rem 0.875rem;
-      border: 1.5px solid var(--border);
-      border-radius: 0.75rem;
-      font-size: 0.9375rem;
-      font-weight: 400;
-      color: var(--text);
-      background: var(--surface);
-      outline: none;
-      transition: all 0.2s ease;
-    }
-
-    .field-input::placeholder {
-      color: #b8b0a8;
-      font-weight: 400;
-    }
-
-    .field-input:hover {
-      border-color: var(--border-hover);
-      background: #fdfcfb;
-    }
-
-    .field-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(124, 111, 100, 0.08);
-      background: var(--surface);
-    }
-
-    .field-input.has-error {
-      border-color: var(--error);
-      background: var(--error-bg);
-    }
-
-    .field-input.has-error:focus {
-      box-shadow: 0 0 0 3px rgba(196, 92, 74, 0.08);
-    }
-
-    /* Select */
-    select.field-input {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238a8279' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 0.875rem center;
-      padding-right: 2.5rem;
-      cursor: pointer;
-    }
-
-    /* ── Matricule ── */
-    .matricule-wrap {
-      display: flex;
-      align-items: stretch;
-    }
-
-    .matricule-prefix {
-      display: flex;
-      align-items: center;
-      padding: 0 0.875rem;
-      background: var(--accent-light);
-      border: 1.5px solid var(--border);
-      border-right: none;
-      border-radius: 0.75rem 0 0 0.75rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      user-select: none;
-    }
-
-    .matricule-wrap .field-input {
-      border-radius: 0 0.75rem 0.75rem 0;
-      flex: 1;
-    }
-
-    /* ── Grid ── */
-    .grid-2 {
-      display: grid;
-      gap: 0.75rem;
-    }
-
-    @media (min-width: 480px) {
-      .grid-2 { grid-template-columns: 1fr 1fr; }
-    }
-
-    /* ── Photo ── */
-    .photo-zone {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.875rem;
-      border: 1.5px dashed var(--border);
-      border-radius: 0.875rem;
-      transition: all 0.2s ease;
-      background: #fdfcfb;
-    }
-
-    .photo-zone:hover {
-      border-color: var(--border-hover);
-      background: var(--surface);
-    }
-
-    .photo-preview {
-      width: 3.5rem;
-      height: 3.5rem;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--border);
-      background: var(--bg);
-    }
-
-    .photo-meta p:first-child {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .photo-meta p:last-child {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      margin-top: 0.125rem;
-    }
-
-    .photo-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      margin-top: 0.5rem;
-      padding: 0.375rem 0.75rem;
-      background: var(--accent-light);
-      color: var(--accent);
-      border: none;
-      border-radius: 0.5rem;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .photo-btn:hover {
-      background: #e5ded6;
-      color: var(--accent-hover);
-    }
-
-    /* ── Erreurs ── */
-    .field-error {
-      display: flex;
-      align-items: center;
-      gap: 0.375rem;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--error);
-      margin-top: 0.375rem;
-    }
-
-    .field-error::before {
-      content: '';
-      width: 0.875rem;
-      height: 0.875rem;
-      background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 3.5V7M7 9.5H7.01M12.5 7C12.5 10.0376 10.0376 12.5 7 12.5C3.96243 12.5 1.5 10.0376 1.5 7C1.5 3.96243 3.96243 1.5 7 1.5C10.0376 1.5 12.5 3.96243 12.5 7Z' stroke='%23c45c4a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-size: contain;
-      flex-shrink: 0;
-    }
-
-    .alert-error {
-      display: flex;
-      gap: 0.75rem;
-      padding: 0.875rem 1rem;
-      background: var(--error-bg);
-      border: 1.5px solid var(--error-border);
-      border-radius: 0.75rem;
-      margin-bottom: 1rem;
-    }
-
-    .alert-error svg {
-      width: 1.125rem;
-      height: 1.125rem;
-      color: var(--error);
-      flex-shrink: 0;
-      margin-top: 0.125rem;
-    }
-
-    .alert-error p {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--error);
-    }
-
-    /* ── Checkbox ── */
-    .checkbox-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.625rem;
-      margin: 1.25rem 0;
-    }
-
-    .custom-check {
-      width: 1.125rem;
-      height: 1.125rem;
-      margin-top: 0.125rem;
-      accent-color: var(--accent);
-      cursor: pointer;
-      flex-shrink: 0;
-      border-radius: 0.25rem;
-    }
-
-    .checkbox-row label {
-      font-size: 0.8125rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      font-weight: 400;
-    }
-
-    .checkbox-row a {
-      color: var(--accent);
-      font-weight: 500;
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-
-    .checkbox-row a:hover {
-      color: var(--accent-hover);
-      text-decoration: underline;
-    }
-
-    /* ── Bouton ── */
-    .btn-submit {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background: var(--accent);
-      color: white;
-      font-size: 0.9375rem;
-      font-weight: 500;
-      border: none;
-      border-radius: 0.75rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
-      letter-spacing: 0.01em;
-    }
-
-    .btn-submit:hover {
-      background: var(--accent-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(94, 84, 76, 0.15);
-    }
-
-    .btn-submit:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .btn-submit .spinner {
-      display: none;
-      width: 1rem;
-      height: 1rem;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      margin-right: 0.5rem;
-      vertical-align: middle;
-    }
-
-    .btn-submit.loading .spinner { display: inline-block; }
-    .btn-submit.loading .btn-text { opacity: 0.8; }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Login link ── */
-    .login-link {
-      text-align: center;
-      margin-top: 1.25rem;
-      padding-top: 1.25rem;
-      border-top: 1.5px solid var(--border);
-    }
-
-    .login-link p {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      font-weight: 400;
-    }
-
-    .login-link a {
-      color: var(--accent);
-      font-weight: 500;
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-
-    .login-link a:hover {
-      color: var(--accent-hover);
-      text-decoration: underline;
-    }
-
-    /* ── Hint ── */
-    .hint {
-      font-size: 0.75rem;
-      color: #b8b0a8;
-      margin-top: 0.375rem;
-    }
-
-    /* ── Responsive ── */
-    @media (min-width: 1024px) {
-      .side-visual { display: flex; }
-      .side-form { padding: 2.5rem 3rem; }
-      .widget { max-height: 520px; }
-    }
-
-    @media (max-width: 640px) {
-      body { padding: 0; }
-      .layout {
-        border-radius: 0;
-        min-height: 100vh;
-        box-shadow: none;
-      }
-      .side-form { padding: 1.5rem; }
-      .widget { max-height: calc(100vh - 8rem); }
-    }
+      --ink: #1a7a5e;
+      --ink-deep: #11503e;
+      --ink-night: #0c372a;
+      --cream: #f5f0e8;
+      --amber: #c9952e;
+    }
+    .font-display { font-family: 'Syne', sans-serif; }
+    .font-body { font-family: 'DM Sans', sans-serif; }
   </style>
 </head>
 
-<body>
+<body class="font-body antialiased min-h-screen flex">
 
-  <div class="layout">
+  <!-- Left: Illustration panel (Desktop only) -->
+  <div class="hidden lg:flex lg:w-[44%] relative items-center justify-center min-h-screen" style="background-color: var(--ink-night);">
 
-    <!-- Illustration -->
-    <aside class="side-visual">
-      <div class="illustration-wrap">
-        <!-- Illustration SVG style flat : personnes discutant/votant -->
-        <svg viewBox="0 0 400 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Fond organique -->
-          <path d="M50 160C50 80 120 40 200 60C280 80 360 40 360 120C360 200 320 280 200 280C80 280 50 240 50 160Z" fill="rgba(255,255,255,0.5)"/>
-          
-          <!-- Personnage 1 (gauche, assis, dos) -->
-          <ellipse cx="130" cy="220" rx="35" ry="12" fill="rgba(120,110,100,0.06)"/>
-          <!-- Corps -->
-          <path d="M100 220V170C100 160 110 150 120 150H140C150 150 160 160 160 170V220" fill="#c9b8a4"/>
-          <!-- Tête -->
-          <circle cx="130" cy="135" r="22" fill="#d4a574"/>
-          <!-- Cheveux -->
-          <path d="M108 130C108 115 118 108 130 108C142 108 152 115 152 130C152 138 148 142 142 142" stroke="#8a6f5b" stroke-width="8" stroke-linecap="round"/>
-          <!-- Bras -->
-          <path d="M105 175C95 185 90 200 95 210" stroke="#c9b8a4" stroke-width="10" stroke-linecap="round"/>
-          <path d="M155 175C165 185 170 200 165 210" stroke="#c9b8a4" stroke-width="10" stroke-linecap="round"/>
-          <!-- Chaise -->
-          <rect x="115" y="220" width="30" height="6" rx="3" fill="#a89888"/>
-          <rect x="120" y="226" width="4" height="24" rx="2" fill="#a89888"/>
-          <rect x="136" y="226" width="4" height="24" rx="2" fill="#a89888"/>
-          
-          <!-- Personnage 2 (droite, face, debout) -->
-          <ellipse cx="280" cy="240" rx="30" ry="10" fill="rgba(120,110,100,0.06)"/>
-          <!-- Corps -->
-          <path d="M255 240V195C255 185 265 175 275 175H285C295 175 305 185 305 195V240" fill="#a89080"/>
-          <!-- Tête -->
-          <circle cx="280" cy="160" r="20" fill="#d4a574"/>
-          <!-- Cheveux -->
-          <ellipse cx="280" cy="152" rx="24" ry="16" fill="#8a6f5b"/>
-          <!-- Visage minimal (juste un sourire) -->
-          <path d="M272 165C275 168 285 168 288 165" stroke="#b08860" stroke-width="2" stroke-linecap="round"/>
-          <!-- Bras -->
-          <path d="M255 200C245 210 240 225 245 235" stroke="#a89080" stroke-width="9" stroke-linecap="round"/>
-          <path d="M305 200C315 210 320 225 315 235" stroke="#a89080" stroke-width="9" stroke-linecap="round"/>
-          
-          <!-- Urne/boîte de vote entre eux -->
-          <rect x="185" y="200" width="50" height="40" rx="6" fill="#8a8279"/>
-          <rect x="190" y="205" width="40" height="30" rx="4" fill="#a89888"/>
-          <rect x="205" y="195" width="10" height="8" rx="2" fill="#7c6f64"/>
-          <!-- Bulletin -->
-          <rect x="210" y="175" width="16" height="22" rx="2" fill="white" stroke="#8a8279" stroke-width="1.5"/>
-          <path d="M214 188L218 192L226 184" stroke="#6b9e75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          
-          <!-- Éléments décoratifs -->
-          <circle cx="60" cy="80" r="20" fill="rgba(201,184,164,0.2)"/>
-          <circle cx="340" cy="100" r="16" fill="rgba(168,144,128,0.15)"/>
-          <circle cx="320" cy="280" r="24" fill="rgba(201,184,164,0.15)"/>
-          
-          <!-- Petite plante -->
-          <path d="M70 260Q75 240 85 230Q90 245 80 260" fill="#6b9e75" opacity="0.3"/>
-          <path d="M80 260Q85 235 95 225Q100 250 90 260" fill="#6b9e75" opacity="0.4"/>
-          <rect x="78" y="260" width="6" height="20" rx="3" fill="#a89888"/>
-        </svg>
+    <!-- Faint dot grid, single quiet texture -->
+    <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle, var(--cream) 1px, transparent 1px); background-size: 28px 28px;"></div>
 
-        <h2>Votez en toute simplicité</h2>
-        <p>Rejoignez la communauté étudiante de l'ICAB et participez activement aux élections représentatives de votre université.</p>
-      </div>
-    </aside>
+    <div class="relative z-10 flex flex-col items-center px-12 text-center max-w-sm">
 
-    <!-- Formulaire -->
-    <main class="side-form">
-      <div class="logo">
-        <div class="logo-icon">ICAB</div>
-        <span class="logo-text">Institut Catholique de Bafoussam</span>
-      </div>
+      <!-- Signature illustration: seal + network = validated, electronic vote -->
+      <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-10">
+        <circle cx="110" cy="110" r="92" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="2 6" opacity="0.5"/>
+        <circle cx="110" cy="110" r="70" stroke="var(--ink)" stroke-width="1.5"/>
 
-      <div class="form-header">
-        <h1>Créer un compte</h1>
-        <p>Accédez à l'espace électeur de votre université</p>
-      </div>
+        <!-- network nodes orbiting the seal: the "electronic" half of the idea -->
+        <line x1="110" y1="40" x2="110" y2="18" stroke="var(--amber)" stroke-width="1.5"/>
+        <circle cx="110" cy="14" r="5" fill="var(--amber)"/>
 
-      <div class="widget">
-        <form method="post" action="{% url 'users:register' %}" enctype="multipart/form-data" id="register-form" novalidate>
-          {% csrf_token %}
+        <line x1="167" y1="65" x2="186" y2="48" stroke="var(--amber)" stroke-width="1.5"/>
+        <circle cx="191" cy="43" r="5" fill="var(--amber)"/>
 
-          {% if form.non_field_errors %}
-          <div class="alert-error">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <div>
-              <p>Erreur de validation</p>
-              <ul class="mt-1 space-y-0.5">
-                {% for error in form.non_field_errors %}
-                  <li class="text-sm font-normal">{{ error }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-          {% endif %}
+        <line x1="167" y1="155" x2="186" y2="172" stroke="var(--amber)" stroke-width="1.5"/>
+        <circle cx="191" cy="177" r="5" fill="var(--amber)"/>
 
-          <!-- Matricule -->
-          <div class="field-group">
-            <label class="field-label" for="id_matricule_suffix">Numéro de matricule</label>
-            <div class="matricule-wrap">
-              <span class="matricule-prefix">ICAB-</span>
-              <input
-                type="text"
-                id="id_matricule_suffix"
-                name="matricule"
-                required
-                maxlength="10"
-                pattern="[0-9]{4}-[0-9]{6}"
-                value="{{ form.data.matricule|default:'' }}"
-                placeholder="2026-000001"
-                class="field-input {% if form.matricule.errors %}has-error{% endif %}"
-              />
-            </div>
-            {% if form.matricule.errors %}
-              <p class="field-error">{{ form.matricule.errors.0 }}</p>
-            {% else %}
-              <p class="hint">Format : année-promotion</p>
-            {% endif %}
-          </div>
+        <line x1="53" y1="65" x2="34" y2="48" stroke="var(--amber)" stroke-width="1.5"/>
+        <circle cx="29" cy="43" r="5" fill="var(--amber)"/>
 
-          <!-- Email -->
-          <div class="field-group">
-            <label class="field-label" for="{{ form.email.id_for_label }}">Email académique</label>
-            <input
-              type="email"
-              name="{{ form.email.html_name }}"
-              id="{{ form.email.id_for_label }}"
-              value="{{ form.email.value|default:'' }}"
-              placeholder="prenom.nom@icab.cm"
-              autocomplete="email"
-              class="field-input {% if form.email.errors %}has-error{% endif %}"
-            />
-            {% if form.email.errors %}
-              <p class="field-error">{{ form.email.errors.0 }}</p>
-            {% endif %}
-          </div>
+        <line x1="53" y1="155" x2="34" y2="172" stroke="var(--amber)" stroke-width="1.5"/>
+        <circle cx="29" cy="177" r="5" fill="var(--amber)"/>
 
-          <!-- Nom / Prénom -->
-          <div class="grid-2">
-            <div class="field-group">
-              <label class="field-label" for="{{ form.nom.id_for_label }}">Nom</label>
-              <input
-                type="text"
-                name="{{ form.nom.html_name }}"
-                id="{{ form.nom.id_for_label }}"
-                value="{{ form.nom.value|default:'' }}"
-                placeholder="Kamga"
-                class="field-input {% if form.nom.errors %}has-error{% endif %}"
-              />
-              {% if form.nom.errors %}
-                <p class="field-error">{{ form.nom.errors.0 }}</p>
-              {% endif %}
-            </div>
-            <div class="field-group">
-              <label class="field-label" for="{{ form.prenom.id_for_label }}">Prénom</label>
-              <input
-                type="text"
-                name="{{ form.prenom.html_name }}"
-                id="{{ form.prenom.id_for_label }}"
-                value="{{ form.prenom.value|default:'' }}"
-                placeholder="Jean"
-                class="field-input {% if form.prenom.errors %}has-error{% endif %}"
-              />
-              {% if form.prenom.errors %}
-                <p class="field-error">{{ form.prenom.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
+        <!-- inner seal: the "validated" half of the idea -->
+        <circle cx="110" cy="110" r="52" fill="var(--ink)"/>
+        <path d="M86 110 L102 128 L136 90" stroke="var(--cream)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
 
-          <!-- Filière / Niveau -->
-          <div class="grid-2">
-            <div class="field-group">
-              <label class="field-label" for="{{ form.filiere.id_for_label }}">Filière</label>
-              <select name="{{ form.filiere.html_name }}" id="{{ form.filiere.id_for_label }}" class="field-input {% if form.filiere.errors %}has-error{% endif %}">
-                {% for value, label in form.filiere.field.choices %}
-                  <option value="{{ value }}" {% if form.filiere.value == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </select>
-              {% if form.filiere.errors %}
-                <p class="field-error">{{ form.filiere.errors.0 }}</p>
-              {% endif %}
-            </div>
-            <div class="field-group">
-              <label class="field-label" for="{{ form.niveau.id_for_label }}">Niveau</label>
-              <select name="{{ form.niveau.html_name }}" id="{{ form.niveau.id_for_label }}" class="field-input {% if form.niveau.errors %}has-error{% endif %}">
-                {% for value, label in form.niveau.field.choices %}
-                  <option value="{{ value }}" {% if form.niveau.value == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </select>
-              {% if form.niveau.errors %}
-                <p class="field-error">{{ form.niveau.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
+      <h2 class="text-2xl font-display font-bold text-white tracking-tight mb-3">Rejoignez la communauté ICAB</h2>
+      <p class="text-sm font-medium leading-relaxed" style="color: #b9d4c9;">Créez votre compte pour participer aux scrutins universitaires.</p>
+    </div>
+  </div>
 
-          <!-- Photo -->
-          <div class="field-group">
-            <label class="field-label">Photo d'identité</label>
-            <div class="photo-zone">
-              <img id="preview-image" src="{% static 'images/default-avatar.png' %}" alt="Aperçu" class="photo-preview" />
-              <div class="photo-meta">
-                <p>Ajouter une photo</p>
-                <p>JPG ou PNG, 5 Mo max</p>
-                <label for="id_photo" class="photo-btn">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="17 8 12 3 7 8"/>
-                    <line x1="12" y1="3" x2="12" y2="15"/>
-                  </svg>
-                  Choisir
-                </label>
-                {{ form.photo }}
-                <p id="file-name" class="hint"></p>
-              </div>
-            </div>
-            {% if form.photo.errors %}
-              <p class="field-error">{{ form.photo.errors.0 }}</p>
-            {% endif %}
-          </div>
+  <!-- Right: Form panel -->
+  <div class="w-full lg:w-[56%] flex items-center justify-center min-h-screen px-6 py-12" style="background-color: var(--cream);">
 
-          <!-- Mots de passe -->
-          <div class="grid-2">
-            <div class="field-group">
-              <label class="field-label" for="{{ form.password1.id_for_label }}">Mot de passe</label>
-              <input
-                type="password"
-                name="{{ form.password1.html_name }}"
-                id="{{ form.password1.id_for_label }}"
-                placeholder="8 caractères min"
-                autocomplete="new-password"
-                class="field-input {% if form.password1.errors %}has-error{% endif %}"
-              />
-              {% if form.password1.errors %}
-                <p class="field-error">{{ form.password1.errors.0 }}</p>
-              {% endif %}
-            </div>
-            <div class="field-group">
-              <label class="field-label" for="{{ form.password2.id_for_label }}">Confirmation</label>
-              <input
-                type="password"
-                name="{{ form.password2.html_name }}"
-                id="{{ form.password2.id_for_label }}"
-                placeholder="Répéter le mot de passe"
-                autocomplete="new-password"
-                class="field-input {% if form.password2.errors %}has-error{% endif %}"
-              />
-              {% if form.password2.errors %}
-                <p class="field-error">{{ form.password2.errors.0 }}</p>
-              {% endif %}
-            </div>
-          </div>
+    <main class="w-full max-w-sm">
 
-          <!-- Conditions -->
-          <div class="checkbox-row">
-            <input type="checkbox" id="terms" required class="custom-check" />
-            <label for="terms">
-              J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a>
-            </label>
-          </div>
-
-          <!-- Submit -->
-          <button type="submit" class="btn-submit" id="submit-btn">
-            <span class="spinner"></span>
-            <span class="btn-text">Créer mon compte</span>
-          </button>
-
-        </form>
-
-        <div class="login-link">
-          <p>Déjà un compte ? <a href="{% url 'users:login' %}">Se connecter</a></p>
+      <div class="flex items-center gap-3 mb-10">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style="background-color: var(--ink);">
+          <span class="text-white text-sm font-display font-bold">ICAB</span>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.18em]" style="color: var(--ink);">Bafoussam · Session 2024</p>
+          <h1 class="text-xl font-display font-bold tracking-tight" style="color: #1c2521;">Inscription</h1>
         </div>
       </div>
-    </main>
 
+      <form method="post" action="{% url 'users:register' %}" enctype="multipart/form-data" id="register-form" novalidate class="space-y-5">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="px-4 py-3 text-sm font-semibold rounded-xl text-red-800 bg-red-50" role="alert">
+          <span class="font-bold block mb-1">Inscription impossible</span>
+          <ul class="list-disc list-inside space-y-0.5">
+            {% for error in form.non_field_errors %}
+              <li class="text-sm font-normal">{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <!-- Matricule -->
+        <div class="space-y-1.5">
+          <label for="id_matricule_suffix" class="text-[11px] font-bold uppercase tracking-wider" style="color: #6b7c75;">Numéro de matricule</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium" style="color: #6b7c75;">ICAB-</span>
+            <input type="text" id="id_matricule_suffix" name="matricule" required maxlength="10" pattern="[0-9]{4}-[0-9]{6}"
+                   value="{{ form.data.matricule|default:'' }}" placeholder="2026-000001"
+                   class="w-full pl-12 pr-4 py-3.5 bg-white border border-[#e2dccf] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 transition-all {% if form.matricule.errors %}border-red-400 bg-red-50{% endif %}"
+                   style="color: #1c2521;" />
+          </div>
+          {% if form.matricule.errors %}
+            <p class="text-xs font-medium" style="color: #c45c4a;">{{ form.matricule.errors.0 }}</p>
+          {% else %}
+            <p class="text-xs" style="color: #8a958f;">Format : année-promotion</p>
+          {% endif %}
+        </div>
+
+        <!-- Email -->
+        <div class="space-y-1.5">
+          <label for="{{ form.email.id_for_label }}" class="text-[11px] font-bold uppercase tracking-wider" style="color: #6b7c75;">Email académique</label>
+          <input type="email" name="{{ form.email.html_name }}" id="{{ form.email.id_for_label }}"
+                 value="{{ form.email.value|default:'' }}" placeholder="prenom.nom@icab.cm" autocomplete="email"
+                 class="w-full px-4 py-3.5 bg-white border border-[#e2dccf] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 transition-all {% if form.email.errors %}border-red-400 bg-red-50{% endif %}"
+                 style="color: #1c2521;" />
+          {% if form.email.errors %}
+            <p class="text-xs font-medium" style="color: #c45c4a;">{{ form.email.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Nom / Prénom -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="{{ form.nom.id_for_label }}" class="text-[11px] font-bold uppercase tracking-wider" style="color: #6b7c75;">Nom</label>
+            <input type="text" name="{{ form.nom.html_name }}" id="{{ form.nom.id_for_label }}"
+                   value="{{ form.nom.value|default:'' }}" placeholder="Kamga"
+                   class="w-full px-4 py-3.5 bg-white border border-[#e2dccf] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 transition-all {% if form.nom.errors %}border-red-400 bg-red-50{% endif %}"
+                   style="color: #1c2521;" />
+            {% if form.nom.errors %}
+              <p class="text-xs font-medium" style="color: #c45c4a;">{{ form.nom.errors.0 }}</p>
+            {% endif %}
+          </div>
+          <div class="space-y-1.5">
+            <label for="{{ form.prenom.id_for_label }}" class="text-[11px] font-bold uppercase tracking-wider" style="color: #6b7c75;">Prénom</label>
+            <input type="text" name="{{ form.prenom.html_name }}" id="{{ form.prenom.id_for_label }}"
+                   value="{{ form.prenom.value|default:'' }}" placeholder="Jean"
+                   class="w-full px-4 py-3.5 bg-white border border-[#e2dccf] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 transition-all {% if form.prenom.errors %}border-red-400 bg-red-50{% endif %}"
+                   style="color: #1c2521;" />
+            {% if form.prenom.errors %}
+              <p class="text-xs font-medium" style="color: #c45c4a;">{{ form.prenom.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Filière / Niveau -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="{{ form.filiere.id_for_label }}" class="text-[11px] font-bold uppercase tracking-wider" style="color: #6b7c75;">Filière</label>
+            <select name="{{ form.filiere.html_name }}" id="{{ form.filiere.id_for_label }}"
+                    class="w-full px-4 py-3.5 bg-white border border-[#e2dccf] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 transition-all appearance-none {% if form.filiere.errors %}border-red-400 bg-red-50{% endif %}"
+                    style="color: #1c2521;">
+              {% for value, label in form.filiere.field.choices %}
+                <option value="{{ value }}" {% if form.filiere.value == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+            {% if form.filiere.errors %}
+              <p class="text-xs font-medium" style="color: #c45c4a;">{{ form.filiere.errors.0 }}</p>
+            {% endif %}
+          </div>
+          <div class="space-y-1.5">
+            <label for="{{ form.niveau.id_for_label }}" class="text-[11px] font-bold uppercase tracking-wider" style="color: #6b7c75;">Niveau</label>
+            <select name="{{ form.niveau.html_name }}" id="{{ form.niveau.id_for_label }}"
+                    class="w-full px-4 py-3.5 bg-white border border-[#e2dccf] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 transition-all appearance-none {% if form.niveau.errors %}border-red-400 bg-red-50{% endif %}"
+                    style="color: #1c2521;">
+              {% for value, label in form.niveau.field.choices %}
+                <option value="{{ value }}" {% if form.niveau.value == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+            {% if form.niveau.errors %}
+              <p class="text-xs font-medium" style="color: #c45c4a;">{{ form.niveau.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Photo -->
+        <div class="space-y-1.5">
+          <label class="text-[11px] font-bold uppercase tracking-wider" style="color: #6b7c75;">Photo d'identité</label>
+          <div class="flex items-center gap-4 px-3 py-3 border border-[#e2dccf] rounded-xl transition-all" style="background: #fdfcfb;">
+            <img id="preview-image" src="{% static 'images/default-avatar.png' %}" alt="Aperçu" class="w-14 h-14 rounded-full object-cover border-2" style="border-color: #e2dccf;" />
+            <div>
+              <p class="text-sm font-medium" style="color: #1c2521;">Ajouter une photo</p>
+              <p class="text-xs" style="color: #8a958f;">JPG ou PNG, 5 Mo max</p>
+              <label for="id_photo" class="inline-flex items-center gap-1.5 mt-1 px-3 py-1 text-xs font-medium rounded-md cursor-pointer transition-all" style="background: var(--cream); color: var(--ink);">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Choisir
+              </label>
+              {{ form.photo }}
+              <p id="file-name" class="text-xs mt-1" style="color: #b8b0a8;"></p>
+            </div>
+          </div>
+          {% if form.photo.errors %}
+            <p class="text-xs font-medium" style="color: #c45c4a;">{{ form.photo.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Mots de passe -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="{{ form.password1.id_for_label }}" class="text-[11px] font-bold uppercase tracking-wider" style="color: #6b7c75;">Mot de passe</label>
+            <input type="password" name="{{ form.password1.html_name }}" id="{{ form.password1.id_for_label }}"
+                   placeholder="8 caractères min" autocomplete="new-password"
+                   class="w-full px-4 py-3.5 bg-white border border-[#e2dccf] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 transition-all {% if form.password1.errors %}border-red-400 bg-red-50{% endif %}"
+                   style="color: #1c2521;" />
+            {% if form.password1.errors %}
+              <p class="text-xs font-medium" style="color: #c45c4a;">{{ form.password1.errors.0 }}</p>
+            {% endif %}
+          </div>
+          <div class="space-y-1.5">
+            <label for="{{ form.password2.id_for_label }}" class="text-[11px] font-bold uppercase tracking-wider" style="color: #6b7c75;">Confirmation</label>
+            <input type="password" name="{{ form.password2.html_name }}" id="{{ form.password2.id_for_label }}"
+                   placeholder="Répéter le mot de passe" autocomplete="new-password"
+                   class="w-full px-4 py-3.5 bg-white border border-[#e2dccf] rounded-xl text-sm font-medium focus:outline-none focus:ring-2 transition-all {% if form.password2.errors %}border-red-400 bg-red-50{% endif %}"
+                   style="color: #1c2521;" />
+            {% if form.password2.errors %}
+              <p class="text-xs font-medium" style="color: #c45c4a;">{{ form.password2.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Conditions -->
+        <div class="flex items-start gap-2.5 mt-5">
+          <input type="checkbox" id="terms" required class="w-4 h-4 mt-0.5 accent-green-600" />
+          <label for="terms" class="text-xs" style="color: #6b7c75;">
+            J'accepte les <a href="#" class="font-semibold" style="color: var(--ink);">conditions d'utilisation</a> et la <a href="#" class="font-semibold" style="color: var(--ink);">politique de confidentialité</a>
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" id="submit-btn"
+                class="w-full py-3.5 text-white font-bold rounded-xl transition-all hover:-translate-y-0.5 active:translate-y-0"
+                style="background-color: var(--ink);">
+          <span id="spinner" class="hidden mr-2 w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          <span id="btn-text">Créer mon compte</span>
+        </button>
+
+      </form>
+
+      <div class="mt-8 pt-6 text-center" style="border-top: 1px solid #e2dccf;">
+        <p class="text-xs font-semibold" style="color: #6b7c75;">
+          Déjà un compte ?
+          <a href="{% url 'users:login' %}" class="font-bold underline underline-offset-2" style="color: var(--ink);">Se connecter</a>
+        </p>
+      </div>
+
+      <a href="{% url 'home' %}" class="flex items-center justify-center gap-1.5 mt-6 text-xs font-semibold" style="color: #8a958f;">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+        Retour au portail
+      </a>
+
+    </main>
   </div>
 
   <script>
     const input = document.getElementById("id_photo");
     const preview = document.getElementById("preview-image");
-    const fileName = document.getElementById("file-name");
+    const fileNameEl = document.getElementById("file-name");
 
     input.addEventListener("change", function () {
       const file = this.files[0];
       if (!file) return;
 
       if (file.size > 5 * 1024 * 1024) {
-        fileName.textContent = "Fichier trop volumineux (max 5 Mo)";
-        fileName.style.color = "var(--error)";
+        fileNameEl.textContent = "Fichier trop volumineux (max 5 Mo)";
+        fileNameEl.style.color = "#c45c4a";
         this.value = "";
         return;
       }
 
-      fileName.textContent = file.name;
-      fileName.style.color = "var(--accent)";
+      fileNameEl.textContent = file.name;
+      fileNameEl.style.color = "var(--ink)";
 
       const reader = new FileReader();
       reader.onload = e => { preview.src = e.target.result; };
@@ -859,8 +281,8 @@
     form.addEventListener("submit", function () {
       if (form.checkValidity()) {
         btn.disabled = true;
-        btn.classList.add("loading");
-        btn.querySelector(".btn-text").textContent = "Création en cours...";
+        document.getElementById("spinner").classList.remove("hidden");
+        document.getElementById("btn-text").textContent = "Création en cours...";
       }
     });
   </script>

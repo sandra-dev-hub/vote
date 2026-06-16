@@ -1,0 +1,81 @@
+{% load static %}
+
+<!-- USER PROFILE CARD (CANDIDAT) -->
+<div class="bg-white p-6 md:p-8 rounded-2xl md:rounded-[2rem] shadow-sm border border-gray-100 flex flex-col items-center text-center w-full md:h-fit md:sticky md:top-24">
+  <!-- Avatar with Badge -->
+  <div class="relative mb-6">
+    {% if candidat.demande.utilisateur.photo %}
+      <img 
+        src="{{ candidat.demande.utilisateur.photo.url }}" 
+        class="w-24 md:w-32 h-24 md:h-32 rounded-2xl md:rounded-[2.5rem] object-cover shadow-xl border-4 border-white"
+        alt="{{ candidat.demande.utilisateur.get_full_name }}"
+      />
+    {% else %}
+      <div class="w-24 md:w-32 h-24 md:h-32 rounded-2xl md:rounded-[2.5rem] bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white shadow-xl border-4 border-white">
+        <span class="text-3xl md:text-5xl font-black">{{ candidat.demande.utilisateur.email|first|upper }}</span>
+      </div>
+    {% endif %}
+    
+    <!-- Status Badge -->
+    <div class="absolute -bottom-2 -right-2 w-8 md:w-10 h-8 md:h-10 flex items-center justify-center shadow-lg border-4 border-white rounded-xl md:rounded-2xl
+      {% if candidat.demande.statut == 'approuve' %}bg-green-500{% elif candidat.demande.statut == 'en_attente' %}bg-yellow-500{% else %}bg-gray-400{% endif %}">
+      {% if candidat.demande.statut == 'approuve' %}
+        <svg class="w-4 md:w-5 h-4 md:h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+      {% elif candidat.demande.statut == 'en_attente' %}
+        <svg class="w-4 md:w-5 h-4 md:h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"/></svg>
+      {% else %}
+        <svg class="w-4 md:w-5 h-4 md:h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M13.477 14.89A6 6 0 0512 18H3a1 1 0 01-1-1v-2a3 3 0 016 0V9a4 4 0 118 0v-.5a.5.5 0 011 0V9a5 5 0 01-10 0V7a1 1 0 012 0v2a3 3 0 106 0V7a4 4 0 00-8 0v2H4a2 2 0 00-2 2v2a4 4 0 008 0 6 6 0 100-12z" clip-rule="evenodd"/></svg>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- User Info -->
+  <h3 class="text-lg md:text-2xl font-black text-gray-900 mb-1 line-clamp-2">
+    {{ candidat.demande.utilisateur.get_full_name|default:candidat.demande.utilisateur.email }}
+  </h3>
+  <p class="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
+    {{ candidat.demande.utilisateur.matricule }}
+  </p>
+  <p class="text-xs md:text-sm text-gray-600 mb-6 leading-relaxed font-medium line-clamp-2">
+    Candidate au poste de <span class="font-bold text-brand-700">{{ candidat.scrutin.titre }}</span>
+  </p>
+
+  <!-- Stats -->
+  <div class="w-full pt-4 md:pt-6 border-t border-gray-100 flex justify-center gap-8 md:gap-12">
+    <div class="flex flex-col items-center">
+      <p class="text-xl md:text-2xl font-black text-brand-700">{{ candidat.nombre_vote|default:0 }}</p>
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Votes</p>
+    </div>
+    <div class="flex flex-col items-center">
+      <p class="text-xl md:text-2xl font-black text-gray-900">
+        {% if ranking %}#{{ ranking }}{% else %}—{% endif %}
+      </p>
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Position</p>
+    </div>
+    <div class="flex flex-col items-center">
+      <p class="text-2xl font-black text-green-600">{{ progress|default:0 }}%</p>
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Progrès</p>
+    </div>
+  </div>
+
+  <!-- CTA Button -->
+  <button class="w-full mt-8 py-3.5 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white text-xs font-bold rounded-2xl transition-all shadow-lg shadow-brand-200 hover:shadow-brand-300/50 active:scale-95">
+    ✏️ Modifier ma Candidature
+  </button>
+
+  <!-- Additional Info -->
+  <div class="w-full mt-6 pt-6 border-t border-gray-50 space-y-3 text-left">
+    <div class="flex items-center justify-between text-[10px]">
+      <span class="text-gray-500 font-bold">Filière</span>
+      <span class="font-bold text-gray-900">{{ candidat.demande.utilisateur.filiere|default:"—" }}</span>
+    </div>
+    <div class="flex items-center justify-between text-[10px]">
+      <span class="text-gray-500 font-bold">Niveau</span>
+      <span class="font-bold text-gray-900">{{ candidat.demande.utilisateur.niveau|default:"—" }}</span>
+    </div>
+    <div class="flex items-center justify-between text-[10px]">
+      <span class="text-gray-500 font-bold">Email</span>
+      <span class="font-bold text-gray-900 truncate">{{ candidat.demande.utilisateur.email }}</span>
+    </div>
+  </div>
+</div>

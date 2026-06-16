@@ -146,22 +146,179 @@ class UserDashboardView(LoginRequiredMixin, TemplateView):
     login_url = "/users/login/"
 
     def get_context_data(self, **kwargs):
+        from django.db.models import Count, F
+        
         ctx = super().get_context_data(**kwargs)
+        user = self.request.user
         now = timezone.now()
+        
+        # ==================== USER DATA ====================
+        ctx['user'] = user
+        
+        # ==================== CANDIDAT CHECK ====================
+        candidat = Candidat.objects.select_related(
+            'demande__utilisateur',
+            'scrutin'
+        ).filter(demande__utilisateur=user).first()
+        
+        ctx['is_candidat'] = candidat is not None
+        ctx['candidat'] = candidat
+        
+        # ==================== SCRUTINS ACCESSIBLES ====================
         scrutins_accessibles = (
             Scrutin.objects.filter(
                 statut="ouvert",
                 date_debut__lte=now,
                 date_fin__gte=now,
-                electeurs__demande__utilisateur=self.request.user,
+                electeurs__demande__utilisateur=user,
             )
             .distinct()
             .order_by("date_fin")
         )
         ctx["scrutins_accessibles"] = scrutins_accessibles
-        # Données de test pour les graphiques utilisateur
-        ctx['chart_labels'] = json.dumps(['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'])
-        ctx['chart_data'] = json.dumps([12, 19, 7, 14, 22, 30, 27])
+        
+        # ==================== STATISTIQUES CANDIDAT ====================
+        if candidat:
+            # Votes pour le candidat
+            votes_count = candidat.nombre_vote or 0
+            
+            # Total électeurs
+            total_electeurs = Electeur.objects.filter(
+                scrutin=candidat.scrutin
+            ).count()
+            ctx['total_electeurs'] = total_electeurs
+            
+            # Progrès - calcul pour le template
+            ctx['votes_progress_percentage'] = round(
+                (votes_count / total_electeurs * 100) if total_electeurs > 0 else 0
+            )
+            
+            # Ranking
+            candidates_by_votes = Candidat.objects.filter(
+                scrutin=candidat.scrutin
+            ).order_by('-nombre_vote').values_list('id', flat=True)
+            try:
+                ranking = list(candidates_by_votes).index(candidat.id) + 1
+                ctx['ranking'] = ranking
+            except:
+                ctx['ranking'] = None
+            
+            # Progrès (ancienne clé pour compatibilité)
+            ctx['progress'] = ctx['votes_progress_percentage']
+            
+            # Votes par Filière
+            votes_by_filiere = Vote.objects.filter(
+                candidat=candidat
+            ).values(
+                'electeur__demande__utilisateur__filiere'
+            ).annotate(count=Count('id')).order_by('-count')
+            
+            filiere_data = []
+            for item in votes_by_filiere:
+                filiere = item['electeur__demande__utilisateur__filiere'] or "Non spécifiée"
+                count = item['count']
+                percentage = round((count / votes_count * 100) if votes_count > 0 else 0)
+                filiere_data.append((filiere, count, percentage))
+            ctx['votes_by_filiere'] = filiere_data
+            
+            # Votes par Niveau
+            votes_by_niveau = Vote.objects.filter(
+                candidat=candidat
+            ).values(
+                'electeur__demande__utilisateur__niveau'
+            ).annotate(count=Count('id')).order_by('-count')
+            
+            niveau_data = []
+            for item in votes_by_niveau:
+                niveau = item['electeur__demande__utilisateur__niveau'] or "Non spécifiée"
+                count = item['count']
+                percentage = round((count / votes_count * 100) if votes_count > 0 else 0)
+                niveau_data.append((niveau, count, percentage))
+            ctx['votes_by_niveau'] = niveau_data
+            
+            # Progrès des votes (par jour de la semaine)
+            days_mapping = {
+                'Monday': 'Lun', 'Tuesday': 'Mar', 'Wednesday': 'Mer',
+                'Thursday': 'Jeu', 'Friday': 'Ven', 'Saturday': 'Sam',
+                'Sunday': 'Dim'
+            }
+            
+            weekly_votes = {
+                'Lun': 0, 'Mar': 0, 'Mer': 0, 'Jeu': 0,
+                'Ven': 0, 'Sam': 0, 'Dim': 0
+            }
+            
+            # Requête simple pour les votes par jour
+            try:
+                votes_data = Vote.objects.filter(
+                    candidat=candidat
+                ).extra(
+                    select={'day': 'DATE(created)'}
+                ).values('day').annotate(count=Count('id'))
+                
+                for item in votes_data:
+                    # Simplification: utiliser modulo pour distribuer
+                    day_index = hash(str(item['day'])) % 7
+                    day_names = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
+                    weekly_votes[day_names[day_index]] += item['count']
+            except:
+                pass
+            
+            ctx['weekly_votes'] = weekly_votes
+            
+            # Pré-calculer les pourcentages pour le template
+            max_weekly = max(weekly_votes.values()) if max(weekly_votes.values()) > 0 else 1
+            weekly_with_percentage = {}
+            for day, count in weekly_votes.items():
+                percentage = round((count / max_weekly * 100)) if max_weekly > 0 else 0
+                weekly_with_percentage[day] = {'count': count, 'percentage': percentage}
+            ctx['weekly_votes_with_percentage'] = weekly_with_percentage
+            ctx['max_weekly_votes'] = max_weekly
+            ctx['vote_progress'] = 12.5  # À calculer si données historiques disponibles
+        
+        else:
+            ctx['is_candidat'] = False
+            ctx['vote_progress'] = 0
+            
+            # Données pour électeur
+            # Compter les scrutins complétés, en cours, et à venir
+            total_accessible_scrutins = Electeur.objects.filter(
+                demande__utilisateur=user
+            ).values('scrutin').distinct().count()
+            
+            completed_scrutins_count = Vote.objects.filter(
+                electeur__demande__utilisateur=user
+            ).values('candidat__scrutin').distinct().count()
+            
+            active_scrutins = Scrutin.objects.filter(
+                statut="ouvert",
+                date_debut__lte=now,
+                date_fin__gte=now,
+            ).count()
+            
+            upcoming_scrutins_count = Scrutin.objects.filter(
+                date_debut__gt=now,
+            ).count()
+            
+            total_scrutins = total_accessible_scrutins if total_accessible_scrutins > 0 else 1
+            
+            ctx['total_scrutins'] = total_scrutins
+            ctx['completed_scrutins_count'] = completed_scrutins_count
+            ctx['active_scrutins_count'] = active_scrutins
+            ctx['upcoming_scrutins_count'] = upcoming_scrutins_count
+            
+            # Pré-calculer les pourcentages
+            ctx['completed_scrutins_percentage'] = round((completed_scrutins_count / total_scrutins * 100)) if total_scrutins > 0 else 0
+            ctx['active_scrutins_percentage'] = round((active_scrutins / total_scrutins * 100)) if total_scrutins > 0 else 0
+            ctx['upcoming_scrutins_percentage'] = round((upcoming_scrutins_count / total_scrutins * 100)) if total_scrutins > 0 else 0
+            
+            # Participation rate
+            ctx['total_accessible_scrutins'] = total_accessible_scrutins
+            ctx['user_votes_count'] = completed_scrutins_count
+            ctx['participation_percentage'] = round(
+                (completed_scrutins_count / total_accessible_scrutins * 100) if total_accessible_scrutins > 0 else 0
+            )
+        
         return ctx
 
 

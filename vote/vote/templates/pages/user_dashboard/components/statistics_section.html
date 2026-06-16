@@ -1,0 +1,107 @@
+{% load static %}
+
+<!-- STATISTIQUES CANDIDAT -->
+<div class="space-y-6 md:space-y-8">
+  <!-- Progression des Votes -->
+  <div class="bg-white p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] shadow-sm border border-gray-100 w-full">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 md:mb-8">
+      <div>
+        <h3 class="text-base md:text-lg font-bold text-gray-900">📈 Progression des Votes</h3>
+        <p class="text-[10px] font-bold text-green-500 uppercase tracking-widest mt-1">
+          {% if vote_progress >= 0 %}
+            ↑ +{{ vote_progress|default:0 }}% depuis hier
+          {% else %}
+            ↓ {{ vote_progress }}% depuis hier
+          {% endif %}
+        </p>
+      </div>
+    </div>
+    
+    <!-- Simple Progress Bar -->
+    <div class="space-y-4">
+      <div>
+        <div class="flex justify-between items-center mb-2 gap-4">
+          <span class="text-xs md:text-sm font-bold text-gray-700 flex-shrink-0">Votes actuels</span>
+          <span class="text-base md:text-lg font-black text-brand-600 flex-shrink-0">{{ candidat.nombre_vote|default:0 }}/{{ total_electeurs }}</span>
+        </div>
+        <div class="h-3 bg-gray-100 rounded-full overflow-hidden w-full">
+          <div 
+            class="h-full bg-gradient-to-r from-brand-500 to-brand-600 transition-all duration-500"
+            style="width: {{ votes_progress_percentage }}%"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Stats -->
+    <div class="mt-6 md:mt-8 w-full">
+      <p class="text-xs md:text-sm font-bold text-gray-700 mb-4">Distribution hebdomadaire</p>
+      <div class="grid grid-cols-7 gap-1 md:gap-2 w-full">
+        {% for day, data in weekly_votes_with_percentage.items %}
+          <div class="text-center">
+            <div class="h-12 md:h-16 bg-gray-50 rounded-lg flex items-end justify-center pb-2 hover:bg-brand-50 transition-all relative group w-full">
+              <div 
+                class="w-full h-full bg-gradient-to-t from-brand-500 to-brand-400 rounded-lg opacity-60 hover:opacity-100 transition-opacity"
+                style="height: {{ data.percentage }}%"
+              ></div>
+              <span class="absolute bottom-full mb-2 text-xs font-bold text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">{{ data.count }}</span>
+            </div>
+            <p class="text-[9px] md:text-[10px] font-bold text-gray-400 mt-1 uppercase">{{ day }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Répartition par Filière & Démographie -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full">
+    <!-- Répartition par Filière -->
+    <div class="bg-white p-6 md:p-8 rounded-2xl md:rounded-[2rem] shadow-sm border border-gray-100 w-full">
+      <h4 class="text-xs md:text-sm font-bold text-gray-900 mb-6">👥 Répartition par Filière</h4>
+      
+      <div class="space-y-4">
+        {% for filiere, count, percentage in votes_by_filiere %}
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-gray-700">{{ filiere }}</span>
+              <span class="text-xs font-bold text-brand-600">{{ percentage }}%</span>
+            </div>
+            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div 
+                class="h-full bg-gradient-to-r from-brand-500 to-brand-600"
+                style="width: {{ percentage }}%"
+              ></div>
+            </div>
+            <p class="text-[10px] text-gray-500 mt-1">{{ count }} votes</p>
+          </div>
+        {% empty %}
+          <p class="text-gray-400 text-sm text-center py-4">Pas de données disponibles</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Démographie par Niveau -->
+    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
+      <h4 class="text-sm font-bold text-gray-900 mb-6">📊 Démographie par Niveau</h4>
+      
+      <div class="space-y-4">
+        {% for niveau, count, percentage in votes_by_niveau %}
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-gray-700">{{ niveau }}</span>
+              <span class="text-xs font-bold text-green-600">{{ count }} votes</span>
+            </div>
+            <div class="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+              <div 
+                class="h-full bg-gradient-to-r from-green-500 to-green-600"
+                style="width: {{ percentage }}%"
+              ></div>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-gray-400 text-sm text-center py-4">Pas de données disponibles</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

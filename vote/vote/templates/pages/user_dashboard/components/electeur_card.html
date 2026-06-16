@@ -1,0 +1,72 @@
+{% load static %}
+
+<!-- USER PROFILE CARD (ÉLECTEUR) -->
+<div class="bg-white p-6 md:p-8 rounded-2xl md:rounded-[2rem] shadow-sm border border-gray-100 flex flex-col items-center text-center w-full md:h-fit md:sticky md:top-24">
+  <!-- Avatar with Badge -->
+  <div class="relative mb-6">
+    {% if user.photo %}
+      <img 
+        src="{{ user.photo.url }}" 
+        class="w-24 md:w-32 h-24 md:h-32 rounded-2xl md:rounded-[2.5rem] object-cover shadow-xl border-4 border-white"
+        alt="{{ user.get_full_name }}"
+      />
+    {% else %}
+      <div class="w-24 md:w-32 h-24 md:h-32 rounded-2xl md:rounded-[2.5rem] bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white shadow-xl border-4 border-white">
+        <span class="text-3xl md:text-5xl font-black">{{ user.email|first|upper }}</span>
+      </div>
+    {% endif %}
+    
+    <!-- Électeur Badge -->
+    <div class="absolute -bottom-2 -right-2 w-8 md:w-10 h-8 md:h-10 flex items-center justify-center shadow-lg border-4 border-white rounded-xl md:rounded-2xl bg-blue-500">
+      <svg class="w-4 md:w-5 h-4 md:h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12a3 3 0 100-6 3 3 0 000 6zm-9 1.6C0 4.232 3.582 1 8 1s8 3.232 8 7.6c0 4.368-3.582 7.6-8 7.6S0 13.232 0 8.6z"/></svg>
+    </div>
+  </div>
+
+  <!-- User Info -->
+  <h3 class="text-lg md:text-2xl font-black text-gray-900 mb-1 line-clamp-2">
+    {{ user.get_full_name|default:user.email }}
+  </h3>
+  <p class="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
+    {{ user.matricule }}
+  </p>
+  <p class="text-xs md:text-sm text-gray-600 mb-6 leading-relaxed font-medium">
+    <span class="font-bold text-blue-700">Électeur</span> · ICAB Bafoussam
+  </p>
+
+  <!-- Stats -->
+  <div class="w-full pt-4 md:pt-6 border-t border-gray-100 flex justify-center gap-6 md:gap-12">
+    <div class="flex flex-col items-center">
+      <p class="text-lg md:text-2xl font-black text-blue-600">{{ user_votes_count|default:0 }}</p>
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Votes</p>
+    </div>
+    <div class="flex flex-col items-center">
+      <p class="text-lg md:text-2xl font-black text-gray-900">{{ scrutins_participated|default:0 }}</p>
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Scrutins</p>
+    </div>
+    <div class="flex flex-col items-center">
+      <p class="text-lg md:text-2xl font-black text-green-600">✓</p>
+      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Actif</p>
+    </div>
+  </div>
+
+  <!-- CTA Button -->
+  <a href="#scrutins" class="w-full mt-8 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-xs font-bold rounded-2xl transition-all shadow-lg shadow-blue-200 hover:shadow-blue-300/50 active:scale-95 inline-flex items-center justify-center gap-2">
+    🗳️ Participer aux Scrutins
+  </a>
+
+  <!-- Additional Info -->
+  <div class="w-full mt-6 pt-6 border-t border-gray-50 space-y-3 text-left">
+    <div class="flex items-center justify-between text-[10px]">
+      <span class="text-gray-500 font-bold">Filière</span>
+      <span class="font-bold text-gray-900">{{ user.filiere|default:"—" }}</span>
+    </div>
+    <div class="flex items-center justify-between text-[10px]">
+      <span class="text-gray-500 font-bold">Niveau</span>
+      <span class="font-bold text-gray-900">{{ user.niveau|default:"—" }}</span>
+    </div>
+    <div class="flex items-center justify-between text-[10px]">
+      <span class="text-gray-500 font-bold">Email</span>
+      <span class="font-bold text-gray-900 truncate">{{ user.email }}</span>
+    </div>
+  </div>
+</div>

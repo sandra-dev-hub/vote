@@ -1,0 +1,119 @@
+{% load static %}<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    {% if is_candidat %}
+      Tableau de Bord Candidat
+    {% else %}
+      Tableau de Bord Électeur
+    {% endif %}
+    | ICAB Bafoussam
+  </title>
+  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+
+  <style type="text/tailwindcss">
+    @theme {
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-display: 'Instrument Serif', serif;
+      --color-brand-50: #eff6ff;
+      --color-brand-100: #dbeafe;
+      --color-brand-200: #bfdbfe;
+      --color-brand-500: #3b82f6;
+      --color-brand-600: #2563eb;
+      --color-brand-700: #1d4ed8;
+      --color-brand-800: #1e40af;
+      --color-brand-900: #1e3a8a;
+      --color-brand-950: #0d2054;
+    }
+
+    .nav-link.active {
+      @apply bg-brand-800 text-white shadow-md shadow-black/20;
+    }
+
+    .sidebar-link-active {
+      @apply bg-brand-800 text-white shadow-md shadow-black/20;
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-gray-50 text-gray-900 antialiased flex overflow-hidden h-screen">
+  <!-- SIDEBAR -->
+  {% include "pages/user_dashboard/components/sidebar.html" %}
+
+  <!-- MAIN AREA -->
+  <main class="flex-grow overflow-y-auto flex flex-col">
+    <!-- HEADER -->
+    {% include "pages/user_dashboard/components/header.html" %}
+
+    <!-- DASHBOARD CONTENT -->
+    <div class="p-8 space-y-8 pb-16">
+      
+      <!-- TOP SECTION: Candidat Card + Stats OR Scrutins -->
+      {% if is_candidat and candidat %}
+        <div class="grid lg:grid-cols-12 gap-8">
+          <!-- Left: Candidat Profile Card -->
+          <div class="lg:col-span-4">
+            {% include "pages/user_dashboard/components/candidat_card.html" %}
+          </div>
+
+          <!-- Right: Statistics Section -->
+          <div class="lg:col-span-8">
+            {% include "pages/user_dashboard/components/statistics_section.html" %}
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- SCRUTINS SECTION -->
+      {% include "pages/user_dashboard/components/scrutins_section.html" %}
+
+    </div>
+  </main>
+
+  <!-- SCRIPTS -->
+  <script>
+    // Mobile Sidebar Toggle
+    const mobileBtn = document.getElementById('mobile-sidebar-button');
+    const mobileSidebar = document.getElementById('mobile-sidebar');
+    const mobileBackdrop = document.getElementById('mobile-sidebar-backdrop');
+    const mobileCloseBtn = document.getElementById('mobile-sidebar-close');
+
+    if (mobileBtn) {
+      mobileBtn.addEventListener('click', () => {
+        mobileSidebar.classList.remove('-translate-x-full');
+        mobileBackdrop.classList.remove('hidden');
+      });
+    }
+
+    if (mobileCloseBtn) {
+      mobileCloseBtn.addEventListener('click', () => {
+        mobileSidebar.classList.add('-translate-x-full');
+        mobileBackdrop.classList.add('hidden');
+      });
+    }
+
+    if (mobileBackdrop) {
+      mobileBackdrop.addEventListener('click', () => {
+        mobileSidebar.classList.add('-translate-x-full');
+        mobileBackdrop.classList.add('hidden');
+      });
+    }
+
+    // Active Navigation Link
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function() {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('sidebar-link-active'));
+        this.classList.add('sidebar-link-active');
+      });
+    });
+
+    // Set active link on load
+    const currentSection = window.location.hash || '#resume';
+    const activeLink = document.querySelector(`[data-section="${currentSection.substring(1)}"]`);
+    if (activeLink) {
+      activeLink.classList.add('sidebar-link-active');
+    }
+  </script>
+</body>
+</html>

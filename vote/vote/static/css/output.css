@@ -2075,9 +2075,6 @@
   .text-emerald-700 {
     color: var(--color-emerald-700);
   }
-  .text-emerald-800 {
-    color: var(--color-emerald-800);
-  }
   .text-gray-300 {
     color: var(--color-gray-300);
   }
@@ -2222,11 +2219,11 @@
       color: var(--color-gray-400);
     }
   }
+  .accent-blue-600 {
+    accent-color: var(--color-blue-600);
+  }
   .accent-brand-600 {
     accent-color: var(--color-brand-600);
-  }
-  .accent-green-600 {
-    accent-color: var(--color-green-600);
   }
   .opacity-0 {
     opacity: 0%;

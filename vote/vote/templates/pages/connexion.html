@@ -9,9 +9,9 @@
 
   <style>
     :root {
-      --ink: #1a7a5e;
-      --ink-deep: #11503e;
-      --ink-night: #0c372a;
+      --ink: #1d4ed8;
+      --ink-deep: #1e40af;
+      --ink-night: #0d2054;
       --cream: #f5f0e8;
       --amber: #c9952e;
     }
@@ -57,7 +57,7 @@
       </svg>
 
       <h2 class="text-2xl font-display font-bold text-white tracking-tight mb-3">Un scrutin vérifiable, du premier au dernier vote</h2>
-      <p class="text-sm font-medium leading-relaxed" style="color: #b9d4c9;">Chaque suffrage est horodaté, chiffré et rattaché à un seul électeur, sans jamais révéler son identité dans les résultats.</p>
+      <p class="text-sm font-medium leading-relaxed" style="color: #bfdbfe;">Chaque suffrage est horodaté, chiffré et rattaché à un seul électeur, sans jamais révéler son identité dans les résultats.</p>
     </div>
   </div>
 
@@ -82,7 +82,7 @@
         {% if messages %}
         <div class="space-y-2 mb-2">
           {% for message in messages %}
-          <div class="px-4 py-3 text-sm font-semibold rounded-xl {% if message.tags == 'success' %}text-emerald-800 bg-emerald-50{% else %}text-blue-800 bg-blue-50{% endif %}" role="alert">
+            <div class="px-4 py-3 text-sm font-semibold rounded-xl {% if message.tags == 'success' %}text-blue-800 bg-blue-50{% else %}text-blue-800 bg-blue-50{% endif %}" role="alert">
             {{ message }}
           </div>
           {% endfor %}

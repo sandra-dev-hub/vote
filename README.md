@@ -245,6 +245,12 @@ Notes et conseils
 - N'exposez jamais `DJANGO_SECRET_KEY` en clair en production.
 - Si vous avez des erreurs `SMTPNotSupportedError` lorsque vous envoyez des emails vers un serveur debug, préférez Mailhog ou `aiosmtpd` (ils n'utilisent pas AUTH).
 
----
+<!-- commande importantes: -->
+uv run python manage.py runserver
 
-Si vous voulez, je peux exécuter ces commandes dans votre environnement pour vérifier (collectstatic + npm build + démarrage du serveur). Dites-moi quelles commandes lancer en priorité. 
+npm run dev
+
+<!-- pour lancer celery -->
+uv run celery -A config beat -l info
+
+uv run celery -A config worker -l info

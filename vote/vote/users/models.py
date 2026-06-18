@@ -113,10 +113,10 @@ class Scrutin(BaseModel):
     def est_periode_vote(self):
         """Retourne True si on est en période 2 : vote actif."""
         now = timezone.now()
-        return (
-            self.statut == StatutScrutin.EN_VOTE
-            and self.date_debut_vote <= now <= self.date_fin_vote
-        )
+        # Accept voting when either the status is explicitly EN_VOTE
+        # or when the vote dates indicate we are in the voting window.
+        in_date_window = self.date_debut_vote <= now <= self.date_fin_vote
+        return (self.statut == StatutScrutin.EN_VOTE and in_date_window) or in_date_window
 
     def is_open_for_vote(self):
         """Alias pour est_periode_vote() — compatibilité ascendante."""
@@ -269,12 +269,9 @@ class Vote(BaseModel):
         now = timezone.now()
 
         # Vérifier que le scrutin est bien en période de VOTE (période 2)
-        if scrutin.statut != StatutScrutin.EN_VOTE:
+        # Use the `est_periode_vote` helper which considers the vote date window.
+        if not scrutin.est_periode_vote():
             raise ValidationError("Ce scrutin n'est pas en période de vote.")
-        if now < scrutin.date_debut_vote:
-            raise ValidationError("La période de vote n'a pas encore commencé.")
-        if now > scrutin.date_fin_vote:
-            raise ValidationError("La période de vote est terminée.")
 
     def save(self, *args, **kwargs):
         self.clean()

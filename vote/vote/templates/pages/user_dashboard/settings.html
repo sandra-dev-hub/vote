@@ -1,0 +1,36 @@
+{% include "pages/user_dashboard/user.html" %}
+
+{% block content %}
+  {% include "pages/user_dashboard/components/header.html" %}
+  <div class="p-6 lg:p-8">
+    <div class="max-w-3xl mx-auto">
+      <header class="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-t-2xl p-6 shadow-md">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-md bg-white/10 flex items-center justify-center text-lg font-bold">⚙️</div>
+          <div>
+            <h1 class="text-2xl font-extrabold">Paramètres du compte</h1>
+            <p class="text-sm opacity-90">Mettez à jour vos coordonnées et préférences</p>
+          </div>
+        </div>
+      </header>
+      <form method="post" class="bg-white rounded-b-2xl p-6 border border-t-0 border-gray-100 shadow-sm">
+        {% csrf_token %}
+        <h2 class="text-lg font-bold mb-4">Paramètres du compte</h2>
+
+        <div class="mb-4">
+          <label class="text-xs font-bold text-gray-600">Téléphone</label>
+          <input name="telephone" value="{{ user.telephone }}" class="w-full mt-1 rounded-lg border border-gray-200 px-3 py-2" />
+        </div>
+
+        <div class="mb-4">
+          <label class="text-xs font-bold text-gray-600">Biographie</label>
+          <textarea name="biographie" class="w-full mt-1 rounded-lg border border-gray-200 px-3 py-2" rows="4">{{ user.biographie }}</textarea>
+        </div>
+
+        <div class="flex justify-end">
+          <button type="submit" class="px-4 py-2 bg-brand-700 text-white rounded-lg font-bold">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

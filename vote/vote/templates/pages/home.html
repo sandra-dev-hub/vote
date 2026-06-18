@@ -252,8 +252,13 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <a href="#" class="text-gray-400 hover:text-brand-600 text-xs font-bold">Programme</a>
-                                <a href="{% url 'users:candidate_detail' slug=cand.slug %}" class="px-4 py-2 bg-brand-700 text-white hover:bg-brand-800 rounded-xl text-xs font-bold">Voir le profil</a>
-                                <a href="{% url 'users:scrutin_vote' slug=cand.scrutin.slug %}" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold">Aller au vote</a>
+                                {% if cand.scrutin.est_periode_vote %}
+                                    <a href="{% url 'users:candidate_detail' slug=cand.slug %}" class="px-4 py-2 bg-brand-700 text-white hover:bg-brand-800 rounded-xl text-xs font-bold">Voir le profil</a>
+                                    <a href="{% url 'users:scrutin_vote' slug=cand.scrutin.slug %}" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold">Aller au vote</a>
+                                {% else %}
+                                    <button disabled class="px-4 py-2 bg-gray-100 text-gray-400 rounded-xl text-xs font-bold cursor-not-allowed" title="Vote fermé">Voir le profil</button>
+                                    <button disabled class="px-3 py-2 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold cursor-not-allowed" title="Vote fermé">Vote fermé</button>
+                                {% endif %}
                         </div>
                     </div>
                 </div>

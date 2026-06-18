@@ -5,7 +5,7 @@
 {% block nav_electeurs %}sidebar-link-active{% endblock %}
 
 {% block content %}
-<header class="h-20 bg-white border-b border-gray-100 px-6 lg:px-8 flex items-center justify-between">
+<header class="h-20 bg-white border-b border-gray-100 px-6 lg:px-8 flex items-center justify-between sticky top-0 z-10">
     <div>
         <h2 class="text-lg font-black text-gray-900">Demandes d'inscription Électeurs</h2>
         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Gérez les demandes</p>
@@ -31,19 +31,33 @@
         {% endfor %}
     {% endif %}
 
-    <!-- Stats -->
-    <div class="grid grid-cols-3 divide-x divide-gray-100 bg-white rounded-3xl border border-gray-100 mb-8">
-        <div class="px-6 py-5 text-center">
-            <p class="text-3xl font-black text-amber-500">{{ nb_en_attente }}</p>
-            <p class="text-xs font-bold text-gray-400">EN ATTENTE</p>
+    <!-- Statistiques -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-3xl border border-amber-200 p-6 text-center hover:shadow-lg transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-4xl">⏳</span>
+                <span class="text-xs font-bold text-amber-600 bg-amber-200 px-2 py-1 rounded-full">En cours</span>
+            </div>
+            <p class="text-4xl font-black text-amber-600 mb-1">{{ nb_en_attente }}</p>
+            <p class="text-sm font-semibold text-amber-700">En Attente</p>
         </div>
-        <div class="px-6 py-5 text-center">
-            <p class="text-3xl font-black text-green-600">{{ nb_approuve }}</p>
-            <p class="text-xs font-bold text-gray-400">APPROUVÉS</p>
+
+        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl border border-green-200 p-6 text-center hover:shadow-lg transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-4xl">✅</span>
+                <span class="text-xs font-bold text-green-600 bg-green-200 px-2 py-1 rounded-full">Validés</span>
+            </div>
+            <p class="text-4xl font-black text-green-600 mb-1">{{ nb_approuve }}</p>
+            <p class="text-sm font-semibold text-green-700">Approuvés</p>
         </div>
-        <div class="px-6 py-5 text-center">
-            <p class="text-3xl font-black text-red-500">{{ nb_rejete }}</p>
-            <p class="text-xs font-bold text-gray-400">REJETÉS</p>
+
+        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-3xl border border-red-200 p-6 text-center hover:shadow-lg transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-4xl">❌</span>
+                <span class="text-xs font-bold text-red-600 bg-red-200 px-2 py-1 rounded-full">Refusés</span>
+            </div>
+            <p class="text-4xl font-black text-red-600 mb-1">{{ nb_rejete }}</p>
+            <p class="text-sm font-semibold text-red-700">Rejetés</p>
         </div>
     </div>
 
@@ -52,14 +66,14 @@
         <div class="overflow-x-auto">
             <table id="demandes-electeurs-table" class="w-full">
                 <thead>
-                <tr class="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-widest">
-                    <th class="px-8 py-5 text-left">Utilisateur</th>
-                    <th class="px-6 py-5 text-left">Filière / Niveau</th>
-                    <th class="px-6 py-5 text-left">Scrutin</th>
-                    <th class="px-6 py-5 text-left">Commentaire</th>
-                    <th class="px-6 py-5 text-left">Soumis le</th>
-                    <th class="px-6 py-5 text-left">Statut</th>
-                    <th class="px-8 py-5 text-right">Actions</th>
+                <tr class="bg-gradient-to-r from-gray-50 to-white border-b-2 border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-widest">
+                    <th class="px-6 py-5 text-left">👤 Utilisateur</th>
+                    <th class="px-6 py-5 text-left">📚 Filière / Niveau</th>
+                    <th class="px-6 py-5 text-left">🗳️ Scrutin</th>
+                    <th class="px-6 py-5 text-left">💬 Commentaire</th>
+                    <th class="px-6 py-5 text-left">📅 Soumis le</th>
+                    <th class="px-6 py-5 text-left">🏷️ Statut</th>
+                    <th class="px-8 py-5 text-right">⚙️ Actions</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -119,15 +133,15 @@
                     <td class="px-8 py-5 text-right">
                         {% if demande.statut == "en_attente" %}
                         <div class="flex gap-2 justify-end">
-                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}">
+                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}" class="inline" onsubmit="return confirm('Approuver cette demande d\'électeur ?')">
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="approuver">
-                                <button type="submit" class="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-2xl text-sm font-bold">Approuver</button>
+                                <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg">✅ Approuver</button>
                             </form>
-                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}">
+                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}" class="inline" onsubmit="return confirm('Rejeter cette demande ?')">
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="rejeter">
-                                <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-2xl text-sm font-bold">Rejeter</button>
+                                <button type="submit" class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg">❌ Rejeter</button>
                             </form>
                         </div>
                         {% else %}

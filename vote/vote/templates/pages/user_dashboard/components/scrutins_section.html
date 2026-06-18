@@ -39,9 +39,15 @@
             </span>
           </div>
         </div>
-        <a href="{% url 'users:scrutin_vote' scrutin.slug %}" class="inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-sm font-bold transition-all shadow-lg shadow-green-200 hover:shadow-green-300/50 active:scale-95">
-          🗳️ Voter
-        </a>
+        {% if scrutin.est_periode_vote %}
+          <a href="{% url 'users:scrutin_vote' scrutin.slug %}" class="inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-sm font-bold transition-all shadow-lg shadow-green-200 hover:shadow-green-300/50 active:scale-95">
+            🗳️ Voter
+          </a>
+        {% else %}
+          <button disabled class="inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-gray-100 text-gray-400 text-sm font-bold cursor-not-allowed">
+            🗳️ Vote fermé
+          </button>
+        {% endif %}
       </div>
     {% empty %}
       <div class="text-center py-12">

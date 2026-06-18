@@ -24,7 +24,17 @@
           <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-1">{{ candidat.demande.utilisateur.nom }} {{ candidat.demande.utilisateur.prenom }}</h1>
           <p class="text-brand-600 font-bold mb-4">{{ candidat.demande.slogan|default:"Candidat" }}</p>
           <div class="mt-4">
-            <a href="{% url 'users:scrutin_vote' slug=candidat.scrutin.slug %}" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold">Aller au vote</a>
+            {% if user.is_authenticated %}
+              {% if est_electeur and est_periode_vote and not a_vote %}
+                <a href="{% url 'users:scrutin_vote' slug=candidat.scrutin.slug %}" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold">Aller au vote</a>
+              {% elif est_electeur and a_vote %}
+                <button disabled class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-500 rounded-lg text-sm font-bold">Vous avez déjà voté</button>
+              {% else %}
+                <a href="{% url 'users:scrutins' %}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold">S'inscrire comme électeur</a>
+              {% endif %}
+            {% else %}
+              <a href="{% url 'login' %}?next={{ request.path }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold">Se connecter pour voter</a>
+            {% endif %}
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div class="p-4 bg-brand-50 rounded-2xl text-center">

@@ -30,6 +30,12 @@ from .views import (
     # Utilisateurs
     UsersListView,
     CandidateDetailView,
+    # User pages
+    ProfileView,
+    MessagesView,
+    StatisticsView,
+    UserSettingsView,
+    MesVotesView,
 )
 
 urlpatterns = [
@@ -109,4 +115,10 @@ urlpatterns = [
     path("admin/parametres/", AdminSettingsView.as_view(), name="admin_settings"),
     # Candidate detail
     path("candidates/<slug:slug>/", CandidateDetailView.as_view(), name="candidate_detail"),
+    # User pages
+    path("profile/", ProfileView.as_view(), name="profile"),
+    path("messages/", MessagesView.as_view(), name="messages"),
+    path("statistiques/", StatisticsView.as_view(), name="statistics"),
+    path("parametres/compte/", UserSettingsView.as_view(), name="user_settings"),
+    path("mes-votes/", MesVotesView.as_view(), name="mes_votes"),
 ]

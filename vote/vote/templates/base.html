@@ -10,18 +10,20 @@
     
     {% block extra_head %}{% endblock %}
 </head>
-<body class="font-sans bg-white text-gray-900 antialiased overflow-x-hidden">
+</body>
+<body class="font-sans bg-white text-gray-900 antialiased overflow-x-hidden min-h-screen flex flex-col">
 
-    <!-- Navbar -->
-    {% include "pages/partials/_navbar.html" %}
+        <!-- Navbar -->
+        {% include "pages/partials/_navbar.html" %}
 
-    <!-- Contenu principal de la page -->
-    {% block content %}
-    {% endblock %}
+        <!-- Contenu principal de la page -->
+        <main class="flex-grow">
+            {% block content %}{% endblock %}
+        </main>
 
-    <!-- Footer -->
-    {% include "pages/partials/_footer.html" %}
+        <!-- Footer -->
+        {% include "pages/partials/_footer.html" %}
 
-    {% block extra_scripts %}{% endblock %}
+        {% block extra_scripts %}{% endblock %}
 </body>
 </html>

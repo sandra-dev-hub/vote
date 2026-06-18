@@ -115,10 +115,10 @@
           Vous n'êtes pas inscrit comme électeur sur ce scrutin.
         </div>
 
-      {% elif scrutin.statut == "ouvert" %}
+      {% elif not est_periode_vote %}
         <div class="p-5 bg-indigo-50 border border-indigo-100 rounded-2xl text-sm text-indigo-700 font-semibold">
-          ⏳ La période de vote n'a pas encore commencé.<br>
-          <span class="font-normal text-indigo-600 mt-2 block">Ouverture : {{ scrutin.date_debut_vote|date:"d M Y à H:i" }}</span>
+          ⏳ La période de vote n'a pas encore commencé ou est hors plage horaire.<br>
+          <span class="font-normal text-indigo-600 mt-2 block">Vote : {{ scrutin.date_debut_vote|date:"d M Y à H:i" }} → {{ scrutin.date_fin_vote|date:"d M Y à H:i" }}</span>
         </div>
 
       {% elif scrutin.statut == "ferme" %}
@@ -145,12 +145,22 @@
         <form method="post" class="space-y-3" id="vote-form">
           {% csrf_token %}
           {% for candidat in candidats %}
-          <label class="vote-option flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-brand-400 hover:bg-brand-50 cursor-pointer transition-all group">
+          <label data-slug="{{ candidat.slug }}" class="vote-option flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-brand-400 hover:bg-brand-50 cursor-pointer transition-all group">
             <input type="radio" name="candidat_slug" value="{{ candidat.slug }}" required class="w-5 h-5 accent-brand-600">
             <div class="flex-1">
-              <span class="font-semibold text-gray-800 group-hover:text-brand-700">{{ candidat.demande.utilisateur.nom|default:"" }} {{ candidat.demande.utilisateur.prenom|default:"" }}</span>
-              <p class="text-xs text-gray-400 mt-0.5">{{ candidat.demande.utilisateur.filiere|default:"" }}</p>
+              <div class="flex items-center gap-3">
+                {% if candidat.demande.utilisateur.photo %}
+                <img src="{{ candidat.demande.utilisateur.photo.url }}" class="w-10 h-10 rounded-lg object-cover border-2 border-white shadow" alt="">
+                {% else %}
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white font-black">{{ candidat.demande.utilisateur.nom|slice:":1"|upper|default:"?" }}</div>
+                {% endif %}
+                <div>
+                  <span class="font-semibold text-gray-800 group-hover:text-brand-700">{{ candidat.demande.utilisateur.nom|default:"" }} {{ candidat.demande.utilisateur.prenom|default:"" }}</span>
+                  <p class="text-xs text-gray-400 mt-0.5">{{ candidat.demande.utilisateur.filiere|default:"" }}</p>
+                </div>
+              </div>
             </div>
+            <div class="text-sm font-black text-brand-700 votes-count" data-slug="{{ candidat.slug }}">{{ candidat.nombre_vote }} vote(s)</div>
           </label>
           {% empty %}
           <p class="text-sm text-gray-400">Aucun candidat disponible.</p>
@@ -269,6 +279,37 @@
         container.appendChild(item);
       });
     };
+    // Ajax vote submission: update counts inline
+    const voteForm = document.getElementById('vote-form');
+    if (voteForm) {
+      voteForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const data = new FormData(form);
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', window.location.href, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onload = function () {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const resp = JSON.parse(xhr.responseText);
+            if (resp.success && Array.isArray(resp.votes)) {
+              resp.votes.forEach(row => {
+                const el = document.querySelector('.votes-count[data-slug="' + row.slug + '"]');
+                if (el) el.textContent = row.nombre_vote + ' vote(s)';
+              });
+              // Disable form after vote
+              form.querySelectorAll('input, button').forEach(i => i.disabled = true);
+              alert(resp.message || 'Vote enregistré');
+            } else {
+              alert(resp.message || 'Erreur lors du vote');
+            }
+          } else {
+            alert('Erreur réseau lors de l\'envoi du vote');
+          }
+        };
+        xhr.send(data);
+      });
+    }
   })();
 </script>
 {% endblock %}

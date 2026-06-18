@@ -26,7 +26,7 @@
   <!-- Liste des scrutins -->
   <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-    {% for scrutin in scrutins_ouverts %}
+    {% for scrutin in scrutins_affichables %}
     <div class="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col gap-4">
 
       <!-- Titre & description -->
@@ -43,7 +43,7 @@
       <div class="flex items-center justify-between text-xs text-gray-400 font-semibold border-t border-gray-50 pt-3">
         <span>{{ scrutin.date_debut|date:"d M Y" }}</span>
         <span>→</span>
-        <span>{{ scrutin.date_fin|date:"d M Y" }}</span>
+        <span>{{ scrutin.date_fin_vote|date:"d M Y" }}</span>
       </div>
 
       <!-- Actions -->
@@ -51,22 +51,61 @@
 
         <!-- Bouton Électeur -->
         {% if user.is_authenticated %}
-          {% if scrutin.pk in electeur_scrutin_ids %}
-            <a href="{% url 'users:scrutin_vote' scrutin.slug %}"
-              class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold text-center transition-all">
-              🗳️ Acceder au vote
-            </a>
-          {% elif scrutin.pk in demandes_electeur_ids %}
-            <button disabled
-              class="flex-1 py-2.5 rounded-xl bg-gray-100 text-gray-400 text-xs font-bold cursor-not-allowed">
-              🗳️ Demande envoyee
-            </button>
+          {% if scrutin.pk in scrutins_en_vote_ids %}
+            {% if scrutin.pk in electeur_scrutin_ids %}
+              <a href="{% url 'users:scrutin_vote' scrutin.slug %}"
+                class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold text-center transition-all">
+                🗳️ Accéder au vote
+              </a>
+            {% elif scrutin.pk in demandes_electeur_ids %}
+              <button disabled
+                class="flex-1 py-2.5 rounded-xl bg-gray-100 text-gray-400 text-xs font-bold cursor-not-allowed">
+                🗳️ Demande envoyée
+              </button>
+            {% else %}
+              <button disabled
+                class="flex-1 py-2.5 rounded-xl bg-gray-100 text-gray-400 text-xs font-bold cursor-not-allowed">
+                🗳️ Inscription fermée — en attente de validation
+              </button>
+            {% endif %}
+
+          {% elif scrutin.pk in scrutins_en_candidature_ids %}
+            {% if scrutin.pk in electeur_scrutin_ids %}
+              <a href="{% url 'users:scrutin_vote' scrutin.slug %}"
+                class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold text-center transition-all">
+                🗳️ Accéder au scrutin
+              </a>
+            {% elif scrutin.pk in demandes_electeur_ids %}
+              <button disabled
+                class="flex-1 py-2.5 rounded-xl bg-gray-100 text-gray-400 text-xs font-bold cursor-not-allowed">
+                🗳️ Demande envoyée
+              </button>
+            {% else %}
+              <button
+                onclick="openModal('modal-electeur-{{ scrutin.pk }}')"
+                class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all">
+                🗳️ Voter
+              </button>
+            {% endif %}
+
           {% else %}
-            <button
-              onclick="openModal('modal-electeur-{{ scrutin.pk }}')"
-              class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all">
-              🗳️ Voter
-            </button>
+            {# période intermédiaire entre dépôts et ouverture du vote #}
+            {% if scrutin.pk in electeur_scrutin_ids %}
+              <a href="{% url 'users:scrutin_vote' scrutin.slug %}"
+                class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold text-center transition-all">
+                🗳️ Accéder au scrutin
+              </a>
+            {% elif scrutin.pk in demandes_electeur_ids %}
+              <button disabled
+                class="flex-1 py-2.5 rounded-xl bg-gray-100 text-gray-400 text-xs font-bold cursor-not-allowed">
+                🗳️ Demande envoyée
+              </button>
+            {% else %}
+              <button disabled
+                class="flex-1 py-2.5 rounded-xl bg-gray-100 text-gray-400 text-xs font-bold cursor-not-allowed">
+                🗳️ En attente d'ouverture du vote
+              </button>
+            {% endif %}
           {% endif %}
 
           {% if scrutin.pk in demandes_candidature_ids %}
@@ -95,9 +134,8 @@
         {% endif %}
       </div>
     </div>
-
-    <!-- ===== MODAL ÉLECTEUR ===== -->
-    {% if user.is_authenticated %}
+    <!-- ===== MODALS ===== -->
+    {% if user.is_authenticated and scrutin.pk in scrutins_en_candidature_ids %}
     <div id="modal-electeur-{{ scrutin.pk }}"
          class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm px-4">
       <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
@@ -128,7 +166,6 @@
       </div>
     </div>
 
-    <!-- ===== MODAL CANDIDATURE ===== -->
     <div id="modal-candidature-{{ scrutin.pk }}"
          class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm px-4">
       <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">

@@ -180,8 +180,8 @@
       </div>
     </nav>
 
-    <!-- Profil utilisateur en bas de sidebar -->
-    <div class="px-4 py-4 border-t border-white/5 shrink-0">
+    <!-- Profile + Logout at bottom -->
+    <div class="mt-auto px-4 py-4 border-t border-white/5">
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-xl bg-brand-700 flex items-center justify-center text-white text-xs font-black shrink-0">
           {{ request.user.email|first|upper }}
@@ -190,13 +190,12 @@
           <p class="text-white text-xs font-bold truncate">{{ request.user.email }}</p>
           <p class="text-blue-400/60 text-[10px] font-semibold uppercase tracking-widest">Administrateur</p>
         </div>
-        <!-- Bouton déconnexion -->
-        <a href="{% url 'users:logout' %}" title="Se déconnecter"
-           class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-blue-100/40 hover:text-white transition-all">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-          </svg>
-        </a>
+      </div>
+
+      <div class="mt-4">
+        <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}
+          <button type="submit" class="w-full text-left px-4 py-2 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold">Déconnexion</button>
+        </form>
       </div>
     </div>
 

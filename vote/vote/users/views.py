@@ -8,6 +8,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.http import JsonResponse
 import json
 from django.utils.text import slugify
 from django.views import View
@@ -96,9 +97,20 @@ class CandidateDetailView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         slug = self.kwargs.get("slug")
-        ctx["candidat"] = (
-            Candidat.objects.select_related("demande__utilisateur", "scrutin").filter(slug=slug).first()
-        )
+        candidat = Candidat.objects.select_related("demande__utilisateur", "scrutin").filter(slug=slug).first()
+        ctx["candidat"] = candidat
+
+        # Indicateurs d'accès au vote (pour gérer l'affichage du bouton)
+        scrutin = candidat.scrutin if candidat else None
+        if self.request.user.is_authenticated and scrutin:
+            electeur = Electeur.objects.filter(demande__utilisateur=self.request.user, scrutin=scrutin).first()
+            ctx["est_electeur"] = electeur is not None
+            ctx["a_vote"] = Vote.objects.filter(electeur=electeur).exists() if electeur else False
+            ctx["est_periode_vote"] = scrutin.est_periode_vote()
+        else:
+            ctx["est_electeur"] = False
+            ctx["a_vote"] = False
+            ctx["est_periode_vote"] = False
         return ctx
 
 
@@ -438,11 +450,28 @@ class ScrutinUserView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         now = timezone.now()
-        ctx["scrutins_ouverts"] = Scrutin.objects.filter(
-            statut="ouvert",
+        # Afficher les scrutins depuis le début des dépôts jusqu'à la fin des votes
+        ctx["scrutins_affichables"] = Scrutin.objects.filter(
+            statut__in=["ouvert", "en_vote"],
             date_debut__lte=now,
-            date_fin__gte=now,
+            date_fin_vote__gte=now,
         ).order_by("-date_debut")
+
+        # ID sets pour le template afin d'adapter l'affichage selon la période
+        ctx["scrutins_en_candidature_ids"] = set(
+            Scrutin.objects.filter(
+                statut="ouvert",
+                date_debut__lte=now,
+                date_fin__gte=now,
+            ).values_list("pk", flat=True)
+        )
+        ctx["scrutins_en_vote_ids"] = set(
+            Scrutin.objects.filter(
+                statut="en_vote",
+                date_debut_vote__lte=now,
+                date_fin_vote__gte=now,
+            ).values_list("pk", flat=True)
+        )
 
         if self.request.user.is_authenticated:
             ctx["demandes_electeur_ids"] = set(
@@ -629,6 +658,98 @@ class UsersListView(LoginRequiredMixin, ListView):
         return ctx
 
 
+# ====================== USER PAGES (PROFILE / MESSAGES / STATS / SETTINGS) ======================
+class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/user_dashboard/profile.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update(get_sidebar_counts())
+        ctx['user'] = self.request.user
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        # accept basic profile fields
+        user.nom = request.POST.get('nom', user.nom)
+        user.prenom = request.POST.get('prenom', user.prenom)
+        user.filiere = request.POST.get('filiere', user.filiere)
+        user.niveau = request.POST.get('niveau', user.niveau)
+        user.telephone = request.POST.get('telephone', user.telephone)
+        user.biographie = request.POST.get('biographie', user.biographie)
+        # photo upload
+        photo = request.FILES.get('photo')
+        if photo:
+            user.photo = photo
+        user.save()
+        messages.success(request, "Profil mis à jour avec succès.")
+        return redirect('users:profile')
+
+
+class MessagesView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/user_dashboard/messages.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update(get_sidebar_counts())
+        # show user's demandes as messages-like entries
+        ctx['demandes_electeur'] = DemandeElecteur.objects.filter(utilisateur=self.request.user).order_by('-date_soumission')
+        ctx['demandes_candidature'] = DemandeCandidature.objects.filter(utilisateur=self.request.user).order_by('-date_soumission')
+        return ctx
+
+
+class StatisticsView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/user_dashboard/statistics.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update(get_sidebar_counts())
+        # reuse calculated dashboard stats
+        base_ctx = UserDashboardView.get_context_data(self, **kwargs)
+        ctx.update({
+            'is_candidat': base_ctx.get('is_candidat'),
+            'votes_by_filiere': base_ctx.get('votes_by_filiere', []),
+            'weekly_votes_with_percentage': base_ctx.get('weekly_votes_with_percentage', {}),
+        })
+        return ctx
+
+
+class UserSettingsView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/user_dashboard/settings.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update(get_sidebar_counts())
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        # allow updating some settings
+        user.telephone = request.POST.get('telephone', user.telephone)
+        user.biographie = request.POST.get('biographie', user.biographie)
+        user.save()
+        messages.success(request, "Paramètres enregistrés.")
+        return redirect('users:user_settings')
+
+
+class MesVotesView(LoginRequiredMixin, TemplateView):
+    template_name = "pages/user_dashboard/mes_votes.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        user = self.request.user
+        ctx.update(get_sidebar_counts())
+        # list scrutins where user is electeur
+        scrutins = Scrutin.objects.filter(electeurs__demande__utilisateur=user).distinct()
+        scrutins_data = []
+        for s in scrutins:
+            electeur = Electeur.objects.filter(demande__utilisateur=user, scrutin=s).first()
+            has_voted = Vote.objects.filter(electeur=electeur).exists() if electeur else False
+            scrutins_data.append({'scrutin': s, 'has_voted': has_voted})
+        ctx['scrutins'] = scrutins_data
+        return ctx
+
+
 
 class TraiterDemandeCandidatureView(LoginRequiredMixin, View):
     login_url = "/users/login/"
@@ -703,11 +824,16 @@ class ScrutinVoteView(LoginRequiredMixin, TemplateView):
 
         electeur = Electeur.objects.filter(demande__utilisateur=request.user, scrutin=scrutin).first()
         if electeur is None:
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({"success": False, "message": "Vous n'êtes pas inscrit comme électeur pour ce scrutin."}, status=403)
             messages.error(request, "Vous n'êtes pas inscrit comme électeur pour ce scrutin.")
             return redirect("users:scrutin_vote", slug=scrutin.slug)
 
-        candidat = get_object_or_404(Candidat, slug=request.POST.get("candidat_slug"), scrutin=scrutin)
+        candidat_slug = request.POST.get("candidat_slug")
+        candidat = get_object_or_404(Candidat, slug=candidat_slug, scrutin=scrutin)
         if Vote.objects.filter(electeur=electeur).exists():
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({"success": False, "message": "Vous avez déjà voté pour ce scrutin."}, status=400)
             messages.warning(request, "Vous avez déjà voté pour ce scrutin.")
             return redirect("users:scrutin_vote", slug=scrutin.slug)
 
@@ -717,8 +843,16 @@ class ScrutinVoteView(LoginRequiredMixin, TemplateView):
                 candidat=candidat,
                 adresse_ip=request.META.get("REMOTE_ADDR", "127.0.0.1"),
             )
+            # Préparer une représentation des nouveaux comptes de votes pour tous les candidats
+            payload = list(
+                Candidat.objects.filter(scrutin=scrutin).values("slug", "nombre_vote")
+            )
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({"success": True, "message": "Votre vote a été enregistré avec succès.", "votes": payload})
             messages.success(request, "✅ Votre vote a été enregistré avec succès.")
         except ValidationError as exc:
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({"success": False, "message": exc.messages[0]}, status=400)
             messages.error(request, f"Vote refusé : {exc.messages[0]}")
 
         return redirect("users:scrutin_vote", slug=scrutin.slug)

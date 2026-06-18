@@ -1,0 +1,44 @@
+{% include "pages/user_dashboard/user.html" %}
+
+{% block content %}
+  {% include "pages/user_dashboard/components/header.html" %}
+  <div class="p-6 lg:p-8">
+    <div class="max-w-4xl mx-auto">
+      <header class="bg-gradient-to-r from-green-600 to-green-500 text-white rounded-t-2xl p-6 shadow-md">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-md bg-white/10 flex items-center justify-center text-lg font-bold">📊</div>
+          <div>
+            <h1 class="text-2xl font-extrabold">Statistiques</h1>
+            <p class="text-sm opacity-90">Analyse de vos performances et participation</p>
+          </div>
+        </div>
+      </header>
+    <div class="bg-white rounded-b-2xl p-6 border border-t-0 border-gray-100 shadow-sm">
+
+      <h3 class="text-sm font-bold text-gray-700 mt-2">Votes par filière</h3>
+      <ul class="mt-2">
+        {% for filiere, count, pct in votes_by_filiere %}
+          <li class="flex justify-between py-2 border-b border-gray-50">
+            <span>{{ filiere }}</span>
+            <span class="text-sm text-gray-500">{{ count }} • {{ pct }}%</span>
+          </li>
+        {% empty %}
+          <li class="text-gray-500 py-2">Aucune donnée</li>
+        {% endfor %}
+      </ul>
+
+      <h3 class="text-sm font-bold text-gray-700 mt-6">Activité hebdomadaire</h3>
+      <div class="mt-3 grid grid-cols-7 gap-2">
+        {% for day, data in weekly_votes_with_percentage.items %}
+          <div class="text-center">
+            <div class="h-24 bg-gray-100 rounded-md flex items-end justify-center">
+              <div style="height:{{ data.percentage }}%" class="w-8 bg-brand-700 rounded-b-md"></div>
+            </div>
+            <div class="text-xs mt-1 text-gray-600">{{ day }}</div>
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

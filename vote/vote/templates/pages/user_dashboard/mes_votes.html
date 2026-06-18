@@ -1,0 +1,38 @@
+{% include "pages/user_dashboard/user.html" %}
+
+{% block content %}
+  {% include "pages/user_dashboard/components/header.html" %}
+  <div class="p-6 lg:p-8">
+    <div class="max-w-4xl mx-auto">
+      <header class="bg-gradient-to-r from-pink-600 to-pink-500 text-white rounded-t-2xl p-6 shadow-md">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-md bg-white/10 flex items-center justify-center text-lg font-bold">🗳️</div>
+          <div>
+            <h1 class="text-2xl font-extrabold">Mes Votes</h1>
+            <p class="text-sm opacity-90">Suivez votre participation aux différents scrutins</p>
+          </div>
+        </div>
+      </header>
+      <div class="bg-white rounded-b-2xl p-6 border border-t-0 border-gray-100 shadow-sm">
+      <ul class="divide-y divide-gray-100">
+        {% for item in scrutins %}
+          <li class="py-3 flex items-center justify-between">
+            <div>
+              <a href="{% url 'users:scrutin_vote' slug=item.scrutin.slug %}" class="font-semibold text-brand-700">{{ item.scrutin.titre }}</a>
+              <p class="text-xs text-gray-500">{{ item.scrutin.date_debut_vote|date:"d M Y" }} — {{ item.scrutin.date_fin_vote|date:"d M Y" }}</p>
+            </div>
+            <div>
+              {% if item.has_voted %}
+                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">Vous avez voté</span>
+              {% else %}
+                <a href="{% url 'users:scrutin_vote' slug=item.scrutin.slug %}" class="px-3 py-1 rounded-full bg-brand-700 text-white text-xs font-bold">Voter</a>
+              {% endif %}
+            </div>
+          </li>
+        {% empty %}
+          <li class="py-4 text-gray-500">Aucun scrutin trouvé.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}

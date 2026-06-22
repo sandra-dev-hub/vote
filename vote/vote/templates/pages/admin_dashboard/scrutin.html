@@ -6,10 +6,10 @@
 {% block content %}
 
 <!-- HEADER -->
-<header class="h-20 bg-white border-b border-gray-100 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
+<header class="h-20 bg-white border-b border-gray-100 px-6 lg:px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
   <div>
-    <h2 class="text-lg font-black text-gray-900 tracking-tight">Gestion des Scrutins</h2>
-    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
+    <h2 class="text-2xl font-black text-gray-900 tracking-tight">Gestion des Scrutins</h2>
+    <p class="text-sm text-gray-500 mt-1">
       Configuration des sessions de vote
     </p>
   </div>
@@ -20,7 +20,7 @@
   </div>
 </header>
 
-<div class="p-8 space-y-7 bg-gray-50/30">
+<div class="px-6 lg:px-8 py-8 space-y-8 bg-gray-50/30">
 
   <!-- MESSAGES -->
   {% if messages or form.errors %}

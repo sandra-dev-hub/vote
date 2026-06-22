@@ -48,6 +48,7 @@
     {% include "pages/user_dashboard/components/header.html" %}
 
     <!-- DASHBOARD CONTENT -->
+    {% block content %}
     <div class="p-4 md:p-8 space-y-6 md:space-y-8 pb-16 w-full flex-grow">
       
       <!-- TOP SECTION: Candidat Card + Stats OR Électeur Card + Stats -->
@@ -129,6 +130,7 @@
       </div>
 
     </div>
+    {% endblock %}
   </main>
 
   <!-- SCRIPTS -->

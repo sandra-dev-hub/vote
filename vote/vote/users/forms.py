@@ -223,8 +223,70 @@ class DemandeElecteurForm(forms.ModelForm):
 
 from django import forms
 
+from django.urls import reverse
+
 from vote.users.models import DemandeCandidature
 from vote.users.models import Scrutin
+from django.contrib.auth.forms import PasswordResetForm
+
+
+# Custom PasswordResetForm that exposes a full `password_reset_url` in the
+# email context so templates can render a single absolute clickable link.
+class CustomPasswordResetForm(PasswordResetForm):
+    def save(
+        self,
+        domain_override=None,
+        subject_template_name="registration/password_reset_subject.txt",
+        email_template_name="registration/password_reset_email.html",
+        use_https=False,
+        token_generator=None,
+        from_email=None,
+        request=None,
+        html_email_template_name=None,
+        extra_email_context=None,
+    ):
+        # keep the request available for send_mail
+        self.request = request
+        return super().save(
+            domain_override=domain_override,
+            subject_template_name=subject_template_name,
+            email_template_name=email_template_name,
+            use_https=use_https,
+            token_generator=token_generator,
+            from_email=from_email,
+            request=request,
+            html_email_template_name=html_email_template_name,
+            extra_email_context=extra_email_context,
+        )
+
+    def send_mail(
+        self,
+        subject_template_name,
+        email_template_name,
+        context,
+        from_email,
+        to_email,
+        html_email_template_name=None,
+    ):
+        # Build an absolute URL for the reset link and add it to the context.
+        try:
+            uid = context.get("uid")
+            token = context.get("token")
+            if hasattr(self, "request") and uid and token:
+                path = reverse("users:password_reset_confirm", kwargs={"uidb64": uid, "token": token})
+                absolute = self.request.build_absolute_uri(path)
+                context = {**context, "password_reset_url": absolute}
+        except Exception:
+            pass
+
+        return super().send_mail(
+            subject_template_name,
+            email_template_name,
+            context,
+            from_email,
+            to_email,
+            html_email_template_name=html_email_template_name,
+        )
 
 
 class DemandeCandidatureForm(forms.ModelForm):

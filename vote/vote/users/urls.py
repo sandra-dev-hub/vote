@@ -37,6 +37,7 @@ from .views import (
     UserSettingsView,
     MesVotesView,
 )
+from vote.users.forms import CustomPasswordResetForm
 
 urlpatterns = [
 
@@ -52,6 +53,7 @@ urlpatterns = [
             html_email_template_name="pages/emails/password_reset_email.html",
             subject_template_name="pages/emails/password_reset_subject.txt",
             success_url="/users/password-reset/done/",
+            form_class=CustomPasswordResetForm,
         ),
         name="password_reset",
     ),

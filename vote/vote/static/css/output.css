@@ -58,7 +58,6 @@
     --color-indigo-500: oklch(58.5% 0.233 277.117);
     --color-indigo-600: oklch(51.1% 0.262 276.966);
     --color-indigo-700: oklch(45.7% 0.24 277.023);
-    --color-purple-400: oklch(71.4% 0.203 305.504);
     --color-pink-500: oklch(65.6% 0.241 354.308);
     --color-pink-600: oklch(59.2% 0.249 0.584);
     --color-gray-50: oklch(98.5% 0.002 247.839);
@@ -2376,10 +2375,6 @@
   }
   .shadow-\[0_4px_14px_0_rgb\(29\,78\,216\,0\.39\)\] {
     --tw-shadow: 0 4px 14px 0 var(--tw-shadow-color, rgb(29,78,216,0.39));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .shadow-\[0_4px_14px_0_rgb\(220\,38\,38\,0\.39\)\] {
-    --tw-shadow: 0 4px 14px 0 var(--tw-shadow-color, rgb(220,38,38,0.39));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .shadow-\[0_4px_20px_rgb\(0\,0\,0\,0\.02\)\] {

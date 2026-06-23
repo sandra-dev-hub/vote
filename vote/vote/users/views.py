@@ -659,12 +659,19 @@ class UsersListView(LoginRequiredMixin, ListView):
 
 
 # ====================== USER PAGES (PROFILE / MESSAGES / STATS / SETTINGS) ======================
-class ProfileView(LoginRequiredMixin, TemplateView):
+class UserBaseView(TemplateView):
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update(get_sidebar_counts())
+        if self.request.user.is_authenticated:
+            ctx['is_candidat'] = Candidat.objects.filter(demande__utilisateur=self.request.user).exists()
+        return ctx
+
+class ProfileView(LoginRequiredMixin, UserBaseView):
     template_name = "pages/user_dashboard/profile.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx.update(get_sidebar_counts())
         ctx['user'] = self.request.user
         return ctx
 
@@ -686,40 +693,31 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         return redirect('users:profile')
 
 
-class MessagesView(LoginRequiredMixin, TemplateView):
+class MessagesView(LoginRequiredMixin, UserBaseView):
     template_name = "pages/user_dashboard/messages.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx.update(get_sidebar_counts())
         # show user's demandes as messages-like entries
         ctx['demandes_electeur'] = DemandeElecteur.objects.filter(utilisateur=self.request.user).order_by('-date_soumission')
         ctx['demandes_candidature'] = DemandeCandidature.objects.filter(utilisateur=self.request.user).order_by('-date_soumission')
         return ctx
 
 
-class StatisticsView(LoginRequiredMixin, TemplateView):
+class StatisticsView(UserDashboardView):
     template_name = "pages/user_dashboard/statistics.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx.update(get_sidebar_counts())
-        # reuse calculated dashboard stats
-        base_ctx = UserDashboardView.get_context_data(self, **kwargs)
-        ctx.update({
-            'is_candidat': base_ctx.get('is_candidat'),
-            'votes_by_filiere': base_ctx.get('votes_by_filiere', []),
-            'weekly_votes_with_percentage': base_ctx.get('weekly_votes_with_percentage', {}),
-        })
         return ctx
 
 
-class UserSettingsView(LoginRequiredMixin, TemplateView):
+class UserSettingsView(LoginRequiredMixin, UserBaseView):
     template_name = "pages/user_dashboard/settings.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx.update(get_sidebar_counts())
         return ctx
 
     def post(self, request, *args, **kwargs):
@@ -732,13 +730,12 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
         return redirect('users:user_settings')
 
 
-class MesVotesView(LoginRequiredMixin, TemplateView):
+class MesVotesView(LoginRequiredMixin, UserBaseView):
     template_name = "pages/user_dashboard/mes_votes.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         user = self.request.user
-        ctx.update(get_sidebar_counts())
         # list scrutins where user is electeur
         scrutins = Scrutin.objects.filter(electeurs__demande__utilisateur=user).distinct()
         scrutins_data = []

@@ -1,4 +1,5 @@
 from django import forms
+from django.utils import timezone
 from django.contrib.auth.forms import UserCreationForm
 from .models import Utilisateur, Scrutin, DemandeElecteur, DemandeCandidature
 
@@ -192,6 +193,14 @@ class ScrutinForm(forms.ModelForm):
         date_fin = cleaned_data.get("date_fin")
         date_debut_vote = cleaned_data.get("date_debut_vote")
         date_fin_vote = cleaned_data.get("date_fin_vote")
+
+        # If form widgets provided naive datetimes (from datetime-local),
+        # make them aware in the project's timezone so comparisons with
+        # timezone.now() are consistent when USE_TZ=True.
+        for key in ("date_debut", "date_fin", "date_debut_vote", "date_fin_vote"):
+            val = cleaned_data.get(key)
+            if val and timezone.is_naive(val):
+                cleaned_data[key] = timezone.make_aware(val, timezone.get_default_timezone())
 
         if date_debut and date_fin and date_debut >= date_fin:
             self.add_error("date_fin", "La fin de la période 1 doit être après son début.")

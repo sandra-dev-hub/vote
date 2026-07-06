@@ -459,8 +459,12 @@ class ScrutinUserView(TemplateView):
 
         # Préparer une prévisualisation des candidats pour les scrutins en période de vote
         from .models import Candidat
-        scrutins_en_vote_qs = ctx["scrutins_affichables"].filter(statut__in=["en_vote"]) if ctx["scrutins_affichables"] else []
-        scrutins_en_vote_pks = {s.pk for s in scrutins_en_vote_qs}
+        scrutins_en_vote_pks = set(
+            Scrutin.objects.filter(
+                date_debut_vote__lte=now,
+                date_fin_vote__gte=now,
+            ).values_list("pk", flat=True)
+        )
         # Attacher un attribut `candidats_preview` à chaque instance de Scrutin
         for s in ctx["scrutins_affichables"]:
             if s.pk in scrutins_en_vote_pks:
@@ -473,14 +477,12 @@ class ScrutinUserView(TemplateView):
         # ID sets pour le template afin d'adapter l'affichage selon la période
         ctx["scrutins_en_candidature_ids"] = set(
             Scrutin.objects.filter(
-                statut="ouvert",
                 date_debut__lte=now,
                 date_fin__gte=now,
             ).values_list("pk", flat=True)
         )
         ctx["scrutins_en_vote_ids"] = set(
             Scrutin.objects.filter(
-                statut="en_vote",
                 date_debut_vote__lte=now,
                 date_fin_vote__gte=now,
             ).values_list("pk", flat=True)

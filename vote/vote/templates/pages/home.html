@@ -397,44 +397,50 @@
 {% endblock %}
 
 {% block extra_scripts %}
+{{ carousel_candidates|json_script:"carousel-data" }}
 <script>
 // ==================== CAROUSEL SCRIPT ====================
-const allCandidates = [
-    { name: 'NTSOPGNI Aimé', role: 'Président des jeunes', img: '{% static "images/hero9.png" %}' },
-    { name: 'FOUDA Laura', role: 'Vice-présidente', img: '{% static "images/hero2.png" %}' },
-    { name: 'MEKOUO Dylan', role: 'Trésorier Général', img: '{% static "images/hero3.png" %}' },
-    { name: 'KAMGA Serge', role: 'Secrétaire Général', img: '{% static "images/hero8.png" %}' },
-    { name: 'MBAH Celeste', role: 'Chargée Communication', img: '{% static "images/hero5.png" %}' },
-    { name: 'TAGNE Pierre', role: 'Chargé Sports', img: '{% static "images/hero7.png" %}' },
-];
+const carouselDataEl = document.getElementById('carousel-data');
+const allCandidates = carouselDataEl ? JSON.parse(carouselDataEl.textContent) : [];
 
 let currentStart = 0;
 
 function renderCarousel() {
     const track = document.getElementById('carousel-track');
     const heights = [420, 470, 420];
+
+    if (!track) return;
+
+    if (!allCandidates.length) {
+        track.innerHTML = `
+            <div class="w-full rounded-[2rem] border border-white/20 bg-white/10 backdrop-blur-sm p-5 text-center text-sm text-white/80">
+                Aucun candidat à afficher pour le scrutin le plus proche.
+            </div>`;
+        return;
+    }
+
     const visible = [0,1,2].map(i => allCandidates[(currentStart + i) % allCandidates.length]);
-    
+
     track.innerHTML = '';
-    
+
     visible.forEach((c, i) => {
         const wrap = document.createElement('div');
         wrap.className = 'cand-photo-wrap slide-in';
         wrap.style.animationDelay = (i * 0.06) + 's';
 
         const img = document.createElement('img');
-        img.src = c.img;
-        img.alt = c.name;
+        img.src = c.img || '{% static "images/hero1.png" %}';
+        img.alt = c.name || 'Candidat';
         img.className = 'cand-photo-img';
         img.style.height = heights[i] + 'px';
 
         const name = document.createElement('p');
         name.className = 'cand-photo-name';
-        name.textContent = c.name;
+        name.textContent = c.name || 'Candidat';
 
         const role = document.createElement('p');
         role.className = 'cand-photo-role';
-        role.textContent = c.role;
+        role.textContent = c.role || 'Candidat';
 
         wrap.appendChild(img);
         wrap.appendChild(name);
@@ -442,21 +448,22 @@ function renderCarousel() {
         track.appendChild(wrap);
     });
 
-    // Update dots
     for (let d = 0; d < 4; d++) {
         const dot = document.getElementById('dot-' + d);
         if (dot) {
-            dot.className = 'dot-base ' + ((currentStart % 4) === d ? 'dot-active' : 'dot-inactive');
+            dot.className = 'dot-base ' + ((currentStart % Math.max(1, allCandidates.length)) === d ? 'dot-active' : 'dot-inactive');
         }
     }
 }
 
 function carouselNext() {
+    if (!allCandidates.length) return;
     currentStart = (currentStart + 1) % allCandidates.length;
     renderCarousel();
 }
 
 function carouselPrev() {
+    if (!allCandidates.length) return;
     currentStart = (currentStart - 1 + allCandidates.length) % allCandidates.length;
     renderCarousel();
 }
@@ -464,7 +471,9 @@ function carouselPrev() {
 // Initial render + Auto slide
 document.addEventListener('DOMContentLoaded', () => {
     renderCarousel();
-    setInterval(carouselNext, 3500);
+    if (allCandidates.length) {
+        setInterval(carouselNext, 3500);
+    }
 });
 </script>
 {% endblock %}

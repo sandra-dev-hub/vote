@@ -46,24 +46,46 @@ class HomeView(TemplateView):
         ctx = super().get_context_data(**kwargs)
         now = timezone.now()
 
-        # Cherche un scrutin actuellement ouvert ou en vote
-        scrutin_live = (
-            Scrutin.objects.filter(
-                statut__in=["ouvert", "en_vote"],
-                date_debut__lte=now,
-                date_fin__gte=now,
-            )
-            .order_by("date_fin")
-            .first()
-        )
+        scrutins = Scrutin.objects.all().order_by("date_debut", "date_fin")
 
-        if scrutin_live:
-            candidats_qs = Candidat.objects.filter(scrutin=scrutin_live).select_related("demande__utilisateur").order_by("-nombre_vote")
+        selected_scrutin = None
+        if scrutins.exists():
+            scrutins_with_candidates = scrutins.filter(candidats__isnull=False).distinct()
+            if scrutins_with_candidates.exists():
+                selected_scrutin = min(
+                    scrutins_with_candidates,
+                    key=lambda scrutin: abs((scrutin.date_debut - now).total_seconds()),
+                )
+            else:
+                selected_scrutin = min(
+                    scrutins,
+                    key=lambda scrutin: abs((scrutin.date_debut - now).total_seconds()),
+                )
+
+        if selected_scrutin:
+            candidats_qs = (
+                Candidat.objects.filter(scrutin=selected_scrutin)
+                .select_related("demande__utilisateur")
+                .order_by("-nombre_vote")
+            )
             ctx["candidats"] = list(candidats_qs[:4])
 
-            nb_electeurs = Electeur.objects.filter(scrutin=scrutin_live).count()
+            carousel_candidates = []
+            for candidat in candidats_qs[:8]:
+                image_url = candidat.demande.image.url if candidat.demande.image else ""
+                carousel_candidates.append(
+                    {
+                        "name": f"{candidat.demande.utilisateur.nom or ''} {candidat.demande.utilisateur.prenom or ''}".strip() or "Candidat",
+                        "role": candidat.demande.slogan or candidat.demande.utilisateur.filiere or "Candidat",
+                        "img": image_url,
+                        "slug": candidat.slug,
+                    }
+                )
+            ctx["carousel_candidates"] = carousel_candidates
+
+            nb_electeurs = Electeur.objects.filter(scrutin=selected_scrutin).count()
             nb_candidats = candidats_qs.count()
-            nb_votes = Vote.objects.filter(candidat__scrutin=scrutin_live).count()
+            nb_votes = Vote.objects.filter(candidat__scrutin=selected_scrutin).count()
 
             transparence = round((nb_votes / nb_electeurs) * 100, 1) if nb_electeurs else 0
 
@@ -73,10 +95,10 @@ class HomeView(TemplateView):
                 "transparence_pct": transparence,
                 "securite_pct": 100,
             }
-            ctx["scrutin"] = scrutin_live
+            ctx["scrutin"] = selected_scrutin
         else:
-            # Fallback global stats
             ctx["candidats"] = list(Candidat.objects.select_related("demande__utilisateur").order_by("-nombre_vote")[:4])
+            ctx["carousel_candidates"] = []
             nb_electeurs = Electeur.objects.count()
             nb_candidats = Candidat.objects.count()
             nb_votes = Vote.objects.count()

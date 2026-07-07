@@ -317,7 +317,7 @@
                                     <form method="post"
                                           action="{% url 'users:traiter_demande_candidature' demande.pk %}"
                                           class="inline"
-                                          onsubmit="return confirm('Approuver cette candidature ?')">
+                                          data-confirm="Approuver cette candidature ?">
                                         {% csrf_token %}
                                         <input type="hidden" name="action" value="approuver">
                                         <button type="submit"
@@ -329,7 +329,7 @@
                                     <form method="post"
                                           action="{% url 'users:traiter_demande_candidature' demande.pk %}"
                                           class="inline"
-                                          onsubmit="return confirm('Rejeter cette candidature ? Cette action est irréversible.')">
+                                          data-confirm="Rejeter cette candidature ? Cette action est irréversible.">
                                         {% csrf_token %}
                                         <input type="hidden" name="action" value="rejeter">
                                         <button type="submit"

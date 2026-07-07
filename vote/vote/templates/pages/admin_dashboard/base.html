@@ -90,6 +90,16 @@
     .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
       @apply border-brand-200 bg-brand-50 text-brand-700;
     }
+
+    .confirm-modal {
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .confirm-card {
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.16);
+    }
   </style>
 </head>
 
@@ -206,9 +216,78 @@
     {% block content %}{% endblock %}
   </main>
 
+  <div id="confirmModal" class="confirm-modal fixed inset-0 hidden z-50 items-center justify-center p-4">
+    <div class="confirm-card w-full max-w-xl rounded-[2rem] bg-white p-6">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-sm font-bold uppercase tracking-[0.18em] text-slate-500">Confirmer l'action</p>
+          <h2 id="confirmModalMessage" class="mt-3 text-xl font-black text-slate-900">Voulez-vous vraiment continuer ?</h2>
+        </div>
+        <button type="button" id="confirmModalClose" class="text-slate-400 hover:text-slate-700 text-3xl leading-none">&times;</button>
+      </div>
+      <p id="confirmModalHint" class="mt-4 text-sm text-slate-500">Cette opération est importante et peut être annulée manuellement si nécessaire.</p>
+      <div class="mt-6 flex justify-end gap-3">
+        <button type="button" id="confirmModalCancel" class="rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Annuler</button>
+        <button type="button" id="confirmModalConfirm" class="rounded-full bg-brand-700 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-800 transition">Confirmer</button>
+      </div>
+    </div>
+  </div>
 
   <script src="{% static 'js/jquery.min.js' %}"></script>
   <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+  <script>
+    (function () {
+      const modal = document.getElementById('confirmModal');
+      const messageEl = document.getElementById('confirmModalMessage');
+      const confirmButton = document.getElementById('confirmModalConfirm');
+      const cancelButton = document.getElementById('confirmModalCancel');
+      const closeButton = document.getElementById('confirmModalClose');
+      let activeForm = null;
+
+      function hideModal() {
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      function showModal(message, form) {
+        if (!modal || !messageEl || !form) return;
+        activeForm = form;
+        messageEl.textContent = message;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      function handleConfirm() {
+        if (activeForm) {
+          activeForm.submit();
+        }
+        hideModal();
+      }
+
+      function handleCancel() {
+        activeForm = null;
+        hideModal();
+      }
+
+      document.addEventListener('click', function (event) {
+        if (event.target === modal) {
+          handleCancel();
+        }
+      });
+
+      if (confirmButton) confirmButton.addEventListener('click', handleConfirm);
+      if (cancelButton) cancelButton.addEventListener('click', handleCancel);
+      if (closeButton) closeButton.addEventListener('click', handleCancel);
+
+      document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          showModal(form.getAttribute('data-confirm'), form);
+        });
+      });
+    })();
+  </script>
 
   {% block extra_scripts %}{% endblock %}
 </body>

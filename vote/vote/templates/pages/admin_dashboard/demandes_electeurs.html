@@ -133,12 +133,12 @@
                     <td class="px-8 py-5 text-right">
                         {% if demande.statut == "en_attente" %}
                         <div class="flex gap-2 justify-end">
-                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}" class="inline" onsubmit="return confirm('Approuver cette demande d\'électeur ?')">
+                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}" class="inline" data-confirm="Approuver cette demande d'électeur ?">
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="approuver">
                                 <button type="submit" class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg">✅ Approuver</button>
                             </form>
-                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}" class="inline" onsubmit="return confirm('Rejeter cette demande ?')">
+                            <form method="post" action="{% url 'users:traiter_demande_electeur' demande.pk %}" class="inline" data-confirm="Rejeter cette demande ?">
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="rejeter">
                                 <button type="submit" class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg">❌ Rejeter</button>

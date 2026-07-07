@@ -299,12 +299,12 @@
               });
               // Disable form after vote
               form.querySelectorAll('input, button').forEach(i => i.disabled = true);
-              alert(resp.message || 'Vote enregistré');
+              showToast(resp.message || 'Votre vote a été enregistré avec succès.', 'success');
             } else {
-              alert(resp.message || 'Erreur lors du vote');
+              showToast(resp.message || 'Erreur lors du vote', 'error');
             }
           } else {
-            alert('Erreur réseau lors de l\'envoi du vote');
+            showToast('Erreur réseau lors de l\'envoi du vote', 'error');
           }
         };
         xhr.send(data);

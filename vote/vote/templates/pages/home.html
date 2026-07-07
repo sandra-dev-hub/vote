@@ -96,10 +96,9 @@
 
             <!-- Dots -->
             <div class="flex items-center justify-center gap-2 mt-3 w-full">
-                <div id="dot-0" class="dot-base dot-active"></div>
-                <div id="dot-1" class="dot-base dot-inactive"></div>
-                <div id="dot-2" class="dot-base dot-inactive"></div>
-                <div id="dot-3" class="dot-base dot-inactive"></div>
+                {% for i in "0123" %}
+                    <div id="dot-{{ forloop.counter0 }}" class="dot-base dot-inactive"></div>
+                {% endfor %}
             </div>
         </div>
     </div>

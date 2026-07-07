@@ -31,19 +31,31 @@
         {% endfor %}
     {% endif %}
 
-    <!-- Stats -->
-    <div class="grid grid-cols-3 divide-x divide-gray-100 bg-white rounded-3xl border border-gray-100 mb-8">
-        <div class="px-6 py-5 text-center">
-            <p class="text-3xl font-black text-brand-700">{{ nb_admin }}</p>
-            <p class="text-xs font-bold text-gray-400">ADMINS</p>
+    <!-- Statuts utilisateurs -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6 text-center hover:shadow-lg transition-all">
+            <div class="flex items-center justify-center gap-2 mb-3">
+                <span class="text-4xl">👑</span>
+                <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-full uppercase">ADMINS</span>
+            </div>
+            <p class="text-4xl font-black text-amber-600 mb-1">{{ nb_admin }}</p>
+            <p class="text-sm font-semibold text-amber-700">Administrateurs</p>
         </div>
-        <div class="px-6 py-5 text-center">
-            <p class="text-3xl font-black text-amber-500">{{ nb_candidat }}</p>
-            <p class="text-xs font-bold text-gray-400">CANDIDATS</p>
+        <div class="bg-indigo-50 border border-indigo-200 rounded-3xl p-6 text-center hover:shadow-lg transition-all">
+            <div class="flex items-center justify-center gap-2 mb-3">
+                <span class="text-4xl">⭐</span>
+                <span class="text-xs font-bold text-indigo-700 bg-indigo-100 px-2 py-1 rounded-full uppercase">CANDIDATS</span>
+            </div>
+            <p class="text-4xl font-black text-indigo-600 mb-1">{{ nb_candidat }}</p>
+            <p class="text-sm font-semibold text-indigo-700">Candidats</p>
         </div>
-        <div class="px-6 py-5 text-center">
-            <p class="text-3xl font-black text-green-600">{{ nb_electeur }}</p>
-            <p class="text-xs font-bold text-gray-400">ÉLECTEURS</p>
+        <div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 text-center hover:shadow-lg transition-all">
+            <div class="flex items-center justify-center gap-2 mb-3">
+                <span class="text-4xl">🗳️</span>
+                <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full uppercase">ÉLECTEURS</span>
+            </div>
+            <p class="text-4xl font-black text-emerald-600 mb-1">{{ nb_electeur }}</p>
+            <p class="text-sm font-semibold text-emerald-700">Électeurs</p>
         </div>
     </div>
 

@@ -11,9 +11,47 @@
             <p class="mt-2 text-sm text-blue-50/90">Consultez toutes les activités enregistrées sur la plateforme.</p>
           </div>
           <div class="rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold">
-            {{ audit_logs|length }} événements récents
+            {{ total_logs|default:audit_logs|length }} événements
           </div>
         </div>
+      </div>
+
+      <!-- Filtres -->
+      <div class="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Utilisateur</label>
+            <input type="text" name="utilisateur" value="{{ utilisateur_filter }}" placeholder="Email utilisateur"
+                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Action</label>
+            <select name="action" class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+              <option value="">Toutes les actions</option>
+              {% for action in actions %}
+                <option value="{{ action }}" {% if action_filter == action %}selected{% endif %}>{{ action }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Date début</label>
+            <input type="date" name="date_debut" value="{{ date_debut }}"
+                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Date fin</label>
+            <input type="date" name="date_fin" value="{{ date_fin }}"
+                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+          </div>
+          <div class="md:col-span-2 lg:col-span-4 flex gap-3">
+            <button type="submit" class="px-6 py-3 bg-brand-600 text-white font-bold rounded-xl hover:bg-brand-700 transition">
+              Filtrer
+            </button>
+            <a href="{% url 'users:admin_logaudit' %}" class="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition">
+              Réinitialiser
+            </a>
+          </div>
+        </form>
       </div>
 
       <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
@@ -45,7 +83,7 @@
           </div>
         {% else %}
           <div class="p-10 text-center text-sm text-gray-500">
-            Aucun événement n’a encore été enregistré sur la plateforme.
+            Aucun événement n’a été trouvé avec ces filtres.
           </div>
         {% endif %}
       </div>

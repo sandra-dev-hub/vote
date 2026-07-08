@@ -838,6 +838,18 @@ class UserSettingsView(LoginRequiredMixin, UserBaseView):
         return redirect('users:user_settings')
 
 
+class UserAuditLogView(LoginRequiredMixin, UserBaseView):
+    template_name = "pages/user_dashboard/logaudit.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["audit_logs"] = (
+            Logaudit.objects.filter(utilisateur=self.request.user)
+            .order_by("-created", "-horodatage")[:50]
+        )
+        return ctx
+
+
 class AuditLogView(LoginRequiredMixin, UserBaseView):
     template_name = "pages/admin_dashboard/logaudit.html"
 
@@ -848,11 +860,36 @@ class AuditLogView(LoginRequiredMixin, UserBaseView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["audit_logs"] = (
-            Logaudit.objects.all()
-            .select_related("utilisateur")
-            .order_by("-created", "-horodatage")[:80]
-        )
+        
+        # Récupérer les filtres
+        utilisateur_filter = self.request.GET.get('utilisateur')
+        action_filter = self.request.GET.get('action')
+        date_debut = self.request.GET.get('date_debut')
+        date_fin = self.request.GET.get('date_fin')
+        
+        # Base queryset
+        queryset = Logaudit.objects.all().select_related("utilisateur")
+        
+        # Appliquer les filtres
+        if utilisateur_filter:
+            queryset = queryset.filter(utilisateur__email__icontains=utilisateur_filter)
+        if action_filter:
+            queryset = queryset.filter(action=action_filter)
+        if date_debut:
+            queryset = queryset.filter(created__gte=date_debut)
+        if date_fin:
+            queryset = queryset.filter(created__lte=date_fin)
+        
+        ctx["audit_logs"] = queryset.order_by("-created", "-horodatage")[:100]
+        ctx["total_logs"] = queryset.count()
+        
+        # Filtres pour le template
+        ctx["utilisateur_filter"] = utilisateur_filter or ""
+        ctx["action_filter"] = action_filter or ""
+        ctx["date_debut"] = date_debut or ""
+        ctx["date_fin"] = date_fin or ""
+        ctx["actions"] = Logaudit.objects.values_list('action', flat=True).distinct()
+        
         return ctx
 
 

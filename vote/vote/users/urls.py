@@ -35,6 +35,7 @@ from .views import (
     MessagesView,
     StatisticsView,
     UserSettingsView,
+    UserAuditLogView,
     AuditLogView,
     MesVotesView,
 )
@@ -124,7 +125,8 @@ urlpatterns = [
     path("statistiques/", StatisticsView.as_view(), name="statistics"),
     path("parametres/compte/", UserSettingsView.as_view(), name="user_settings"),
     path("mes-votes/", MesVotesView.as_view(), name="mes_votes"),
+    path("journal-audit/", UserAuditLogView.as_view(), name="user_logaudit"),
 
     # Admin - Journal d'audit
-    path("admin/journal-audit/", AuditLogView.as_view(), name="logaudit"),
+    path("admin/journal-audit/", AuditLogView.as_view(), name="admin_logaudit"),
 ]

@@ -62,24 +62,24 @@
     <!-- Tableau -->
     <div class="bg-white rounded-3xl border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table id="utilisateurs-table" class="w-full">
+            <table id="utilisateurs-table" class="w-full min-w-[800px]">
                 <thead>
                 <tr class="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-widest">
-                    <th class="px-6 py-5 text-left">Utilisateur</th>
-                    <th class="px-6 py-5 text-left">Email</th>
-                    <th class="px-6 py-5 text-left">Matricule</th>
-                    <th class="px-6 py-5 text-left">Filière</th>
-                    <th class="px-6 py-5 text-left">Niveau</th>
-                    <th class="px-6 py-5 text-left">Rôle</th>
-                    <th class="px-6 py-5 text-left">Statut</th>
-                    <th class="px-6 py-5 text-left">Créé le</th>
+                    <th class="px-4 md:px-6 py-4 md:py-5 text-left whitespace-nowrap">Utilisateur</th>
+                    <th class="px-4 md:px-6 py-4 md:py-5 text-left whitespace-nowrap">Email</th>
+                    <th class="px-4 md:px-6 py-4 md:py-5 text-left whitespace-nowrap">Matricule</th>
+                    <th class="px-4 md:px-6 py-4 md:py-5 text-left whitespace-nowrap">Filière</th>
+                    <th class="px-4 md:px-6 py-4 md:py-5 text-left whitespace-nowrap">Niveau</th>
+                    <th class="px-4 md:px-6 py-4 md:py-5 text-left whitespace-nowrap">Rôle</th>
+                    <th class="px-4 md:px-6 py-4 md:py-5 text-left whitespace-nowrap">Statut</th>
+                    <th class="px-4 md:px-6 py-4 md:py-5 text-left whitespace-nowrap">Créé le</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                 {% for utilisateur in utilisateurs %}
                 <tr class="hover:bg-gray-50 transition-colors">
                     <!-- Photo & Nom -->
-                    <td class="px-6 py-5">
+                    <td class="px-4 md:px-6 py-4 md:py-5">
                         <div class="flex items-center gap-3">
                             {% if utilisateur.photo %}
                                 <img src="{{ utilisateur.photo.url }}" class="w-10 h-10 rounded-xl object-cover border border-gray-200" alt="">
@@ -92,15 +92,15 @@
                         </div>
                     </td>
 
-                    <td class="px-6 py-5 text-sm text-gray-600">{{ utilisateur.email }}</td>
+                    <td class="px-4 md:px-6 py-4 md:py-5 text-sm text-gray-600">{{ utilisateur.email }}</td>
 
-                    <td class="px-6 py-5 font-mono text-xs text-gray-500">{{ utilisateur.matricule|default:"—" }}</td>
+                    <td class="px-4 md:px-6 py-4 md:py-5 font-mono text-xs text-gray-500">{{ utilisateur.matricule|default:"—" }}</td>
 
-                    <td class="px-6 py-5 text-sm text-gray-600">{{ utilisateur.filiere|default:"—" }}</td>
+                    <td class="px-4 md:px-6 py-4 md:py-5 text-sm text-gray-600">{{ utilisateur.filiere|default:"—" }}</td>
 
-                    <td class="px-6 py-5 text-sm text-gray-600">{{ utilisateur.niveau|default:"—" }}</td>
+                    <td class="px-4 md:px-6 py-4 md:py-5 text-sm text-gray-600">{{ utilisateur.niveau|default:"—" }}</td>
 
-                    <td class="px-6 py-5">
+                    <td class="px-4 md:px-6 py-4 md:py-5">
                         {% if utilisateur.role == "ADMIN" %}
                             <span class="px-4 py-1.5 bg-gradient-to-br from-brand-50 to-brand-100 text-brand-700 rounded-full text-xs font-bold inline-flex items-center gap-2">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11c2.761 0 5-2.239 5-5S14.761 1 12 1 7 3.239 7 6s2.239 5 5 5zM4 21v-2c0-2.761 4.477-5 8-5s8 2.239 8 5v2"/></svg>
@@ -117,7 +117,7 @@
                         {% endif %}
                     </td>
 
-                    <td class="px-6 py-5">
+                    <td class="px-4 md:px-6 py-4 md:py-5">
                         {% if utilisateur.is_active %}
                             <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Actif</span>
                         {% else %}
@@ -125,7 +125,7 @@
                         {% endif %}
                     </td>
 
-                    <td class="px-6 py-5 text-sm text-gray-500">{{ utilisateur.created|date:"d M Y" }}</td>
+                    <td class="px-4 md:px-6 py-4 md:py-5 text-sm text-gray-500">{{ utilisateur.created|date:"d M Y" }}</td>
                 </tr>
                 {% empty %}
                 <tr>

@@ -3,24 +3,33 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     <title>{% block title %}ICAB Bafoussam — Plateforme de Vote Sécurisé{% endblock %}</title>
     
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
     <style>
       .toast-container {
         position: fixed;
-        top: 1.5rem;
-        right: 1.5rem;
+        top: 1rem;
+        right: 1rem;
+        left: 1rem;
         z-index: 9999;
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
         pointer-events: none;
       }
+      @media (min-width: 768px) {
+        .toast-container {
+          top: 1.5rem;
+          right: 1.5rem;
+          left: auto;
+        }
+      }
       .toast {
-        min-width: 18rem;
-        max-width: 26rem;
+        min-width: auto;
+        max-width: 100%;
+        width: auto;
         border-radius: 1rem;
         box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
         padding: 1rem 1.25rem;
@@ -30,6 +39,12 @@
         transform: translateY(-10px);
         opacity: 0;
         animation: toastIn 0.32s ease forwards;
+      }
+      @media (min-width: 768px) {
+        .toast {
+          min-width: 18rem;
+          max-width: 26rem;
+        }
       }
       .toast-success { background: linear-gradient(135deg, #14b8a6, #0f766e); }
       .toast-error   { background: linear-gradient(135deg, #ef4444, #b91c1c); }

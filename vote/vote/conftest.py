@@ -18,3 +18,8 @@ def _media_storage(settings, tmpdir) -> None:
 @pytest.fixture
 def user(db) -> User:
     return UserFactory.create()
+
+
+@pytest.fixture
+def admin_user(db) -> User:
+    return UserFactory.create(is_staff=True, role="ADMIN")

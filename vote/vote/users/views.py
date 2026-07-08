@@ -7,9 +7,12 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.utils import timezone
 from django.http import JsonResponse
 import json
+from django.templatetags.static import static
 from django.utils.text import slugify
 from django.views import View
 from django.views.generic import (
@@ -17,7 +20,7 @@ from django.views.generic import (
 )
 
 from django.views.generic import TemplateView
-from .models import Candidat, Electeur, DemandeCandidature, DemandeElecteur, Vote
+from .models import Candidat, Electeur, DemandeCandidature, DemandeElecteur, Vote, Logaudit
 from .tasks import (
     notify_electeur_statut_demande,
     notify_candidat_statut_demande,
@@ -50,17 +53,9 @@ class HomeView(TemplateView):
 
         selected_scrutin = None
         if scrutins.exists():
-            scrutins_with_candidates = scrutins.filter(candidats__isnull=False).distinct()
-            if scrutins_with_candidates.exists():
-                selected_scrutin = min(
-                    scrutins_with_candidates,
-                    key=lambda scrutin: abs((scrutin.date_debut - now).total_seconds()),
-                )
-            else:
-                selected_scrutin = min(
-                    scrutins,
-                    key=lambda scrutin: abs((scrutin.date_debut - now).total_seconds()),
-                )
+            latest_scrutin = scrutins.order_by("-created", "-id").first()
+            if latest_scrutin:
+                selected_scrutin = latest_scrutin
 
         if selected_scrutin:
             candidats_qs = (
@@ -98,7 +93,26 @@ class HomeView(TemplateView):
             ctx["scrutin"] = selected_scrutin
         else:
             ctx["candidats"] = list(Candidat.objects.select_related("demande__utilisateur").order_by("-nombre_vote")[:4])
-            ctx["carousel_candidates"] = []
+            ctx["carousel_candidates"] = [
+                {
+                    "name": "Vote sécurisé",
+                    "role": "ICAB Bafoussam",
+                    "img": static("images/hero1.png"),
+                    "slug": None,
+                },
+                {
+                    "name": "Élections étudiantes",
+                    "role": "Participation citoyenne",
+                    "img": static("images/hero2.png"),
+                    "slug": None,
+                },
+                {
+                    "name": "Transparence",
+                    "role": "Résultats en temps réel",
+                    "img": static("images/hero3.png"),
+                    "slug": None,
+                },
+            ]
             nb_electeurs = Electeur.objects.count()
             nb_candidats = Candidat.objects.count()
             nb_votes = Vote.objects.count()
@@ -147,6 +161,27 @@ def get_sidebar_counts():
             statut=StatutDemande.EN_ATTENTE
         ).count(),
     }
+
+
+def create_audit_log(user, action, request=None, detail=None):
+    """Enregistre un événement d'audit pour un utilisateur."""
+    if not user:
+        return None
+
+    ip_address = "127.0.0.1"
+    if request is not None:
+        forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if forwarded_for:
+            ip_address = forwarded_for.split(",")[0].strip()
+        else:
+            ip_address = request.META.get("REMOTE_ADDR") or ip_address
+
+    return Logaudit.objects.create(
+        utilisateur=user,
+        action=action,
+        adresse_ip=ip_address,
+        detail=detail,
+    )
 
 
 # ====================== AUTH ======================
@@ -557,10 +592,16 @@ class ScrutinUserView(TemplateView):
             if DemandeElecteur.objects.filter(utilisateur=request.user, scrutin=scrutin).exists():
                 messages.error(request, "Vous avez déjà soumis une demande d'électeur.")
             else:
-                DemandeElecteur.objects.create(
+                demande = DemandeElecteur.objects.create(
                     utilisateur=request.user,
                     scrutin=scrutin,
                     commentaire=commentaire or None,
+                )
+                create_audit_log(
+                    request.user,
+                    "electeur_request_submitted",
+                    request,
+                    f"Demande d’électeur soumise pour le scrutin {scrutin.titre}.",
                 )
                 messages.success(request, "Demande électeur envoyée avec succès !")
 
@@ -568,13 +609,19 @@ class ScrutinUserView(TemplateView):
             if DemandeCandidature.objects.filter(utilisateur=request.user, scrutin=scrutin).exists():
                 messages.error(request, "Vous avez déjà soumis une candidature.")
             else:
-                DemandeCandidature.objects.create(
+                demande = DemandeCandidature.objects.create(
                     utilisateur=request.user,
                     scrutin=scrutin,
                     commentaire=commentaire or None,
                     programme=request.POST.get("programme", "").strip() or None,
                     slogan=request.POST.get("slogan", "").strip() or None,
                     image=request.FILES.get("image"),
+                )
+                create_audit_log(
+                    request.user,
+                    "candidature_request_submitted",
+                    request,
+                    f"Candidature soumise pour le scrutin {scrutin.titre}.",
                 )
                 messages.success(request, "Candidature envoyée avec succès !")
 
@@ -630,6 +677,12 @@ class TraiterDemandeElecteurView(LoginRequiredMixin, View):
 
             # Notification asynchrone via Celery
             notify_electeur_statut_demande.delay(str(demande.pk))
+            create_audit_log(
+                demande.utilisateur,
+                "electeur_request_processed",
+                request,
+                f"Votre demande d’électeur a été approuvée pour le scrutin {demande.scrutin.titre}.",
+            )
             messages.success(request, f"✅ Demande de {demande.utilisateur.email} approuvée.")
 
         elif action == "rejeter":
@@ -639,6 +692,12 @@ class TraiterDemandeElecteurView(LoginRequiredMixin, View):
 
             # Notification asynchrone via Celery
             notify_electeur_statut_demande.delay(str(demande.pk))
+            create_audit_log(
+                demande.utilisateur,
+                "electeur_request_processed",
+                request,
+                f"Votre demande d’électeur a été rejetée pour le scrutin {demande.scrutin.titre}.",
+            )
             messages.warning(request, f"❌ Demande de {demande.utilisateur.email} rejetée.")
 
         return redirect("users:demandes_electeurs")
@@ -726,6 +785,12 @@ class ProfileView(LoginRequiredMixin, UserBaseView):
         if photo:
             user.photo = photo
         user.save()
+        create_audit_log(
+            user,
+            "profile_updated",
+            request,
+            "Profil utilisateur mis à jour depuis l’espace personnel.",
+        )
         messages.success(request, "Profil mis à jour avec succès.")
         return redirect('users:profile')
 
@@ -763,8 +828,32 @@ class UserSettingsView(LoginRequiredMixin, UserBaseView):
         user.telephone = request.POST.get('telephone', user.telephone)
         user.biographie = request.POST.get('biographie', user.biographie)
         user.save()
+        create_audit_log(
+            user,
+            "settings_updated",
+            request,
+            "Paramètres du compte mis à jour.",
+        )
         messages.success(request, "Paramètres enregistrés.")
         return redirect('users:user_settings')
+
+
+class AuditLogView(LoginRequiredMixin, UserBaseView):
+    template_name = "pages/admin_dashboard/logaudit.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_admin():
+            return redirect('users:user_dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["audit_logs"] = (
+            Logaudit.objects.all()
+            .select_related("utilisateur")
+            .order_by("-created", "-horodatage")[:80]
+        )
+        return ctx
 
 
 class MesVotesView(LoginRequiredMixin, UserBaseView):
@@ -810,6 +899,12 @@ class TraiterDemandeCandidatureView(LoginRequiredMixin, View):
 
             # Notification asynchrone via Celery
             notify_candidat_statut_demande.delay(str(demande.pk))
+            create_audit_log(
+                demande.utilisateur,
+                "candidature_request_processed",
+                request,
+                f"Votre candidature a été approuvée pour le scrutin {demande.scrutin.titre}.",
+            )
             messages.success(request, f"🎉 Candidature de {demande.utilisateur.email} approuvée.")
 
         elif action == "rejeter":
@@ -819,6 +914,12 @@ class TraiterDemandeCandidatureView(LoginRequiredMixin, View):
 
             # Notification asynchrone via Celery
             notify_candidat_statut_demande.delay(str(demande.pk))
+            create_audit_log(
+                demande.utilisateur,
+                "candidature_request_processed",
+                request,
+                f"Votre candidature a été rejetée pour le scrutin {demande.scrutin.titre}.",
+            )
             messages.warning(request, f"❌ Candidature de {demande.utilisateur.email} rejetée.")
 
         return redirect("users:demandes_candidatures")
@@ -872,15 +973,38 @@ class ScrutinVoteView(LoginRequiredMixin, TemplateView):
             return redirect("users:scrutin_vote", slug=scrutin.slug)
 
         try:
-            Vote.objects.create(
-                electeur=electeur,
-                candidat=candidat,
-                adresse_ip=request.META.get("REMOTE_ADDR", "127.0.0.1"),
+            with transaction.atomic():
+                vote = Vote.objects.create(
+                    electeur=electeur,
+                    candidat=candidat,
+                    adresse_ip=request.META.get("REMOTE_ADDR", "127.0.0.1"),
+                )
+                candidat.nombre_vote = (candidat.nombre_vote or 0) + 1
+                candidat.save(update_fields=["nombre_vote"])
+
+            payload = [
+                {
+                    "slug": candidate.slug,
+                    "nom": f"{candidate.demande.utilisateur.nom or ''} {candidate.demande.utilisateur.prenom or ''}".strip(),
+                    "votes": candidate.nombre_vote,
+                }
+                for candidate in Candidat.objects.filter(scrutin=scrutin).select_related("demande__utilisateur").order_by("-nombre_vote")
+            ]
+
+            create_audit_log(
+                request.user,
+                "vote_cast",
+                request,
+                f"Vote enregistré pour le scrutin {scrutin.titre}.",
             )
-            # Préparer une représentation des nouveaux comptes de votes pour tous les candidats
-            payload = list(
-                Candidat.objects.filter(scrutin=scrutin).values("slug", "nombre_vote")
-            )
+
+            channel_layer = get_channel_layer()
+            if channel_layer is not None:
+                async_to_sync(channel_layer.group_send)(
+                    f"scrutin_{scrutin.slug}",
+                    {"type": "vote_update", "payload": payload},
+                )
+
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 return JsonResponse({"success": True, "message": "Votre vote a été enregistré avec succès.", "votes": payload})
             messages.success(request, "✅ Votre vote a été enregistré avec succès.")
